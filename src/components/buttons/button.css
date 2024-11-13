@@ -1,0 +1,3 @@
+.default-button{
+    @apply text-base bg-primary px-3 py-1 rounded-full hover:bg-primaryHover cursor-pointer text-white duration-150;
+}

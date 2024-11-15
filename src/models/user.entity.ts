@@ -8,6 +8,7 @@ export type UserEntity = {
   department: string;
   birthday: Date;
   bornLocation: string;
+  password?: string;
 
   officeAddress?: string;
   gender?: "M" | "F";

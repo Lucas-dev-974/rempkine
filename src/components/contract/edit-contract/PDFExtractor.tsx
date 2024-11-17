@@ -37,7 +37,7 @@ function PDFViewer() {
   const [fields, setFields] = createSignal<any[]>([]);
 
   const PDFurl =
-    "http://192.168.1.57:3000/src/assets/contrat-type-de-remplacement-liberal-28-03-2023-.pdf";
+    "http://localhost:3000/src/assets/contrat-type-de-remplacement-liberal-28-03-2023-.pdf";
 
   onMount(async () => await loadPdf());
 

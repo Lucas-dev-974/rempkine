@@ -16,7 +16,7 @@ export function Home() {
           <p class="my-3">RempKiné, annonces de kiné pour les kiné </p>
 
           <Show when={!storeService.proxy.isLogin}>
-            <div class="flex  flex-wrap">
+            <div class="flex flex-wrap gap-3">
               <Button
                 class="my-1 w-full sm:w-auto"
                 text="Je souhaite rejoindre"

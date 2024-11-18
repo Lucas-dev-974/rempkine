@@ -12,6 +12,10 @@ export function NotifcationItem(props: Partial<NotificationType>) {
     <div
       ref={setRef}
       class="bg-blue-500 px-4 py-3 rounded-md flex justify-around gap-3 items-center text-white "
+      classList={{
+        "bg-blue-500": props.type == "info",
+        "bg-red-500": props.type == "error",
+      }}
     >
       <p> {props.content} </p>
       <div>

@@ -2,6 +2,8 @@ import { CalendarIcon } from "../../../icons/CalendarIcon";
 import { HouseIcon } from "../../../icons/HouseIcon";
 import { PeopleIcon } from "../../../icons/PeopleIcon";
 import { PercentIcon } from "../../../icons/PercentIcon";
+import { NotificationService } from "../../../utils/notification.service";
+import storeService from "../../../utils/store.service";
 import { Button } from "../../buttons/Button";
 
 export interface AnnoucementCardProps {
@@ -16,10 +18,10 @@ export interface AnnoucementCardProps {
 
 export function AnnoucementCard(props: AnnoucementCardProps) {
   return (
-    <div class="announcement bg-gray-300  max-w-[350px] min-w-[280px] rounded-xl">
+    <div class="announcement bg-gray-300  max-w-[350px] min-w-[280px] rounded-xl cursor-pointer ">
       <img
         src="https://images.pexels.com/photos/20860586/pexels-photo-20860586/free-photo-of-physiotherapist-looking-at-patient-back.jpeg"
-        class="rounded-t-xl "
+        class="rounded-t-xl object-cover w-[350px] h-[230px]"
       />
 
       <div class="content py-3 px-2">
@@ -62,6 +64,13 @@ export function AnnoucementCard(props: AnnoucementCardProps) {
           <Button
             text="Proposer un contrat"
             onClick={() => {
+              if (!storeService.proxy.isLogin) {
+                NotificationService.push({
+                  type: "error",
+                  content: "Vous devez être connecter pour proposer un contrat",
+                });
+                return;
+              }
               location.href = "/contract-edit";
             }}
           />

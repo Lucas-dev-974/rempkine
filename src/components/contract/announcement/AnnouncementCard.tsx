@@ -16,7 +16,7 @@ export interface AnnoucementCardProps {
 
 export function AnnoucementCard(props: AnnoucementCardProps) {
   return (
-    <div class="announcement bg-gray-300 w-[70%] max-w-[350px] rounded-xl">
+    <div class="announcement bg-gray-300  max-w-[350px] min-w-[280px] rounded-xl">
       <img
         src="https://images.pexels.com/photos/20860586/pexels-photo-20860586/free-photo-of-physiotherapist-looking-at-patient-back.jpeg"
         class="rounded-t-xl "
@@ -30,28 +30,31 @@ export function AnnoucementCard(props: AnnoucementCardProps) {
             <div class="w-5 h-5">
               <CalendarIcon />
             </div>
-            <p>du 02/12/2024 au 06/12/2024</p>
+            <p class="text-sm font-bold">du 02/12/2024 au 06/12/2024</p>
           </div>
 
           <div class="flex items-center gap-1">
             <div class="w-5 h-5">
               <PeopleIcon />
             </div>
-            <p>{props.clientNumber}</p>
+            <p class="text-sm font-bold">{props.clientNumber}</p>
           </div>
 
           <div class="flex items-center gap-1">
             <div class="w-5 h-5">
               <HouseIcon />
             </div>
-            <p> cabinet {props.accommodation ? " + logement" : ""}</p>
+            <p class="text-sm font-bold">
+              {" "}
+              cabinet {props.accommodation ? " + logement" : ""}
+            </p>
           </div>
 
           <div class="flex items-center gap-1">
             <div class="w-5 h-5">
               <PercentIcon />
             </div>
-            <p>{props.remuneration}</p>
+            <p class="text-sm font-bold">{props.remuneration}</p>
           </div>
         </div>
 

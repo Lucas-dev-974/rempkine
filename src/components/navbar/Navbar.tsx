@@ -1,5 +1,6 @@
 import { MenuIcon } from "../../icons/MenuIcon";
 import "./navbar.css";
+import { UserMenu } from "./user-menu/UserMenu";
 
 export function Navbar() {
   return (
@@ -11,10 +12,10 @@ export function Navbar() {
 
         <div class="nav-btn-group">
           <a href="/annonces">Annonces</a>
-          <a href="#">....</a>
         </div>
       </div>
 
+      <UserMenu class="sm:visible" />
       <div class="mobile-nav flex items-center  sm:hidden">
         <div class="w-7 h-7 relative top-1">
           <MenuIcon />

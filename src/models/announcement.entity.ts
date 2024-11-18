@@ -29,4 +29,34 @@ export const announcements: AnnouncementEntity[] = [
     },
     text: "",
   },
+
+  {
+    location: "Saint Denis",
+    workType: "Medecin",
+    accommodation: true,
+    clientNumber: "70-100",
+    remuneration: "80/20",
+    secretariat: true,
+    vehicle: false,
+    duration: {
+      start: new Date("2024-12-02"),
+      end: new Date("2024-12-06"),
+    },
+    text: "",
+  },
+
+  {
+    location: "Saint Denis",
+    workType: "Medecin",
+    accommodation: true,
+    clientNumber: "70-100",
+    remuneration: "80/20",
+    secretariat: true,
+    vehicle: false,
+    duration: {
+      start: new Date("2024-12-02"),
+      end: new Date("2024-12-06"),
+    },
+    text: "",
+  },
 ];

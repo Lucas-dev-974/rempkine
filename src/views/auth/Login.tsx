@@ -34,8 +34,6 @@ export function LoginCard() {
     }
 
     setFormData(data); // Mettez à jour l'état si nécessaire
-    console.log("form", formData());
-
     await authService.login(
       formData() as Pick<UserEntity, "email" | "password">
     );

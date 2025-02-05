@@ -1,6 +1,7 @@
 import { Show } from "solid-js";
 import { Button } from "../../components/buttons/Button";
 import storeService from "../../utils/store.service";
+import { DialogWrapper } from "../../components/dialog/DialogWrapper";
 
 export function Home() {
   return (
@@ -8,7 +9,7 @@ export function Home() {
       <div class="flex items-center">
         <div class="w-1/2">
           <h1 class="text-2xl sm:text-3xl md:text-5xl my-3 font-bold text-gray-800 text-center md:text-left">
-            Trouve dès maintenant un remplaçant pour ton cabinet
+            Simplifie la gestion de tes contrats avec tes collaborateurs
           </h1>
           <p class="my-3 text-center md:text-left pr-10">
             RempKiné est un outil dédié aux kinésithérapeutes, conçu pour
@@ -37,6 +38,8 @@ export function Home() {
               text="Tester l'outil"
               onClick={() => (location.href = "/contract-edit")}
             />
+
+            <DialogWrapper>teste</DialogWrapper>
           </div>
         </div>
 

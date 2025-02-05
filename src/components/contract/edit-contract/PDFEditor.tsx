@@ -5,7 +5,6 @@ import { Button } from "../../buttons/Button";
 import { PDFTool } from "./PDFTool";
 
 import "./PDFEditor.css";
-
 export function PDFEditor() {
   const [pdfFile, setPdfFile] = createSignal();
   const [currentPage, setCurrentPage] = createSignal(1);
@@ -70,8 +69,6 @@ export function PDFEditor() {
               top: `${field.top}px`,
               width: `${field.width}px`,
               height: `${field.height}px`,
-              // "font-size": "16px",
-              padding: "2px",
             }}
           />
         ))}

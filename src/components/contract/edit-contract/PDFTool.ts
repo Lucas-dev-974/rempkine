@@ -3,6 +3,9 @@ import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { user1, user2, UserEntity } from "../../../models/user.entity";
 
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "node_modules/pdfjs-dist/build/pdf.worker.mjs";
+
 export type FormFieldsType = {
   page: number;
   fields: {

@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { AnnoucementCard } from "../../components/contract/announcement/AnnouncementCard";
+import { AnnoucementCard } from "./AnnouncementCard";
 import {
   announcements,
   AnnouncementEntity,

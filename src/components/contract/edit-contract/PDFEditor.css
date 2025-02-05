@@ -1,0 +1,14 @@
+
+#pdf-canvas {
+    width: 100%;
+}
+
+.pdf-input{
+    @apply border-none inset-0 overflow-visible text-sm
+}
+
+.pdf-input:focus,
+.pdf-input:active {
+    @apply border-none;
+    outline: none;
+}

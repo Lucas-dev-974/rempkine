@@ -19,8 +19,6 @@ export function UserMenu(props: UserMenuProps) {
 
   function handleClickOutside(event: MouseEvent) {
     if (storeService.proxy.isLogin) {
-      console.log(!menuRef()!.contains(event.target as Node));
-
       if (menuRef() && !menuRef()!.contains(event.target as Node)) {
         setOpen(false); // Ferme le menu si on clique à l'extérieur
       }

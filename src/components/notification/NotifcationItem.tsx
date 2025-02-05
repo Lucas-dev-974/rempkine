@@ -1,10 +1,11 @@
-import { createSignal } from "solid-js";
+import { createSignal, mergeProps } from "solid-js";
 import { CloseIcon } from "../../icons/CloseIcon";
 import { NotificationType } from "../../utils/notification.service";
 
 export function NotifcationItem(props: Partial<NotificationType>) {
   const [ref, setRef] = createSignal<HTMLDivElement>();
 
+  const mergedProps = mergeProps({ type: "info" }, props);
   function closeNotif() {
     ref()?.remove();
   }
@@ -13,8 +14,8 @@ export function NotifcationItem(props: Partial<NotificationType>) {
       ref={setRef}
       class="bg-blue-500 px-4 py-3 rounded-md flex justify-around gap-3 items-center text-white "
       classList={{
-        "bg-blue-500": props.type == "info",
-        "bg-red-500": props.type == "error",
+        "bg-blue-500": mergedProps.type == "info",
+        "bg-red-500": mergedProps.type == "error",
       }}
     >
       <p> {props.content} </p>

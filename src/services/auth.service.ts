@@ -26,7 +26,6 @@ class AuthService {
 
   async login(user: Pick<UserEntity, "email" | "password">) {
     const response = await fetcher.post("/auth/login", user);
-    console.log(response);
 
     if (response.error) {
       setLoggedIn(false);

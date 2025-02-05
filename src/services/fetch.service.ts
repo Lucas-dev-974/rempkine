@@ -46,7 +46,10 @@ class Fetcher {
     if (response.status != 200) {
       console.log("error ");
 
-      NotificationService.push({ content: responseJson.error.message });
+      NotificationService.push({
+        content: responseJson.error.message,
+        type: "error",
+      });
     }
 
     return responseJson;

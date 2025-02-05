@@ -1,12 +1,9 @@
 import { Route, Router, useNavigate } from "@solidjs/router";
-import { Home } from "../views/Home";
+import { Home } from "../views/home/Home";
 import { Contracts } from "../views/Contracts";
 import PDFViewer from "../components/contract/edit-contract/PDFExtractor";
 import { Authentication } from "../views/auth/Authentication";
 import { For } from "solid-js";
-import { Navbar } from "../components/navbar/Navbar";
-import { Notification } from "../components/notification/Notification";
-import { setNavigate } from "../utils/navigation";
 
 const routes = [
   { path: "/", component: Home },

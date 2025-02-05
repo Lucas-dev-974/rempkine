@@ -4,13 +4,13 @@ import storeService from "../../utils/store.service";
 
 export function Home() {
   return (
-    <div class="pt-8">
-      <div class="flex gap-1 flex-wrap ">
-        <div class="w-full sm:w-1/2 md:w-auto">
-          <h1 class="text-2xl sm:text-3xl md:text-4xl my-3 font-bold text-gray-800 text-center md:text-left">
+    <div class="pt-8 xl:mx-40 ">
+      <div class="flex items-center">
+        <div class="w-1/2">
+          <h1 class="text-2xl sm:text-3xl md:text-5xl my-3 font-bold text-gray-800 text-center md:text-left">
             Trouve dès maintenant un remplaçant pour ton cabinet
           </h1>
-          <p class="my-3 md:w-2/3 text-center md:text-left">
+          <p class="my-3 text-center md:text-left pr-10">
             RempKiné est un outil dédié aux kinésithérapeutes, conçu pour
             simplifier la création de contrats. Gagnez du temps en générant
             automatiquement des documents conformes et personnalisés en quelques
@@ -35,9 +35,17 @@ export function Home() {
             <Button
               class="my-1 w-full sm:w-auto"
               text="Tester l'outil"
-              onClick={() => (location.href = "/login")}
+              onClick={() => (location.href = "/contract-edit")}
             />
           </div>
+        </div>
+
+        <div class="w-1/2 radius-10 ">
+          <img
+            class="rounded-2xl"
+            src="https://images.pexels.com/photos/20860582/pexels-photo-20860582/free-photo-of-physiotherapist-and-patient-exercising.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            alt=""
+          />
         </div>
       </div>
 

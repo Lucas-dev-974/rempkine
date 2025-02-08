@@ -58,6 +58,9 @@ export function PDFEditor() {
   });
 
   async function changePage(page: number) {
+    if (page === -1 && pdfTool.currentPage == 1) return 1;
+    if (page === +1 && pdfTool.currentPage == 6) return 6;
+
     await pdfTool.renderPage(pdfTool.currentPage + page);
     const fieldsFromForm = pdfTool.getCurrentPageFieldsFromFormFields();
     if (fieldsFromForm) {

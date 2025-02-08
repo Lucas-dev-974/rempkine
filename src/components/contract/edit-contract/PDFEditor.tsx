@@ -1,39 +1,79 @@
-import { createSignal, onMount } from "solid-js";
+import { createEffect, createSignal, on, onMount } from "solid-js";
 import { NextIcon } from "../../../icons/NextIcon";
 import { PreviousIcon } from "../../../icons/PreviousIcon";
 import { Button } from "../../buttons/Button";
 import { PDFTool } from "./PDFTool";
 
+export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
+
 import "./PDFEditor.css";
+
+const [fields, setFields] = createSignal<any[]>([]);
+
+export function HandleInputChangePDFEditor(
+  fieldID: string | string[],
+  value: string
+) {
+  if (Array.isArray(fieldID)) {
+    fieldID.forEach((id) => {
+      setFields((prev) => {
+        if (!prev) return prev;
+        const field = prev.find((f) => f.id === id);
+        if (!field) return prev;
+        field.value = value;
+        return [...prev];
+      });
+
+      currentPDF()?.handleInputChange(id, value);
+    });
+  } else {
+    setFields((prev) => {
+      if (!prev) return prev;
+      const field = prev.find((f) => f.id === fieldID);
+      if (!field) return prev;
+      field.value = value;
+      return [...prev];
+    });
+
+    currentPDF()?.handleInputChange(fieldID, value);
+  }
+}
+
 export function PDFEditor() {
   const [pdfFile, setPdfFile] = createSignal();
   const [currentPage, setCurrentPage] = createSignal(1);
   const [numPages, setNumPages] = createSignal();
-  const [fields, setFields] = createSignal<any[]>([]);
 
   const PDFurl =
     "http://localhost:3000/src/assets/contrat-type-de-remplacement-liberal-28-03-2023-.pdf";
 
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
+
   onMount(async () => {
     await pdfTool.loadPdf();
     setPdfFile(pdfTool.pdfFile);
     setCurrentPage(pdfTool.currentPage);
     setNumPages(pdfTool.numPages);
+    setCurrentPDF(pdfTool);
   });
 
   async function changePage(page: number) {
     await pdfTool.renderPage(pdfTool.currentPage + page);
-    setFields(pdfTool.fields!);
+    const fieldsFromForm = pdfTool.getCurrentPageFieldsFromFormFields();
+    if (fieldsFromForm) {
+      setFields(fieldsFromForm);
+    }
     setCurrentPage(pdfTool.currentPage);
     setNumPages(pdfTool.numPages);
   }
+
   return (
     <div>
       <div class="flex gap-2 my-4 justify-between">
         <Button
           onClick={() => pdfTool.downloadModifiedPdf(pdfFile() as File)}
           text="Télécharger le PDF modifié"
+          size="small"
         />
         <div class="flex items-center">
           <button

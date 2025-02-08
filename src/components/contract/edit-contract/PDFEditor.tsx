@@ -86,7 +86,7 @@ export function PDFEditor() {
             <PreviousIcon />
           </button>
           <p class="mx-4">
-            Page {currentPage()} sur {numPages() as number}
+            {currentPage()} sur {numPages() as number}
           </p>
           <button
             class="h-3 w-3 rounded-full flex items-center"

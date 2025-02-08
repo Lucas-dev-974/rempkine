@@ -1,3 +1,5 @@
+import "./LabeledInput.css";
+
 interface LabeledInputProps {
   id: string;
   label: string;

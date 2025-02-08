@@ -80,16 +80,16 @@ export function PDFEditor() {
         />
         <div class="flex items-center">
           <button
-            class="h-3 w-3 rounded-full flex items-center"
+            class="h-2 w-2 rounded-full flex items-center"
             onClick={() => changePage(-1)}
           >
             <PreviousIcon />
           </button>
-          <p class="mx-4">
+          <p class="mx-4 text-sm">
             {currentPage()} sur {numPages() as number}
           </p>
           <button
-            class="h-3 w-3 rounded-full flex items-center"
+            class="h-2 w-2 rounded-full flex items-center"
             onClick={() => changePage(+1)}
           >
             <NextIcon />

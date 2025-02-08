@@ -1,8 +1,11 @@
 import { createSignal, JSX, Show } from "solid-js";
-import "./DialogWrapper.css";
+import { Button } from "../buttons/Button";
 
+import "./DialogWrapper.css";
 type DialogWrapperProps = {
   children: JSX.Element;
+  btnText: string;
+  title: string;
 };
 
 export function DialogWrapper(props: DialogWrapperProps) {
@@ -13,13 +16,17 @@ export function DialogWrapper(props: DialogWrapperProps) {
 
   return (
     <>
-      <button onClick={openDialog}>Open Dialog</button>
+      <Button text={props.btnText} onClick={openDialog} />
       <Show when={isOpen()} fallback={null}>
         <div class="dialog-overlay" onClick={closeDialog}>
-          <div class="dialog-content" onClick={(e) => e.stopPropagation()}>
-            <button class="close-button" onClick={closeDialog}>
-              &times;
-            </button>
+          <div class="dialog" onClick={(e) => e.stopPropagation()}>
+            <div class="dialog-header">
+              <h3>{props.title}</h3>
+              <button class="close-button" onClick={closeDialog}>
+                &times;
+              </button>
+            </div>
+
             {props.children}
           </div>
         </div>

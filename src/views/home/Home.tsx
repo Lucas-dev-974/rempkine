@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import { Button } from "../../components/buttons/Button";
 import storeService from "../../utils/store.service";
-import { DialogWrapper } from "../../components/dialog/DialogWrapper";
+import { DialogTool } from "../../components/dialog/dialog-tool/DialogTool";
 
 export function Home() {
   return (
@@ -33,13 +33,7 @@ export function Home() {
           </Show>
 
           <div class="my-3">
-            <Button
-              class="my-1 w-full sm:w-auto"
-              text="Tester l'outil"
-              onClick={() => (location.href = "/contract-edit")}
-            />
-
-            <DialogWrapper>teste</DialogWrapper>
+            <DialogTool />
           </div>
         </div>
 

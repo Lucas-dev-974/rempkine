@@ -45,7 +45,6 @@ export class PDFTool {
     const response = await fetch(this.url!);
     if (!response.ok) throw new Error("Erreur de chargement du PDF");
 
-    // Convertir la réponse en ArrayBuffer puis en Uint8Array
     const arrayBuffer = await response.arrayBuffer();
     const pdfUint8Array = new Uint8Array(arrayBuffer);
 
@@ -57,10 +56,8 @@ export class PDFTool {
     this.pdfDoc = await pdfjsLib.getDocument(pdfUint8Array).promise;
     this.numPages = this.pdfDoc.numPages;
 
-    this.renderPage(1); // Charge la première page
+    this.renderPage(1);
     await this.getPagesFields();
-
-    this.loadSubsituteInformations();
   }
 
   async getPagesFields() {
@@ -351,21 +348,32 @@ export class PDFTool {
     this.renderPage(this.currentPage!);
   }
 
+  getCurrentPageFieldsFromFormFields() {
+    return this.formFields!.find((form) => form.page === this.currentPage)
+      ?.fields;
+  }
+
   handleInputChange(fieldId: any, newValue: any) {
-    const onPage = this.formFields!.filter(
-      (form) => form.page == this.currentPage
-    )[0];
-    const indexOfPage = this.formFields!.indexOf(onPage);
-    this.formFields![indexOfPage].fields = onPage.fields.map((field) =>
-      field.id === fieldId ? { ...field, value: newValue } : field
-    );
+    this.formFields = this.formFields?.map((page) => {
+      return {
+        ...page,
+        fields: page.fields.map((field) => {
+          if (field.id === fieldId) {
+            return {
+              ...field,
+              value: newValue,
+            };
+          }
+          return field;
+        }),
+      };
+    });
+
     this.renderPage(this.currentPage);
   }
 
   // Fonction pour appliquer les modifications et télécharger le PDF
   async downloadModifiedPdf(pdfFile: File) {
-    console.log("PDF FILE", pdfFile);
-
     const reader = new FileReader();
 
     reader.onload = async () => {
@@ -401,5 +409,29 @@ export class PDFTool {
     };
 
     reader.readAsArrayBuffer(pdfFile as File);
+  }
+
+  getReplacedFields(gender?: "m" | "f") {
+    return {
+      name: gender === "m" ? ["94R", "117R"] : ["98R", "116R"],
+      birthday: "96R",
+      birthdayLocation: "95R",
+      orderDepartement: "93R",
+      orderDepartmentNumber: "97R",
+      professionnalAddress: "104R",
+      email: "100R",
+    };
+  }
+
+  getSubstituteFields(gender?: "m" | "f") {
+    return {
+      name: gender === "m" ? ["99R", "118R"] : ["105R", "115R"],
+      birthday: "102R",
+      birtdayLoction: "103R",
+      orderDepartement: "109R",
+      orderDepartmentNumber: "108R",
+      address: "112R",
+      email: "111R",
+    };
   }
 }

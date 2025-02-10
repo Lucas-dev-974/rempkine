@@ -413,7 +413,10 @@ export class PDFTool {
 
   getReplacedFields(gender?: "m" | "f") {
     return {
-      name: gender === "m" ? ["94R", "117R"] : ["98R", "116R"],
+      name:
+        gender === "m"
+          ? ["94R", "117R", "125R", "119R", "121R"]
+          : ["98R", "116R", "114R", "124R", "120R"],
       birthday: "96R",
       birthdayLocation: "95R",
       orderDepartement: "93R",
@@ -425,7 +428,7 @@ export class PDFTool {
 
   getSubstituteFields(gender?: "m" | "f") {
     return {
-      name: gender === "m" ? ["99R", "118R"] : ["105R", "115R"],
+      name: gender === "m" ? ["99R", "118R", "127R"] : ["105R", "115R", "126R"],
       birthday: "102R",
       birtdayLoction: "103R",
       orderDepartement: "109R",

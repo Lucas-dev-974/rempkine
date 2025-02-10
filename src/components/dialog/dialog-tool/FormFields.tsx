@@ -9,8 +9,8 @@ import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
 import { LabeledInput } from "../../inputs/LabeledInput";
 
 export function FormFields() {
-  const [replacedGender, setReplacedGender] = createSignal<"m" | "f">();
-  const [substituteGender, setSubstituteGender] = createSignal<"m" | "f">();
+  const [replacedGender, setReplacedGender] = createSignal<"m" | "f">("m");
+  const [substituteGender, setSubstituteGender] = createSignal<"m" | "f">("m");
 
   return (
     <AccordionWrapper multiple={true}>
@@ -218,12 +218,12 @@ export function FormFields() {
               }}
             />
             <LabeledInput
-              id="address"
+              id="substitute-address"
               label="Adresse"
               type="text"
               onInput={(e) => {
                 HandleInputChangePDFEditor(
-                  currentPDF()?.getSubstituteFields().email as string,
+                  currentPDF()?.getSubstituteFields().address as string,
                   e.target.value
                 );
               }}

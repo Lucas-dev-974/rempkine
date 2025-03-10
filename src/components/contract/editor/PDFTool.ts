@@ -6,6 +6,25 @@ import { user1, user2, UserEntity } from "../../../models/user.entity";
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "node_modules/pdfjs-dist/build/pdf.worker.mjs";
 
+export enum GenderEnum {
+  male = "m",
+  female = "f",
+}
+
+export enum AuthorsEnum {
+  student,
+  professional,
+  none,
+}
+
+export type otherContractDataType = {
+  replacedGender: GenderEnum;
+  substituteGender: GenderEnum;
+
+  contractAuthor: AuthorsEnum;
+  authorEmail: string;
+};
+
 export type FormFieldsType = {
   page: number;
   fields: {
@@ -33,12 +52,21 @@ export class PDFTool {
   public currentPage: number = 1;
   public formFields: FormFieldsType[] | undefined;
   public fields: any[] | undefined;
+  public OCD: otherContractDataType;
 
   constructor(url: string, canvasID: string) {
     this.url = url;
     this.canvasID = canvasID;
 
     this.loadPdf();
+
+    this.OCD = {
+      contractAuthor: AuthorsEnum.none,
+      authorEmail: "",
+
+      replacedGender: GenderEnum.male,
+      substituteGender: GenderEnum.male,
+    };
   }
 
   async loadPdf() {
@@ -354,6 +382,8 @@ export class PDFTool {
   }
 
   handleInputChange(fieldId: any, newValue: any) {
+    // console.log(fieldId);
+
     this.formFields = this.formFields?.map((page) => {
       return {
         ...page,
@@ -411,6 +441,20 @@ export class PDFTool {
     reader.readAsArrayBuffer(pdfFile as File);
   }
 
+  getFieldValue(field: string): string {
+    let value = "";
+
+    this.formFields?.forEach((fields) => {
+      fields.fields.forEach((_field) => {
+        if (_field.id == field) {
+          value = _field.value;
+        }
+      });
+    });
+
+    return value;
+  }
+
   getReplacedFields(gender?: "m" | "f") {
     return {
       name:
@@ -430,11 +474,31 @@ export class PDFTool {
     return {
       name: gender === "m" ? ["99R", "118R", "127R"] : ["105R", "115R", "126R"],
       birthday: "102R",
-      birtdayLoction: "103R",
+      birthdayLoction: "103R",
       orderDepartement: "109R",
       orderDepartmentNumber: "108R",
       address: "112R",
       email: "111R",
+    };
+  }
+
+  getContractInformationFields() {
+    return {
+      startDate: "122R",
+      enDate: "123R",
+      percentReversedToSubstitute: "130R",
+      reversedBefore: "131R",
+      NonInstallationRadius: "134R",
+      conciliationCDOMK: "137R",
+      doneAtLocation: "139R",
+      doneAt: "138R",
+    };
+  }
+
+  updateOCD(ocd: Partial<otherContractDataType>) {
+    this.OCD = {
+      ...this.OCD,
+      ...ocd,
     };
   }
 }

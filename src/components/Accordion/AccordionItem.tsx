@@ -1,3 +1,6 @@
+import { Show } from "solid-js";
+import "./AccordionItem.css";
+
 type AccordionItemProps = {
   id: number;
   toggle: (id: number) => void;
@@ -8,9 +11,12 @@ type AccordionItemProps = {
 export function AccordionItem(props: AccordionItemProps & { children?: any }) {
   return (
     <div class="accordion-item">
-      <button class="accordion-header" onClick={() => props.toggle(props.id)}>
-        {props.title}
-      </button>
+      <div class="accordion-header" onClick={() => props.toggle(props.id)}>
+        <p>{props.title}</p>
+        <Show when={props.id != 3}>
+          <button>test</button>
+        </Show>
+      </div>
       {props.isOpen && <div class="accordion-content">{props.children}</div>}
     </div>
   );

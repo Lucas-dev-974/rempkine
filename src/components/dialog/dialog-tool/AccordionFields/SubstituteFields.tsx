@@ -14,8 +14,8 @@ export function SubstituteFields(props: {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: AccordionItemType[] | (() => AccordionItemType[]);
 }) {
-  const [Gender, setGender] = createSignal<"m" | "f">(
-    currentPDF()?.OCD.substituteGender as GenderEnum
+  const [Gender, setGender] = createSignal(
+    currentPDF()?.OCD.substituteGender.toString() as GenderEnum
   );
 
   const [EmailValue, setEmailValue] = createSignal("");
@@ -73,6 +73,8 @@ export function SubstituteFields(props: {
           currentPDF()?.getSubstituteFields(Gender()).address as string
         ) || ""
       );
+
+      setGender(currentPDF()?.OCD.substituteGender as GenderEnum);
     })
   );
 
@@ -90,16 +92,26 @@ export function SubstituteFields(props: {
       <Dialog2InputRadio
         legend="Genre:"
         name="substitute-gender"
-        id1="substitute-mister"
-        text1="Monsieur"
-        value1="m"
-        id2="substitute-miss"
-        text2="Madame"
-        value2="f"
+        items={[
+          {
+            id: "substitute-mister",
+            text: "Monsieur",
+            value: GenderEnum.male,
+          },
+          {
+            id: "substitute-miss",
+            text: "Madame",
+            value: GenderEnum.female,
+          },
+        ]}
         onChange={(e) => {
           const target = e.target as HTMLInputElement;
-          setGender(target.value as "m" | "f");
+          setGender(target.value as GenderEnum);
+          currentPDF()?.updateOCD({
+            substituteGender: target.value as GenderEnum,
+          });
         }}
+        value={Gender()}
       />
       <LabeledInput
         id="substitute-name"

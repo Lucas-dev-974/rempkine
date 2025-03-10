@@ -6,7 +6,7 @@ import {
   HandleInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
 import { LabeledInput } from "../../../inputs/LabeledInput";
-import { toggleItemEvent } from "../FormFields";
+import { toggleItemEvent } from "./FormFields";
 
 export function ContractInformationsFields(props: {
   toggleItem: ((id: number) => void) | ((id: number) => void);

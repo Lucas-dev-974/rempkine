@@ -1,9 +1,9 @@
 import { createSignal } from "solid-js";
-import { AccordionWrapper } from "../../Accordion/AccordionWrapper";
+import { AccordionWrapper } from "../../../Accordion/AccordionWrapper";
 
-import { ReplacedFields } from "./AccordionFields/ReplacedFields";
-import { SubstituteFields } from "./AccordionFields/SubstituteFields";
-import { ContractInformationsFields } from "./AccordionFields/ContractInformationsFields";
+import { ReplacedFields } from "./ReplacedFields";
+import { SubstituteFields } from "./SubstituteFields";
+import { ContractInformationsFields } from "./ContractInformationsFields";
 
 export const [toggleItemEvent, setToggleItemEvent] = createSignal(false);
 

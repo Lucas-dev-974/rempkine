@@ -5,7 +5,7 @@ import { currentPDF } from "../contract/editor/PDFEditor";
 import {
   setToggleItemEvent,
   toggleItemEvent,
-} from "../dialog/dialog-tool/FormFields";
+} from "../dialog/dialog-tool/AccordionFields/FormFields";
 
 type AccordionWrapperProps = {
   multiple?: boolean; // Permet plusieurs panneaux ouverts simultanément

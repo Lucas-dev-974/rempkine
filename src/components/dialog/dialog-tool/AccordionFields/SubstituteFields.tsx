@@ -8,7 +8,7 @@ import {
 import { GenderEnum } from "../../../contract/editor/PDFTool";
 import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
 import { LabeledInput } from "../../../inputs/LabeledInput";
-import { toggleItemEvent } from "../FormFields";
+import { toggleItemEvent } from "./FormFields";
 
 export function SubstituteFields(props: {
   toggleItem: ((id: number) => void) | ((id: number) => void);

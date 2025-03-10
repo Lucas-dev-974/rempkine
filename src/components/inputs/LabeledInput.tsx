@@ -3,7 +3,7 @@ import "./LabeledInput.css";
 interface LabeledInputProps {
   id: string;
   label: string;
-  type: "text" | "mail" | "date";
+  type: "text" | "mail" | "date" | "number";
   placeholder?: string;
 
   value?: string;

@@ -13,9 +13,6 @@ export function AccordionItem(props: AccordionItemProps & { children?: any }) {
     <div class="accordion-item">
       <div class="accordion-header" onClick={() => props.toggle(props.id)}>
         <p>{props.title}</p>
-        <Show when={props.id != 3}>
-          <button>test</button>
-        </Show>
       </div>
       {props.isOpen && <div class="accordion-content">{props.children}</div>}
     </div>

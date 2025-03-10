@@ -1,14 +1,13 @@
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
-import { user1, user2, UserEntity } from "../../../models/user.entity";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "node_modules/pdfjs-dist/build/pdf.worker.mjs";
 
 export enum GenderEnum {
-  male = "m",
-  female = "f",
+  male = "male",
+  female = "female",
 }
 
 export enum AuthorsEnum {
@@ -196,186 +195,6 @@ export class PDFTool {
     else this.fields = fields;
   }
 
-  loadSubsituteInformations() {
-    const userIsM = (user: UserEntity) => {
-      if (user.gender == "M") return true;
-      else return false;
-    };
-
-    const options: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    };
-
-    this.formFields!.map((field) => {
-      field.fields.forEach((field) => {
-        switch (field.id) {
-          case "98R":
-            field.value = userIsM(user1)
-              ? ""
-              : user1.name + " " + user1.lastName;
-            break;
-
-          case "94R":
-            field.value = userIsM(user1)
-              ? user1.name + " " + user1.lastName
-              : "";
-            break;
-
-          case "96R":
-            const formattedDate = new Intl.DateTimeFormat(
-              "fr-FR",
-              options
-            ).format(user1.birthday);
-            field.value = formattedDate;
-            break;
-
-          case "95R":
-            field.value = user1.bornLocation;
-            break;
-
-          case "93R":
-            field.value = user1.department;
-            break;
-
-          case "97R":
-            field.value = user1.odreNumber.toString();
-            break;
-
-          case "104R":
-            field.value = user1.address;
-            break;
-
-          case "100R":
-            field.value = user1.email;
-            break;
-
-          case "105R":
-            field.value = userIsM(user2)
-              ? ""
-              : user2.name + " " + user2.lastName;
-            break;
-
-          case "99R":
-            field.value = userIsM(user2)
-              ? user2.name + " " + user2.lastName
-              : "";
-            break;
-
-          case "102R":
-            const formattedDate_ = new Intl.DateTimeFormat(
-              "fr-FR",
-              options
-            ).format(user2.birthday);
-            field.value = formattedDate_;
-            break;
-
-          case "103R":
-            field.value = user2.bornLocation;
-            break;
-
-          case "109R":
-            field.value = user2.department;
-            break;
-
-          case "108R":
-            field.value = user2.odreNumber.toString();
-            break;
-
-          case "112R":
-            field.value = user2.address;
-            break;
-
-          case "111R":
-            field.value = user2.email;
-            break;
-          // ------- PAGE 3 --------------
-          case "116R":
-            field.value = userIsM(user1)
-              ? ""
-              : user1.name + " " + user1.lastName;
-            break;
-
-          case "117R":
-            field.value = userIsM(user1)
-              ? user1.name + " " + user1.lastName
-              : "";
-            break;
-
-          case "115R":
-            field.value = userIsM(user2)
-              ? ""
-              : user2.name + " " + user2.lastName;
-            break;
-
-          case "118R":
-            field.value = userIsM(user2)
-              ? user2.name + " " + user2.lastName
-              : "";
-            break;
-
-          case "114R":
-            field.value = userIsM(user1)
-              ? ""
-              : user1.name + " " + user1.lastName;
-            break;
-
-          case "125R":
-            field.value = userIsM(user1)
-              ? user1.name + " " + user1.lastName
-              : "";
-            break;
-
-          case "124R":
-            field.value = userIsM(user1)
-              ? ""
-              : user1.name + " " + user1.lastName;
-            break;
-
-          case "119R":
-            field.value = userIsM(user1)
-              ? user1.name + " " + user1.lastName
-              : "";
-            break;
-
-          case "126R":
-            field.value = userIsM(user2)
-              ? ""
-              : user2.name + " " + user2.lastName;
-            break;
-
-          case "127R":
-            field.value = userIsM(user2)
-              ? user2.name + " " + user2.lastName
-              : "";
-            break;
-
-          case "120R":
-            field.value = userIsM(user1)
-              ? ""
-              : user1.name + " " + user1.lastName;
-            break;
-
-          case "121R":
-            field.value = userIsM(user1)
-              ? user1.name + " " + user1.lastName
-              : "";
-            break;
-
-          case "138R":
-            field.value = new Intl.DateTimeFormat("fr-FR", options).format(
-              user1.birthday
-            );
-            break;
-        }
-      });
-    });
-
-    this.renderPage(this.currentPage!);
-  }
-
   getCurrentPageFieldsFromFormFields() {
     return this.formFields!.find((form) => form.page === this.currentPage)
       ?.fields;
@@ -455,10 +274,10 @@ export class PDFTool {
     return value;
   }
 
-  getReplacedFields(gender?: "m" | "f") {
+  getReplacedFields(gender?: GenderEnum) {
     return {
       name:
-        gender === "m"
+        gender === GenderEnum.male
           ? ["94R", "117R", "125R", "119R", "121R"]
           : ["98R", "116R", "114R", "124R", "120R"],
       birthday: "96R",
@@ -470,9 +289,12 @@ export class PDFTool {
     };
   }
 
-  getSubstituteFields(gender?: "m" | "f") {
+  getSubstituteFields(gender?: GenderEnum) {
     return {
-      name: gender === "m" ? ["99R", "118R", "127R"] : ["105R", "115R", "126R"],
+      name:
+        gender === GenderEnum.male
+          ? ["99R", "118R", "127R"]
+          : ["105R", "115R", "126R"],
       birthday: "102R",
       birthdayLoction: "103R",
       orderDepartement: "109R",

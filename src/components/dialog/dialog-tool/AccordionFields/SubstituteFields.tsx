@@ -8,7 +8,10 @@ import {
 import { GenderEnum } from "../../../contract/editor/PDFTool";
 import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
 import { LabeledInput } from "../../../inputs/LabeledInput";
-import { toggleItemEvent } from "./FormFields";
+import { setToggleItemEvent, toggleItemEvent } from "./FormFields";
+import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
+import storeService from "../../../../utils/store.service";
+import { UserEntity } from "../../../../models/user.entity";
 
 export function SubstituteFields(props: {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -78,6 +81,54 @@ export function SubstituteFields(props: {
     })
   );
 
+  function subInputHandler(
+    field:
+      | "name"
+      | "birthday"
+      | "birthdayLoction"
+      | "orderDepartement"
+      | "orderDepartmentNumber"
+      | "address"
+      | "email",
+    value: string
+  ) {
+    HandleInputChangePDFEditor(
+      currentPDF()?.getSubstituteFields(Gender() as GenderEnum)[
+        `${field}`
+      ] as unknown as string,
+      value
+    );
+  }
+
+  function fillWithMyInformations() {
+    setToggleItemEvent(!toggleItemEvent());
+
+    // code
+    const userDatas: UserEntity = storeService.data.user;
+
+    setEmailValue(userDatas.personalAddress);
+    setNameValue(userDatas.name);
+    setBirthdayLocationValue(userDatas.bornLocation);
+    setBirthdayValue(userDatas.birthday.toString());
+    setOrderDepartmentNumberValue(
+      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+    );
+    setGender(userDatas.gender as GenderEnum);
+    setOrderDepartementValue(userDatas.department);
+    setProfessionnalAddressValue(userDatas.personalAddress as string);
+
+    subInputHandler("email", userDatas.email);
+    subInputHandler("name", userDatas.name);
+    subInputHandler("birthday", userDatas.birthday.toString());
+    subInputHandler("birthdayLoction", userDatas.bornLocation);
+    subInputHandler("orderDepartement", userDatas.department);
+    subInputHandler(
+      "orderDepartmentNumber",
+      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+    );
+    subInputHandler("address", userDatas.personalAddress);
+  }
+
   return (
     <AccordionItem
       id={2}
@@ -89,6 +140,8 @@ export function SubstituteFields(props: {
         )?.isOpen
       }
     >
+      <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformations} />
+
       <Dialog2InputRadio
         legend="Genre:"
         name="substitute-gender"
@@ -118,11 +171,7 @@ export function SubstituteFields(props: {
         label="Nom, prénom"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields(Gender() as "m" | "f")
-              .name as unknown as string,
-            e.target.value
-          );
+          subInputHandler("name", e.target.value);
         }}
         value={NameValue()}
       />
@@ -131,10 +180,7 @@ export function SubstituteFields(props: {
         label="Email"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().email as string,
-            e.target.value
-          );
+          subInputHandler("email", e.target.value);
         }}
         value={EmailValue()}
       />
@@ -143,10 +189,7 @@ export function SubstituteFields(props: {
         label="Anniversaire"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().birthday as string,
-            e.target.value
-          );
+          subInputHandler("birthday", e.target.value);
         }}
         value={BirthdayValue()}
       />
@@ -155,10 +198,7 @@ export function SubstituteFields(props: {
         label="Née à"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().birthdayLoction as string,
-            e.target.value
-          );
+          subInputHandler("birthdayLoction", e.target.value);
         }}
         value={BirthdayLocationValue()}
       />
@@ -167,22 +207,16 @@ export function SubstituteFields(props: {
         label="Département d'ordre"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().orderDepartement as string,
-            e.target.value
-          );
+          subInputHandler("orderDepartement", e.target.value);
         }}
         value={OrderDepartementValue()}
       />
       <LabeledInput
         id="department-number-order"
         label="Numéro"
-        type="text"
+        type="number"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().orderDepartmentNumber as string,
-            e.target.value
-          );
+          subInputHandler("orderDepartmentNumber", e.target.value);
         }}
         value={OrderDepartmentNumberValue()}
       />
@@ -191,10 +225,7 @@ export function SubstituteFields(props: {
         label="Adresse"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getSubstituteFields().address as string,
-            e.target.value
-          );
+          subInputHandler("address", e.target.value);
         }}
         value={ProfessionnalAddressValue()}
       />

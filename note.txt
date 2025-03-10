@@ -1,0 +1,38 @@
+Avoir une limite d'utilisation de l'outil si non connecter ?
+
+
+---------- Remp kiné ----------- Last note
+
+fonction de transmision: document décrivant ce qui à été fait avec le patient pour transmètre au prochain kiné, ajouter une partie address (patient) qui renvoi sur google map 
+data: 
+- nom prénom patient
+- transmision
+- localisation 
+
+type de transmision:
+- à domicile - geoloc
+- au cabinet
+
+Système abonnement:
+- individuelle
+- enterprise (5 membre)
+---------------------------------------
+
+
+fonction de transmision: document décrivant ce qui à été fait avec le patient pour transmètre au prochain kiné, ajouter une partie address (patient) qui renvoi sur google map 
+data: 
+- nom prénom patient
+- transmision
+- localisation 
+
+type de transmision:
+- à domicile - geoloc
+- au cabinet
+
+Système abonnement:
+- individuelle
+- enterprise (5 membre)
+
+[] UI - Mes contrat
+[] UI - Doc client
+[] Sy -  

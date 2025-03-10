@@ -1,7 +1,7 @@
 import { Route, Router, useNavigate } from "@solidjs/router";
 import { Home } from "../views/home/Home";
 import { Contracts } from "../views/Contracts";
-import PDFViewer from "../components/contract/edit-contract/PDFViewer";
+import PDFViewer from "../components/contract/editor/PDFViewer";
 import { Authentication } from "../views/auth/Authentication";
 import { For } from "solid-js";
 

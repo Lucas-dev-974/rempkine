@@ -1,4 +1,4 @@
-import { PDFEditor } from "../../contract/edit-contract/PDFEditor";
+import { PDFEditor } from "../../contract/editor/PDFEditor";
 import { DialogWrapper } from "../DialogWrapper";
 import { FormFields } from "./FormFields";
 

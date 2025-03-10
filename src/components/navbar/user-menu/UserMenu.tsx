@@ -58,6 +58,7 @@ export function UserMenu(props: UserMenuProps) {
               storeService.proxy.isLogin = false;
               storeService.proxy.isLogin = false;
               storeService.proxy.token = "";
+              storeService.proxy.user = {};
 
               location.href = "/";
             }}

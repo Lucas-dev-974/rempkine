@@ -1,6 +1,6 @@
 import { PDFEditor } from "../../contract/editor/PDFEditor";
 import { DialogWrapper } from "../DialogWrapper";
-import { FormFields } from "./FormFields";
+import { FormFields } from "./AccordionFields/FormFields";
 
 import "./DialogTool.css";
 

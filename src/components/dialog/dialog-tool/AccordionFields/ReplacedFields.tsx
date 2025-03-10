@@ -8,80 +8,125 @@ import {
 import { GenderEnum } from "../../../contract/editor/PDFTool";
 import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
 import { LabeledInput } from "../../../inputs/LabeledInput";
-import { toggleItemEvent } from "../FormFields";
+import { setToggleItemEvent, toggleItemEvent } from "./FormFields";
+import { Button } from "../../../buttons/Button";
+import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
+import { UserEntity } from "../../../../models/user.entity";
+import storeService from "../../../../utils/store.service";
 
 export function ReplacedFields(props: {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: AccordionItemType[] | (() => AccordionItemType[]);
 }) {
-  const [replacedGender, setReplacedGender] = createSignal(
-    currentPDF()?.OCD.replacedGender as GenderEnum
+  const [Gender, setGender] = createSignal(
+    (currentPDF()?.OCD.replacedGender as GenderEnum) ||
+      GenderEnum.female.toString()
   );
-  const [replacedEmailValue, setReplacedEmailValue] = createSignal("");
-  const [replacedNameValue, setReplacedNameValue] = createSignal("");
-  const [replacedBirthdayValue, setReplacedBirthdayValue] = createSignal("");
-  const [
-    replacedProfessionnalAddressValue,
-    setReplacedProfessionnalAddressValue,
-  ] = createSignal("");
-  const [
-    replacedOrderDepartmentNumberValue,
-    setReplacedOrderDepartmentNumberValue,
-  ] = createSignal("");
-  const [replacedOrderDepartementValue, setReplacedOrderDepartementValue] =
+  const [emailValue, setEmailValue] = createSignal("");
+  const [nameValue, setNameValue] = createSignal("");
+  const [birthdayValue, setBirthdayValue] = createSignal("");
+  const [professionnalAddressValue, setProfessionnalAddressValue] =
     createSignal("");
-  const [replacedBirthdayLocationValue, setReplacedBirthdayLocationValue] =
+  const [orderDepartmentNumberValue, setOrderDepartmentNumberValue] =
     createSignal("");
+  const [orderDepartementValue, setOrderDepartementValue] = createSignal("");
+  const [birthdayLocationValue, setBirthdayLocationValue] = createSignal("");
 
   createEffect(
     on(toggleItemEvent, () => {
-      setReplacedEmailValue(
+      setEmailValue(
         currentPDF()?.getFieldValue(
           currentPDF()?.getReplacedFields().email as string
         ) || ""
       );
 
-      setReplacedNameValue(
+      setNameValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender()).name[0] as string
+          currentPDF()?.getReplacedFields(Gender()).name[0] as string
         ) || ""
       );
 
-      setReplacedBirthdayValue(
+      setBirthdayValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender()).birthday as string
+          currentPDF()?.getReplacedFields(Gender()).birthday as string
         ) || ""
       );
 
-      setReplacedBirthdayLocationValue(
+      setBirthdayLocationValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender())
-            .birthdayLocation as string
+          currentPDF()?.getReplacedFields(Gender()).birthdayLocation as string
         ) || ""
       );
 
-      setReplacedOrderDepartementValue(
+      setOrderDepartementValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender())
-            .orderDepartement as string
+          currentPDF()?.getReplacedFields(Gender()).orderDepartement as string
         ) || ""
       );
 
-      setReplacedOrderDepartmentNumberValue(
+      setOrderDepartmentNumberValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender())
+          currentPDF()?.getReplacedFields(Gender())
             .orderDepartmentNumber as string
         ) || ""
       );
 
-      setReplacedProfessionnalAddressValue(
+      setProfessionnalAddressValue(
         currentPDF()?.getFieldValue(
-          currentPDF()?.getReplacedFields(replacedGender())
+          currentPDF()?.getReplacedFields(Gender())
             .professionnalAddress as string
         ) || ""
       );
+      setGender(currentPDF()?.OCD.replacedGender as GenderEnum);
     })
   );
+
+  function subInputHandler(
+    field:
+      | "name"
+      | "birthday"
+      | "birthdayLocation"
+      | "orderDepartement"
+      | "orderDepartmentNumber"
+      | "professionnalAddress"
+      | "email",
+    value: string
+  ) {
+    HandleInputChangePDFEditor(
+      currentPDF()?.getReplacedFields(Gender() as GenderEnum)[
+        `${field}`
+      ] as unknown as string,
+      value
+    );
+  }
+  function fillWithMyInformations() {
+    setToggleItemEvent(!toggleItemEvent());
+
+    const userDatas: UserEntity = storeService.data.user;
+
+    setEmailValue(userDatas.personalAddress);
+    setNameValue(userDatas.name);
+    setBirthdayLocationValue(userDatas.bornLocation);
+    setBirthdayValue(userDatas.birthday.toString());
+    setOrderDepartmentNumberValue(
+      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+    );
+    setGender(userDatas.gender as GenderEnum);
+    setOrderDepartementValue(userDatas.department);
+    setProfessionnalAddressValue(userDatas.officeAddress as string);
+
+    subInputHandler("email", userDatas.email);
+    subInputHandler("name", userDatas.name);
+    subInputHandler("birthday", userDatas.birthday.toString());
+    subInputHandler("birthdayLocation", userDatas.bornLocation);
+    subInputHandler("orderDepartement", userDatas.department);
+    subInputHandler(
+      "orderDepartmentNumber",
+      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+    );
+    subInputHandler("professionnalAddress", userDatas.personalAddress);
+  }
+
   return (
     <AccordionItem
       id={1}
@@ -93,22 +138,31 @@ export function ReplacedFields(props: {
         )?.isOpen ?? false
       }
     >
+      <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformations} />
+
       <Dialog2InputRadio
         legend="Genre:"
         name="replaced-gender"
-        id1="replaced-mister"
-        text1="Monsieur"
-        value1="m"
-        id2="replaced-miss"
-        text2="Madame"
-        value2="f"
+        items={[
+          {
+            id: "replaced-mister",
+            text: "Monsieur",
+            value: GenderEnum.male,
+          },
+          {
+            id: "replaced-miss",
+            text: "Madame",
+            value: GenderEnum.female,
+          },
+        ]}
         onChange={(e) => {
           const target = e.target as HTMLInputElement;
-          setReplacedGender(target.value as GenderEnum);
+          setGender(target.value as GenderEnum);
           currentPDF()?.updateOCD({
             replacedGender: target.value as GenderEnum,
           });
         }}
+        value={Gender()}
       />
 
       <LabeledInput
@@ -116,85 +170,63 @@ export function ReplacedFields(props: {
         label="Nom, prénom"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields(replacedGender() as "m" | "f")
-              .name as unknown as string,
-            e.target.value
-          );
+          subInputHandler("name", e.target.value);
         }}
-        value={replacedNameValue()}
+        value={nameValue()}
       />
       <LabeledInput
         id="replaced-mail"
         label="Email"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().email as string,
-            e.target.value
-          );
+          subInputHandler("email", e.target.value);
         }}
-        value={replacedEmailValue()}
+        value={emailValue()}
       />
       <LabeledInput
         id="birthday"
         label="Anniversaire"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().birthday as string,
-            e.target.value
-          );
+          subInputHandler("birthday", e.target.value);
         }}
-        value={replacedBirthdayValue()}
+        value={birthdayValue()}
       />
       <LabeledInput
         id="birthday-location"
         label="Née à"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().birthdayLocation as string,
-            e.target.value
-          );
+          subInputHandler("birthdayLocation", e.target.value);
         }}
-        value={replacedBirthdayLocationValue()}
+        value={birthdayLocationValue()}
       />
       <LabeledInput
         id="department-order"
         label="Département d'ordre"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().orderDepartement as string,
-            e.target.value
-          );
+          subInputHandler("orderDepartement", e.target.value);
         }}
-        value={replacedOrderDepartementValue()}
+        value={orderDepartementValue()}
       />
       <LabeledInput
         id="department-number-order"
         label="Numéro"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().orderDepartmentNumber as string,
-            e.target.value
-          );
+          subInputHandler("orderDepartmentNumber", e.target.value);
         }}
-        value={replacedOrderDepartmentNumberValue()}
+        value={orderDepartmentNumberValue()}
       />
       <LabeledInput
         id="professional-address"
         label="Adresse profesionnel"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
-            currentPDF()?.getReplacedFields().professionnalAddress as string,
-            e.target.value
-          );
+          subInputHandler("professionnalAddress", e.target.value);
         }}
-        value={replacedProfessionnalAddressValue()}
+        value={professionnalAddressValue()}
       />
     </AccordionItem>
   );

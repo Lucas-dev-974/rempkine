@@ -3,6 +3,8 @@ Avoir une limite d'utilisation de l'outil si non connecter ?
 Rajouter des options d'administration pour les utilisateur admin
     - Mettre le site en maintenance
 
+fonctionnalité d'installation PWA
+
 ---------- Remp kiné ----------- Last note
 
 fonction de transmision: document décrivant ce qui à été fait avec le patient pour transmètre au prochain kiné, ajouter une partie address (patient) qui renvoi sur google map 

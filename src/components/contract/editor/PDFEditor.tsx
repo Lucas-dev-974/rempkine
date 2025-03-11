@@ -98,7 +98,10 @@ export function PDFEditor() {
       </div>
 
       <div style="position: relative;">
-        <canvas id="pdf-canvas"></canvas>
+        <canvas
+          id="pdf-canvas"
+          class=" border border-gray-400 rounded-lg"
+        ></canvas>
 
         {fields().map((field) => (
           <input

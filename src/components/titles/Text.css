@@ -1,0 +1,7 @@
+.text {
+  @apply text-gray-700 text-base;
+}
+
+.text-1-home {
+  @apply my-3  pr-0 lg:pr-10;
+}

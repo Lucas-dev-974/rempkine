@@ -1,12 +1,11 @@
-
 .small-button {
-  @apply !text-sm  !px-3 !py-1 ;
+  @apply !text-sm  !px-3 !py-1;
 }
 
 .default-button {
-  @apply text-base bg-primary px-4 py-2 rounded-full hover:bg-primaryHover cursor-pointer text-white duration-150;
+  @apply text-base bg-blue-base px-4 py-2 rounded-full hover:bg-blue-light cursor-pointer text-white duration-700 hover:shadow-lg;
 }
 
 .large-button {
-  @apply !text-lg  !px-5 !py-3 ;
+  @apply !text-lg  !px-5 !py-3;
 }

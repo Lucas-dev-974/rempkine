@@ -3,5 +3,5 @@
 }
 
 .text-1-home {
-  @apply my-3 text-center md:text-left pr-0 lg:pr-10;
+  @apply my-3  pr-0 lg:pr-10;
 }

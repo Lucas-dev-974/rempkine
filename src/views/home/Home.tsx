@@ -32,7 +32,7 @@ export function Home() {
             </div>
           </Show>
 
-          <div class="my-3 flex justify-center lg:justify-start md:justify-end">
+          <div class="my-3 flex justify-end lg:justify-start">
             <DialogTool />
           </div>
         </div>

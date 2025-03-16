@@ -3,7 +3,7 @@
 }
 
 .dialog {
-  @apply bg-white lg:p-5 rounded-lg relative overflow-auto;
+  @apply bg-white lg:p-5 rounded-lg relative overflow-auto  z-50;
 }
 
 .dialog-header {

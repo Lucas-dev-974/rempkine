@@ -11,14 +11,14 @@ export function DialogTool() {
       title="Test de l'outil d'édition de contrat"
     >
       <div class="dialog-tool-content">
+        <div class="dialog-tool-form">
+          <FormFields />
+        </div>
+
         <div class="dialog-tool-pdf-container">
           <div class="dialog-tool-pdf">
             <PDFEditor />
           </div>
-        </div>
-
-        <div class="dialog-tool-form">
-          <FormFields />
         </div>
       </div>
     </DialogWrapper>

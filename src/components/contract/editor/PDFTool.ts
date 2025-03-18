@@ -16,7 +16,7 @@ export enum AuthorsEnum {
   none,
 }
 
-export type otherContractDataType = {
+export type OtherContractDataType = {
   replacedGender: GenderEnum;
   substituteGender: GenderEnum;
 
@@ -51,7 +51,7 @@ export class PDFTool {
   public currentPage: number = 1;
   public formFields: FormFieldsType[] | undefined;
   public fields: any[] | undefined;
-  public OCD: otherContractDataType;
+  public OCD: OtherContractDataType;
 
   constructor(url: string, canvasID: string) {
     this.url = url;
@@ -317,7 +317,7 @@ export class PDFTool {
     };
   }
 
-  updateOCD(ocd: Partial<otherContractDataType>) {
+  updateOCD(ocd: Partial<OtherContractDataType>) {
     this.OCD = {
       ...this.OCD,
       ...ocd,

@@ -1,4 +1,7 @@
 export type ContractEntity = {
+  contractAuthor: string;
+  authorEmail: string;
+
   name: string;
   author: string;
   startDate: string;

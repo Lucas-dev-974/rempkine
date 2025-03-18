@@ -1,11 +1,6 @@
 import { createSignal, JSX, onMount } from "solid-js";
 
 import "./Accordion.css";
-import { currentPDF } from "../contract/editor/PDFEditor";
-import {
-  setToggleItemEvent,
-  toggleItemEvent,
-} from "../dialog/dialog-tool/AccordionFields/FormFields";
 
 type AccordionWrapperProps = {
   multiple?: boolean; // Permet plusieurs panneaux ouverts simultanément
@@ -44,7 +39,6 @@ export function AccordionWrapper(
   });
 
   function toggleItem(id: number) {
-    setToggleItemEvent(!toggleItemEvent());
     setItems((prevItems) => {
       return props.multiple
         ? prevItems.map((item) =>

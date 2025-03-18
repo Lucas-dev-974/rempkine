@@ -1,9 +1,9 @@
 .labeled-input {
-  @apply grid grid-cols-1 my-1;
+  @apply grid grid-cols-1 my-5;
 }
 
 .labeled-input > input {
-  @apply bg-gray-100 border-b-2;
+  @apply bg-gray-100 border-b-2 py-2 px-3;
 }
 
 .labeled-input > input:active,

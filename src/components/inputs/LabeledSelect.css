@@ -1,0 +1,12 @@
+.labeled-select {
+  @apply grid grid-cols-1 my-5;
+}
+
+.labeled-select > select {
+  @apply bg-gray-100 border-b-2 py-2 px-3;
+}
+
+.labeled-select > select:active,
+input:focus {
+  @apply bg-none outline-none;
+}

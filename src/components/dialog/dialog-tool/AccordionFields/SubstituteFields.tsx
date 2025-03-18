@@ -1,87 +1,89 @@
-import { createSignal, createEffect, on } from "solid-js";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
 import { AccordionItemType } from "../../../Accordion/AccordionWrapper";
+import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
+import { AccordionItem } from "../../../Accordion/AccordionItem";
+import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
+import { GenderEnum } from "../../../contract/editor/PDFTool";
+import { UserEntity } from "../../../../models/user.entity";
+import { LabeledInput } from "../../../inputs/LabeledInput";
+import storeService from "../../../../utils/store.service";
+import { createSignal, createEffect, on } from "solid-js";
 import {
   currentPDF,
-  HandleInputChangePDFEditor,
+  HandlerInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
-import { GenderEnum } from "../../../contract/editor/PDFTool";
-import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
-import { LabeledInput } from "../../../inputs/LabeledInput";
-import { setToggleItemEvent, toggleItemEvent } from "./FormFields";
-import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
-import storeService from "../../../../utils/store.service";
-import { UserEntity } from "../../../../models/user.entity";
 
-export function SubstituteFields(props: {
+interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: AccordionItemType[] | (() => AccordionItemType[]);
-}) {
-  const [Gender, setGender] = createSignal(
-    currentPDF()?.OCD.substituteGender.toString() as GenderEnum
-  );
+}
 
-  const [EmailValue, setEmailValue] = createSignal("");
-  const [NameValue, setNameValue] = createSignal("");
-  const [BirthdayValue, setBirthdayValue] = createSignal("");
-  const [OrderDepartementValue, setOrderDepartementValue] = createSignal("");
-  const [BirthdayLocationValue, setBirthdayLocationValue] = createSignal("");
+export function SubstituteFields(props: AccordionFieldsProps) {
+  const [fieldUpdatedEvent, setFieldUpdatedEvent] = createSignal(false);
 
-  const [ProfessionnalAddressValue, setProfessionnalAddressValue] =
-    createSignal("");
-  const [OrderDepartmentNumberValue, setOrderDepartmentNumberValue] =
-    createSignal("");
+  // ------------ Input fields signals ------------
+  const [Gender, setGender] = createSignal();
+  const [email, setEmail] = createSignal<string>("");
+  const [name, setName] = createSignal<string>("");
+  const [birthday, setBirthday] = createSignal<string>("");
+  const [birthdayLocation, setBirthdayLocation] = createSignal<string>("");
+  const [orderDepartement, setOrderDepartement] = createSignal<string>("");
+  const [professionnalAddress, setProfessionnalAddress] =
+    createSignal<string>("");
+  const [orderDepartmentNumber, setOrderDepartmentNumber] =
+    createSignal<string>("");
+  // ------------ Input fields signals ------------
 
-  createEffect(
-    on(toggleItemEvent, () => {
-      setEmailValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields().email as string
-        ) || ""
-      );
+  function updateFieldsWithCurrentPDF() {
+    setGender(currentPDF()?.OCD.substituteGender.toString() as GenderEnum);
+    setEmail(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().email as string
+      ) || ""
+    );
 
-      setNameValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender()).name[0] as string
-        ) || ""
-      );
+    setName(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields(Gender() as GenderEnum)
+          .name[0] as string
+      ) || ""
+    );
 
-      setBirthdayValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender()).birthday as string
-        ) || ""
-      );
+    setBirthday(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().birthday as string
+      ) || ""
+    );
 
-      setBirthdayLocationValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender()).birthdayLoction as string
-        ) || ""
-      );
+    setBirthdayLocation(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().birthdayLoction as string
+      ) || ""
+    );
 
-      setOrderDepartementValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender()).orderDepartement as string
-        ) || ""
-      );
+    setOrderDepartement(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().orderDepartement as string
+      ) || ""
+    );
 
-      setOrderDepartmentNumberValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender())
-            .orderDepartmentNumber as string
-        ) || ""
-      );
+    setOrderDepartmentNumber(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().orderDepartmentNumber as string
+      ) || ""
+    );
 
-      setProfessionnalAddressValue(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getSubstituteFields(Gender()).address as string
-        ) || ""
-      );
+    setProfessionnalAddress(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getSubstituteFields().address as string
+      ) || ""
+    );
 
-      setGender(currentPDF()?.OCD.substituteGender as GenderEnum);
-    })
-  );
+    setGender(currentPDF()?.OCD.substituteGender as GenderEnum);
+  }
 
-  function subInputHandler(
+  createEffect(on(fieldUpdatedEvent, () => updateFieldsWithCurrentPDF()));
+
+  function SubHandleInputChangePDFEditor(
     field:
       | "name"
       | "birthday"
@@ -92,7 +94,7 @@ export function SubstituteFields(props: {
       | "email",
     value: string
   ) {
-    HandleInputChangePDFEditor(
+    HandlerInputChangePDFEditor(
       currentPDF()?.getSubstituteFields(Gender() as GenderEnum)[
         `${field}`
       ] as unknown as string,
@@ -101,32 +103,31 @@ export function SubstituteFields(props: {
   }
 
   function fillWithMyInformations() {
-    setToggleItemEvent(!toggleItemEvent());
-
+    setFieldUpdatedEvent(!fieldUpdatedEvent());
     // code
     const userDatas: UserEntity = storeService.data.user;
 
-    setEmailValue(userDatas.personalAddress);
-    setNameValue(userDatas.name);
-    setBirthdayLocationValue(userDatas.bornLocation);
-    setBirthdayValue(userDatas.birthday.toString());
-    setOrderDepartmentNumberValue(
+    setEmail(userDatas.personalAddress);
+    setName(userDatas.name);
+    setBirthdayLocation(userDatas.bornLocation);
+    setBirthday(userDatas.birthday.toString());
+    setOrderDepartmentNumber(
       userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
     );
     setGender(userDatas.gender as GenderEnum);
-    setOrderDepartementValue(userDatas.department);
-    setProfessionnalAddressValue(userDatas.personalAddress as string);
+    setOrderDepartement(userDatas.department);
+    setProfessionnalAddress(userDatas.personalAddress as string);
 
-    subInputHandler("email", userDatas.email);
-    subInputHandler("name", userDatas.name);
-    subInputHandler("birthday", userDatas.birthday.toString());
-    subInputHandler("birthdayLoction", userDatas.bornLocation);
-    subInputHandler("orderDepartement", userDatas.department);
-    subInputHandler(
+    SubHandleInputChangePDFEditor("email", userDatas.email);
+    SubHandleInputChangePDFEditor("name", userDatas.name);
+    SubHandleInputChangePDFEditor("birthday", userDatas.birthday.toString());
+    SubHandleInputChangePDFEditor("birthdayLoction", userDatas.bornLocation);
+    SubHandleInputChangePDFEditor("orderDepartement", userDatas.department);
+    SubHandleInputChangePDFEditor(
       "orderDepartmentNumber",
       userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
     );
-    subInputHandler("address", userDatas.personalAddress);
+    SubHandleInputChangePDFEditor("address", userDatas.personalAddress);
   }
 
   return (
@@ -163,71 +164,82 @@ export function SubstituteFields(props: {
           currentPDF()?.updateOCD({
             substituteGender: target.value as GenderEnum,
           });
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={Gender()}
+        value={Gender() as GenderEnum}
       />
       <LabeledInput
         id="substitute-name"
         label="Nom, prénom"
         type="text"
         onInput={(e) => {
-          subInputHandler("name", e.target.value);
+          SubHandleInputChangePDFEditor("name", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={NameValue()}
+        value={name()}
       />
       <LabeledInput
         id="substitute-mail"
         label="Email"
         type="text"
         onInput={(e) => {
-          subInputHandler("email", e.target.value);
+          SubHandleInputChangePDFEditor("email", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={EmailValue()}
+        value={email()}
       />
       <LabeledInput
         id="substitute-birthday"
         label="Anniversaire"
         type="date"
         onInput={(e) => {
-          subInputHandler("birthday", e.target.value);
+          SubHandleInputChangePDFEditor("birthday", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={BirthdayValue()}
+        value={birthday()}
       />
       <LabeledInput
         id="substitute-birthday-location"
         label="Née à"
         type="text"
         onInput={(e) => {
-          subInputHandler("birthdayLoction", e.target.value);
+          SubHandleInputChangePDFEditor("birthdayLoction", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={BirthdayLocationValue()}
+        value={birthdayLocation()}
       />
       <LabeledInput
         id="department-order"
         label="Département d'ordre"
         type="text"
         onInput={(e) => {
-          subInputHandler("orderDepartement", e.target.value);
+          SubHandleInputChangePDFEditor("orderDepartement", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={OrderDepartementValue()}
+        value={orderDepartement()}
       />
       <LabeledInput
         id="department-number-order"
         label="Numéro"
         type="number"
         onInput={(e) => {
-          subInputHandler("orderDepartmentNumber", e.target.value);
+          SubHandleInputChangePDFEditor(
+            "orderDepartmentNumber",
+            e.target.value
+          );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={OrderDepartmentNumberValue()}
+        value={orderDepartmentNumber()}
       />
       <LabeledInput
         id="substitute-address"
         label="Adresse"
         type="text"
         onInput={(e) => {
-          subInputHandler("address", e.target.value);
+          SubHandleInputChangePDFEditor("address", e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-        value={ProfessionnalAddressValue()}
+        value={professionnalAddress()}
       />
     </AccordionItem>
   );

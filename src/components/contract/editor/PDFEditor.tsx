@@ -1,4 +1,4 @@
-import { createEffect, createSignal, on, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { NextIcon } from "../../../icons/NextIcon";
 import { PreviousIcon } from "../../../icons/PreviousIcon";
 import { Button } from "../../buttons/Button";
@@ -10,7 +10,7 @@ import "./PDFEditor.css";
 
 const [fields, setFields] = createSignal<any[]>([]);
 
-export function HandleInputChangePDFEditor(
+export function HandlerInputChangePDFEditor(
   fieldID: string | string[],
   value: string
 ) {

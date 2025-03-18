@@ -1,18 +1,25 @@
-import { createSignal, createEffect, on } from "solid-js";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
 import { AccordionItemType } from "../../../Accordion/AccordionWrapper";
+import { AccordionItem } from "../../../Accordion/AccordionItem";
+import { LabeledSelect } from "../../../inputs/LabeledSelect";
+import { LabeledInput } from "../../../inputs/LabeledInput";
+import { createSignal, createEffect, on } from "solid-js";
 import {
   currentPDF,
-  HandleInputChangePDFEditor,
+  HandlerInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
-import { LabeledInput } from "../../../inputs/LabeledInput";
-import { toggleItemEvent } from "./FormFields";
+import { AuthorsEnum } from "../../../contract/editor/PDFTool";
 
-export function ContractInformationsFields(props: {
+interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: AccordionItemType[] | (() => AccordionItemType[]);
-}) {
-  // ------------
+}
+
+export function ContractInformationsFields(
+  props: ContractInformationsFieldsProps
+) {
+  const [fieldUpdatedEvent, setFieldUpdatedEvent] = createSignal(false);
+
+  // ------------ Input fields signals ------------
   const [startDate, setStartDate] = createSignal("");
   const [endDate, setEndDate] = createSignal("");
   const [percentReturnToSubstitute, setPercentReturnToSubstitute] =
@@ -25,61 +32,74 @@ export function ContractInformationsFields(props: {
   const [conciliationCDOMK, setConciliationCDOMK] = createSignal("");
   const [doneAtLocation, setDoneAtLocation] = createSignal("");
   const [doneAt, setDoneAt] = createSignal("");
-  // ------------
+  const [author, setAuthor] = createSignal(AuthorsEnum.professional);
+  const [authorEmail, setAuthorEmail] = createSignal("");
 
-  createEffect(
-    on(toggleItemEvent, () => {
-      setStartDate(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields().startDate as string
-        ) || ""
-      );
+  // ------------ Input fields signals ------------
 
-      setEndDate(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields().enDate as string
-        ) || ""
-      );
+  // ------------ Select Options List ------------
+  const selectAuhorOptions = [
+    { value: AuthorsEnum.student, label: "Student" },
+    { value: AuthorsEnum.professional, label: "Profesionnel" },
+  ];
+  // ------------ Select Options List ------------
 
-      setPercentReturnToSubstitute(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields()
-            .percentReversedToSubstitute as string
-        ) || ""
-      );
+  function updateFieldsWithCurrentPDF() {
+    setStartDate(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().startDate as string
+      ) || ""
+    );
 
-      setDoneAtLocation(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields().doneAtLocation as string
-        ) || ""
-      );
+    setEndDate(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().enDate as string
+      ) || ""
+    );
 
-      setConciliationCDOMK(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields()
-            .conciliationCDOMK as string
-        ) || ""
-      );
+    setPercentReturnToSubstitute(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields()
+          .percentReversedToSubstitute as string
+      ) || ""
+    );
 
-      setNonInstallationRadius(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields()
-            .NonInstallationRadius as string
-        ) || ""
-      );
+    setDoneAtLocation(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().doneAtLocation as string
+      ) || ""
+    );
 
-      setDoneAt(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields().doneAt as string
-        ) || ""
-      );
-      setPercentReturnToSubstituteBeforeDate(
-        currentPDF()?.getFieldValue(
-          currentPDF()?.getContractInformationFields().reversedBefore as string
-        ) || ""
-      );
-    })
-  );
+    setConciliationCDOMK(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().conciliationCDOMK as string
+      ) || ""
+    );
+
+    setNonInstallationRadius(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields()
+          .NonInstallationRadius as string
+      ) || ""
+    );
+
+    setDoneAt(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().doneAt as string
+      ) || ""
+    );
+    setPercentReturnToSubstituteBeforeDate(
+      currentPDF()?.getFieldValue(
+        currentPDF()?.getContractInformationFields().reversedBefore as string
+      ) || ""
+    );
+
+    setAuthor(currentPDF()?.OCD.contractAuthor ?? AuthorsEnum.professional);
+
+    setAuthorEmail(currentPDF()?.OCD.authorEmail ?? "");
+  }
+
+  createEffect(on(fieldUpdatedEvent, () => updateFieldsWithCurrentPDF()));
 
   return (
     <AccordionItem
@@ -92,15 +112,40 @@ export function ContractInformationsFields(props: {
         )?.isOpen
       }
     >
+      <LabeledSelect
+        id="author"
+        label="Autheur du contrat"
+        options={selectAuhorOptions}
+        selected={author()}
+        onChange={(e) => {
+          currentPDF()?.updateOCD({ contractAuthor: e.target.value });
+          setAuthor(e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
+        }}
+      />
+
+      <LabeledInput
+        id="author-email"
+        label="Email de l'hauteur du contrat"
+        type="text"
+        onInput={(e) => {
+          currentPDF()?.updateOCD({ authorEmail: e.target.value });
+          setAuthorEmail(e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
+        }}
+        value={authorEmail()}
+      />
+
       <LabeledInput
         id="start-date"
         label="Date de début"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields().startDate as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={startDate()}
       />
@@ -109,10 +154,11 @@ export function ContractInformationsFields(props: {
         label="Date de fin"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields().enDate as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={endDate()}
       />
@@ -120,13 +166,14 @@ export function ContractInformationsFields(props: {
       <LabeledInput
         id="percent-returned-to-subsitute"
         label="Pourcentage reversé au remplaçant"
-        type="text"
+        type="number"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields()
               .percentReversedToSubstitute as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={percentReturnToSubstitute()}
       />
@@ -136,11 +183,12 @@ export function ContractInformationsFields(props: {
         label="Pourcentage reversé au remplaçant avant la date"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields()
               .reversedBefore as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={percentReturnToSubstituteBeforeDate()}
       />
@@ -148,13 +196,14 @@ export function ContractInformationsFields(props: {
       <LabeledInput
         id="non-installation-radius"
         label="Rayon de non installation"
-        type="text"
+        type="number"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields()
               .NonInstallationRadius as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={nonInstallationRadius()}
       />
@@ -163,11 +212,12 @@ export function ContractInformationsFields(props: {
         label="conciliation CDOMK "
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields()
               .conciliationCDOMK as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={conciliationCDOMK()}
       />
@@ -176,11 +226,12 @@ export function ContractInformationsFields(props: {
         label="Fait à"
         type="text"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields()
               .doneAtLocation as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={doneAtLocation()}
       />
@@ -189,10 +240,11 @@ export function ContractInformationsFields(props: {
         label="Fait le"
         type="date"
         onInput={(e) => {
-          HandleInputChangePDFEditor(
+          HandlerInputChangePDFEditor(
             currentPDF()?.getContractInformationFields().doneAt as string,
             e.target.value
           );
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={doneAt()}
       />

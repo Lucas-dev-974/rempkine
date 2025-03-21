@@ -1,6 +1,5 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
-import { RouteManager } from "./router/Router";
 import { App } from "./App";
 
 import "./index.css";

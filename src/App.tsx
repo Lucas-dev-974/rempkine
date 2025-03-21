@@ -1,11 +1,13 @@
 import { FloatingMenu } from "./components/floating menu/FloatingMenu";
-import { Navbar } from "./components/navbar/Navbar";
 import { Notification } from "./components/notification/Notification";
-import { setEffect } from "./const.data";
+import { fetcher } from "./services/fetch.service";
+import { Navbar } from "./components/navbar/Navbar";
 import { RouteManager } from "./router/Router";
+import { onMount } from "solid-js";
 
 export function App() {
-  setEffect();
+  onMount(() => fetcher.setHost(import.meta.env.VITE_HOST));
+
   return (
     <main>
       <Navbar />

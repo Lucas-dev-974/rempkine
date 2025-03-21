@@ -1,34 +1,33 @@
-export type ContractEntity = {
-  contractAuthor: string;
-  authorEmail: string;
+import { GenderEnum } from "../components/contract/editor/PDFTool";
 
-  name: string;
-  author: string;
+export type ContractEntity = {
+  authorEmail: string;
+  authorName: string;
   startDate: string;
   endDate: string;
-  percentReturnToSubstitute: string;
-  percentReturnToSubstituteBeforeDate: string;
-  nonInstallationRadius: string;
+  percentReturnToSubstitute: number;
+  percentReturnToSubstituteBeforeDate: Date;
+  nonInstallationRadius: number;
   conciliationCDOMK: string;
   doneAtLocation: string;
-  doneAt: string;
+  doneAtDate: Date;
 
   // -- ReplacedFields
-  replacedGender: string;
+  replacedGender: GenderEnum;
   replacedEmail: string;
   replacedName: string;
-  replacedBirthday: string;
+  replacedBirthday: Date;
   replacedBirthdayLocation: string;
   replacedOrderDepartement: string;
-  replacedOrderDepartmentNumber: string;
+  replacedOrderDepartmentNumber: number;
   replacedProfessionnalAddress: string;
 
   // -- SubstituteFields
-  substituteGender: string;
+  substituteGender: GenderEnum;
   substituteEmail: string;
   substituteName: string;
-  substituteBirthday: string;
+  substituteBirthday: Date;
   substituteBirthdayLocation: string;
   substituteOrderDepartement: string;
-  substituteOrderDepartmentNumber: string;
+  substituteOrderDepartmentNumber: number;
 };

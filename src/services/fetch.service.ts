@@ -1,8 +1,12 @@
 import { NotificationService } from "../utils/notification.service";
 
 class Fetcher {
-  host = "http://localhost:1337/api";
+  host = "http://localhost:3001/api";
   token = "";
+
+  setHost(host: string) {
+    this.host = host;
+  }
 
   async get(url: string) {
     const response = await this.fetcher(url, { method: "GET" });
@@ -32,8 +36,8 @@ class Fetcher {
     return await response;
   }
 
-  async fetcher(input: string, init?: RequestInit) {
-    const response = await fetch(this.host + input, {
+  async fetcher(url: string, init?: RequestInit) {
+    const response = await fetch(this.host + url, {
       ...init,
       headers: {
         Authorization: "Bearer " + this.token,
@@ -56,4 +60,4 @@ class Fetcher {
   }
 }
 
-export const fetcher = new Fetcher();
+export const FetcherService = new Fetcher();

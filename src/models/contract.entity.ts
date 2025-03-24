@@ -1,8 +1,9 @@
-import { GenderEnum } from "../components/contract/editor/PDFTool";
+import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type ContractEntity = {
   authorEmail: string;
   authorName: string;
+  authorStatus: AuthorsEnum;
   startDate: string;
   endDate: string;
   percentReturnToSubstitute: number;

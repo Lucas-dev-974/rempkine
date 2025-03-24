@@ -106,8 +106,8 @@ export function ReplacedFields(props: AccordionFieldsProps) {
     setFieldUpdatedEvent(!fieldUpdatedEvent());
     const userDatas: UserEntity = storeService.data.user;
 
-    setEmail(userDatas.personalAddress);
-    setName(userDatas.name);
+    setEmail(userDatas.email);
+    setName(userDatas.fullname);
     setBirthdayLocation(userDatas.bornLocation);
     setBirthday(userDatas.birthday.toString());
     setOrderDepartmentNumber(
@@ -115,10 +115,10 @@ export function ReplacedFields(props: AccordionFieldsProps) {
     );
     setGender(userDatas.gender as GenderEnum);
     setOrderDepartement(userDatas.department);
-    setProfessionnalAddress(userDatas.officeAddress as string);
+    setProfessionnalAddress(userDatas.officeAdress as string);
 
     subInputHandler("email", userDatas.email);
-    subInputHandler("name", userDatas.name);
+    subInputHandler("name", userDatas.fullname);
     subInputHandler("birthday", userDatas.birthday.toString());
     subInputHandler("birthdayLocation", userDatas.bornLocation);
     subInputHandler("orderDepartement", userDatas.department);
@@ -126,7 +126,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       "orderDepartmentNumber",
       userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
     );
-    subInputHandler("professionnalAddress", userDatas.personalAddress);
+    subInputHandler("professionnalAddress", userDatas.officeAdress as string);
   }
 
   return (

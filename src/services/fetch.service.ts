@@ -1,8 +1,9 @@
 import { NotificationService } from "../utils/notification.service";
+import storeService from "../utils/store.service";
 
 class Fetcher {
   host = "http://localhost:3001/api";
-  token = "";
+  token = storeService.proxy.token;
 
   setHost(host: string) {
     this.host = host;
@@ -47,11 +48,12 @@ class Fetcher {
 
     const responseJson = await response.json();
 
-    if (response.status != 200) {
+    const okStatusCode = [200, 201, 204];
+    if (!okStatusCode.includes(response.status)) {
       console.log("error ");
 
       NotificationService.push({
-        content: responseJson.error.message,
+        content: responseJson.error,
         type: "error",
       });
     }

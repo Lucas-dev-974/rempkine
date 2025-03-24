@@ -107,8 +107,8 @@ export function SubstituteFields(props: AccordionFieldsProps) {
     // code
     const userDatas: UserEntity = storeService.data.user;
 
-    setEmail(userDatas.personalAddress);
-    setName(userDatas.name);
+    setEmail(userDatas.personalAdress);
+    setName(userDatas.fullname);
     setBirthdayLocation(userDatas.bornLocation);
     setBirthday(userDatas.birthday.toString());
     setOrderDepartmentNumber(
@@ -116,10 +116,10 @@ export function SubstituteFields(props: AccordionFieldsProps) {
     );
     setGender(userDatas.gender as GenderEnum);
     setOrderDepartement(userDatas.department);
-    setProfessionnalAddress(userDatas.personalAddress as string);
+    setProfessionnalAddress(userDatas.personalAdress as string);
 
     SubHandleInputChangePDFEditor("email", userDatas.email);
-    SubHandleInputChangePDFEditor("name", userDatas.name);
+    SubHandleInputChangePDFEditor("name", userDatas.fullname);
     SubHandleInputChangePDFEditor("birthday", userDatas.birthday.toString());
     SubHandleInputChangePDFEditor("birthdayLoction", userDatas.bornLocation);
     SubHandleInputChangePDFEditor("orderDepartement", userDatas.department);
@@ -127,7 +127,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
       "orderDepartmentNumber",
       userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
     );
-    SubHandleInputChangePDFEditor("address", userDatas.personalAddress);
+    SubHandleInputChangePDFEditor("address", userDatas.personalAdress);
   }
 
   return (

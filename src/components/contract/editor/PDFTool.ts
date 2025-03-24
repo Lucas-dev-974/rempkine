@@ -1,6 +1,8 @@
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
+import { ContractEntity } from "../../../models/contract.entity";
+import { contractService } from "../../../services/contract.service";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "node_modules/pdfjs-dist/build/pdf.worker.mjs";
@@ -11,17 +13,17 @@ export enum GenderEnum {
 }
 
 export enum AuthorsEnum {
-  student,
-  professional,
-  none,
+  student = "student",
+  professional = "professional",
 }
 
 export type OtherContractDataType = {
   replacedGender: GenderEnum;
   substituteGender: GenderEnum;
 
-  contractAuthor: AuthorsEnum;
+  authorName: string;
   authorEmail: string;
+  authorStatus: AuthorsEnum;
 };
 
 export type FormFieldsType = {
@@ -60,12 +62,50 @@ export class PDFTool {
     this.loadPdf();
 
     this.OCD = {
-      contractAuthor: AuthorsEnum.none,
+      authorStatus: AuthorsEnum.professional,
+      authorName: "",
       authorEmail: "",
 
       replacedGender: GenderEnum.male,
       substituteGender: GenderEnum.male,
     };
+  }
+
+  saveModifiedPdf() {
+    const contract: ContractEntity = {
+      authorName: this.OCD.authorName,
+      authorEmail: this.OCD.authorEmail,
+      authorStatus: this.OCD.authorStatus,
+
+      startDate: this.getFieldValue("122R"),
+      endDate: this.getFieldValue("123R"),
+      percentReturnToSubstitute: +this.getFieldValue("130R"),
+      percentReturnToSubstituteBeforeDate: new Date(this.getFieldValue("131R")),
+      nonInstallationRadius: +this.getFieldValue("134R"),
+      conciliationCDOMK: this.getFieldValue("137R"),
+      doneAtLocation: this.getFieldValue("139R"),
+      doneAtDate: new Date(this.getFieldValue("138R")),
+
+      replacedGender: this.OCD.replacedGender,
+      replacedEmail: this.getFieldValue("100R"),
+      replacedName: this.getFieldValue("94R") || this.getFieldValue("98R"),
+      replacedBirthday: new Date(this.getFieldValue("96R")),
+      replacedBirthdayLocation: this.getFieldValue("95R"),
+      replacedOrderDepartement: this.getFieldValue("93R"),
+      replacedOrderDepartmentNumber: +this.getFieldValue("97R"),
+      replacedProfessionnalAddress: this.getFieldValue("104R"),
+
+      substituteGender: this.OCD.substituteGender,
+      substituteEmail: this.getFieldValue("100R"),
+      substituteName: this.getFieldValue("99R") || this.getFieldValue("105R"),
+      substituteBirthday: new Date(this.getFieldValue("102R")),
+      substituteBirthdayLocation: this.getFieldValue("103R"),
+      substituteOrderDepartement: this.getFieldValue("109R"),
+      substituteOrderDepartmentNumber: +this.getFieldValue("108R"),
+    };
+
+    const response = contractService.createContract(contract);
+    console.log(response);
   }
 
   async loadPdf() {

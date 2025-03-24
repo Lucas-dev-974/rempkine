@@ -12,7 +12,7 @@ export function LabeledSelect(props: LabeledSelectProps) {
   return (
     <div class="labeled-select">
       <label for="author">Autheur du contrat</label>
-      <select name="author" id="author" onChange={props.onChange}>
+      <select name={props.id} id={props.id} onChange={props.onChange}>
         {props.options.map((option) => (
           <option
             value={option.value}

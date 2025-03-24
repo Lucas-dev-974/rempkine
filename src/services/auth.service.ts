@@ -1,9 +1,8 @@
 import { setLoggedIn } from "../const.data";
-import { UserEntity, user1 } from "../models/user.entity";
+import { UserEntity } from "../models/user.entity";
 import storeService from "../utils/store.service";
-import { fetcher } from "./fetch.service";
+import { FetcherService } from "./fetch.service";
 
-type loginResponse = {};
 class AuthService {
   private setData(response: any) {
     setLoggedIn(true);
@@ -12,8 +11,7 @@ class AuthService {
   }
 
   async register(user: Partial<UserEntity>) {
-    const response = await fetcher.post("/auth/register", user);
-    console.log(response);
+    const response = await FetcherService.patch("/auth/", user);
 
     if (response.error) {
       setLoggedIn(false);
@@ -25,7 +23,7 @@ class AuthService {
   }
 
   async login(user: Pick<UserEntity, "email" | "password">) {
-    const response = await fetcher.post("/auth/login", user);
+    const response = await FetcherService.post("/auth/", user);
 
     if (response.error) {
       setLoggedIn(false);

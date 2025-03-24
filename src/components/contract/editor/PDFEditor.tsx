@@ -1,4 +1,4 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import { NextIcon } from "../../../icons/NextIcon";
 import { PreviousIcon } from "../../../icons/PreviousIcon";
 import { Button } from "../../buttons/Button";
@@ -7,6 +7,7 @@ import { PDFTool } from "./PDFTool";
 export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
 
 import "./PDFEditor.css";
+import { loggedIn } from "../../../const.data";
 
 const [fields, setFields] = createSignal<any[]>([]);
 
@@ -73,11 +74,21 @@ export function PDFEditor() {
   return (
     <div>
       <div class="flex gap-2 my-4 justify-between">
-        <Button
-          onClick={() => pdfTool.downloadModifiedPdf(pdfFile() as File)}
-          text="Télécharger le PDF modifié"
-          size="small"
-        />
+        <div class="flex gap-2">
+          <Button
+            onClick={() => pdfTool.downloadModifiedPdf(pdfFile() as File)}
+            text="Télécharger le PDF modifié"
+            size="small"
+          />
+
+          <Show when={loggedIn()}>
+            <Button
+              onClick={() => pdfTool.saveModifiedPdf()}
+              text="Sauvegarder le PDF modifié"
+              size="small"
+            />
+          </Show>
+        </div>
         <div class="flex items-center">
           <button
             class="h-2 w-2 rounded-full flex items-center"

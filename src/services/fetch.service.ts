@@ -1,8 +1,13 @@
 import { NotificationService } from "../utils/notification.service";
+import storeService from "../utils/store.service";
 
 class Fetcher {
-  host = "http://localhost:1337/api";
-  token = "";
+  host = "http://localhost:3001/api";
+  token = storeService.proxy.token;
+
+  setHost(host: string) {
+    this.host = host;
+  }
 
   async get(url: string) {
     const response = await this.fetcher(url, { method: "GET" });
@@ -32,8 +37,8 @@ class Fetcher {
     return await response;
   }
 
-  async fetcher(input: string, init?: RequestInit) {
-    const response = await fetch(this.host + input, {
+  async fetcher(url: string, init?: RequestInit) {
+    const response = await fetch(this.host + url, {
       ...init,
       headers: {
         Authorization: "Bearer " + this.token,
@@ -43,11 +48,12 @@ class Fetcher {
 
     const responseJson = await response.json();
 
-    if (response.status != 200) {
+    const okStatusCode = [200, 201, 204];
+    if (!okStatusCode.includes(response.status)) {
       console.log("error ");
 
       NotificationService.push({
-        content: responseJson.error.message,
+        content: responseJson.error,
         type: "error",
       });
     }
@@ -56,4 +62,4 @@ class Fetcher {
   }
 }
 
-export const fetcher = new Fetcher();
+export const FetcherService = new Fetcher();

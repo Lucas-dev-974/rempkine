@@ -2,8 +2,7 @@ import { GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type UserEntity = {
   id?: number;
-  name: string;
-  lastName: string;
+  fullname: string;
   email: string;
   orderNumber?: number;
   department: string;
@@ -11,7 +10,7 @@ export type UserEntity = {
   bornLocation: string;
   password?: string;
 
-  personalAddress: string;
-  officeAddress?: string;
+  personalAdress: string;
+  officeAdress?: string;
   gender?: GenderEnum;
 };

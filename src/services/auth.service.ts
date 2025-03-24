@@ -11,7 +11,7 @@ class AuthService {
   }
 
   async register(user: Partial<UserEntity>) {
-    const response = await FetcherService.post("/auth/", user);
+    const response = await FetcherService.patch("/auth/", user);
 
     if (response.error) {
       setLoggedIn(false);

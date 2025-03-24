@@ -10,7 +10,7 @@ export type UserEntity = {
   bornLocation: string;
   password?: string;
 
-  personalAddress: string;
-  officeAddress?: string;
+  personalAdress: string;
+  officeAdress?: string;
   gender?: GenderEnum;
 };

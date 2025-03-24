@@ -32,14 +32,17 @@ export function ContractInformationsFields(
   const [conciliationCDOMK, setConciliationCDOMK] = createSignal("");
   const [doneAtLocation, setDoneAtLocation] = createSignal("");
   const [doneAt, setDoneAt] = createSignal("");
-  const [author, setAuthor] = createSignal(AuthorsEnum.professional);
+  const [authorStatus, setAuthorStatus] = createSignal(
+    AuthorsEnum.professional
+  );
   const [authorEmail, setAuthorEmail] = createSignal("");
+  const [authorName, setAuthorName] = createSignal("");
 
   // ------------ Input fields signals ------------
 
   // ------------ Select Options List ------------
   const selectAuhorOptions = [
-    { value: AuthorsEnum.student, label: "Student" },
+    { value: AuthorsEnum.student, label: "Etudient" },
     { value: AuthorsEnum.professional, label: "Profesionnel" },
   ];
   // ------------ Select Options List ------------
@@ -94,9 +97,11 @@ export function ContractInformationsFields(
       ) || ""
     );
 
-    setAuthor(currentPDF()?.OCD.contractAuthor ?? AuthorsEnum.professional);
+    setAuthorStatus(currentPDF()?.OCD.authorStatus ?? AuthorsEnum.professional);
 
     setAuthorEmail(currentPDF()?.OCD.authorEmail ?? "");
+
+    setAuthorName(currentPDF()?.OCD.authorName?.toString() ?? "");
   }
 
   createEffect(on(fieldUpdatedEvent, () => updateFieldsWithCurrentPDF()));
@@ -114,19 +119,19 @@ export function ContractInformationsFields(
     >
       <LabeledSelect
         id="author"
-        label="Autheur du contrat"
+        label="Auteur du contrat"
         options={selectAuhorOptions}
-        selected={author()}
+        selected={authorStatus()}
         onChange={(e) => {
-          currentPDF()?.updateOCD({ contractAuthor: e.target.value });
-          setAuthor(e.target.value);
+          currentPDF()?.updateOCD({ authorStatus: e.target.value });
+          setAuthorStatus(e.target.value);
           setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
       />
 
       <LabeledInput
         id="author-email"
-        label="Email de l'hauteur du contrat"
+        label="Email de l'auteur du contrat"
         type="text"
         onInput={(e) => {
           currentPDF()?.updateOCD({ authorEmail: e.target.value });
@@ -134,6 +139,18 @@ export function ContractInformationsFields(
           setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
         value={authorEmail()}
+      />
+
+      <LabeledInput
+        id="author-name"
+        label="Nom de l'auteur du contrat"
+        type="text"
+        onInput={(e) => {
+          currentPDF()?.updateOCD({ authorName: e.target.value });
+          setAuthorName(e.target.value);
+          setFieldUpdatedEvent(!fieldUpdatedEvent());
+        }}
+        value={authorName()}
       />
 
       <LabeledInput

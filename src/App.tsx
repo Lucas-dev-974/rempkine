@@ -1,4 +1,3 @@
-import { FloatingMenu } from "./components/floating menu/FloatingMenu";
 import { Notification } from "./components/notification/Notification";
 import { FetcherService } from "./services/fetch.service";
 import { createEffect, on, onMount } from "solid-js";
@@ -6,6 +5,7 @@ import { Navbar } from "./components/navbar/Navbar";
 import storeService from "./utils/store.service";
 import { RouteManager } from "./router/Router";
 import { loggedIn } from "./const.data";
+import { FloatingMenu } from "./components/floating-menu/FloatingMenu";
 
 export function App() {
   onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));

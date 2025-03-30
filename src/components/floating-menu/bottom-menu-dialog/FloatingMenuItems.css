@@ -1,0 +1,7 @@
+.floating-menu-item {
+  @apply w-7 flex flex-col items-center gap-1;
+}
+
+.floating-menu-item-text {
+  @apply text-xs font-bold text-white;
+}

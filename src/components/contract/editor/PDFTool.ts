@@ -15,7 +15,7 @@ export enum GenderEnum {
 
 export enum AuthorsEnum {
   student = "student",
-  professional = "professional",
+  professional = "professionnal",
 }
 
 export type OtherContractDataType = {

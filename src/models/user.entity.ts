@@ -1,4 +1,4 @@
-import { GenderEnum } from "../components/contract/editor/PDFTool";
+import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type UserEntity = {
   id?: number;
@@ -13,4 +13,5 @@ export type UserEntity = {
   personalAdress: string;
   officeAdress?: string;
   gender?: GenderEnum;
+  status: AuthorsEnum;
 };

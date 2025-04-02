@@ -1,8 +1,9 @@
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, values } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../../models/contract.entity";
 import { contractService } from "../../../services/contract.service";
+import { HandlerInputChangePDFEditor } from "./PDFEditor";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "node_modules/pdfjs-dist/build/pdf.worker.mjs";
@@ -14,7 +15,7 @@ export enum GenderEnum {
 
 export enum AuthorsEnum {
   student = "student",
-  professional = "professional",
+  professional = "professionnal",
 }
 
 export type OtherContractDataType = {
@@ -55,6 +56,8 @@ export class PDFTool {
   public fields: any[] | undefined;
   public OCD: OtherContractDataType;
 
+  public contractData: Partial<ContractEntity>;
+
   constructor(url: string, canvasID: string) {
     this.url = url;
     this.canvasID = canvasID;
@@ -69,13 +72,130 @@ export class PDFTool {
       replacedGender: GenderEnum.male,
       substituteGender: GenderEnum.male,
     };
+
+    this.contractData = {};
+  }
+
+  public setContractDataToPDFFields(contract: Partial<ContractEntity>) {
+    const replacedFields = this.getReplacedFields(contract.replacedGender);
+    const substituteFields = this.getSubstituteFields(
+      contract.substituteGender
+    );
+    const contractInformationFields = this.getContractInformationFields();
+
+    const contractFieldsLink = {
+      startDate: {
+        field: contractInformationFields.startDate,
+        value: contract.startDate,
+      },
+      endDate: {
+        field: contractInformationFields.endDate,
+        value: contract.endDate,
+      },
+      percentReturnToSubstitute: {
+        field: contractInformationFields.percentReversedToSubstitute,
+        value: contract.percentReturnToSubstitute,
+      },
+      percentReturnToSubstituteBeforeDate: {
+        field: contractInformationFields.reversedBefore,
+        value: contract.percentReturnToSubstituteBeforeDate,
+      },
+      nonInstallationRadius: {
+        field: contractInformationFields.NonInstallationRadius,
+        value: contract.nonInstallationRadius,
+      },
+      conciliationCDOMK: {
+        field: contractInformationFields.conciliationCDOMK,
+        value: contract.conciliationCDOMK,
+      },
+      doneAtLocation: {
+        field: contractInformationFields.doneAtLocation,
+        value: contract.doneAtLocation,
+      },
+      doneAtDate: {
+        field: contractInformationFields.doneAt,
+        value: contract.doneAtDate,
+      },
+
+      replacedEmail: {
+        field: replacedFields.email,
+        value: contract.replacedEmail,
+      },
+
+      replacedName: {
+        field: replacedFields.name,
+        value: contract.replacedName,
+      },
+
+      replacedBirthday: {
+        field: replacedFields.birthday,
+        value: contract.replacedBirthday,
+      },
+
+      replacedBirthdayLocation: {
+        field: replacedFields.birthdayLocation,
+        value: contract.replacedBirthdayLocation,
+      },
+
+      replacedOrderDepartement: {
+        field: replacedFields.orderDepartement,
+        value: contract.replacedOrderDepartement,
+      },
+      replacedOrderDepartmentNumber: {
+        field: replacedFields.orderDepartmentNumber,
+        value: contract.replacedOrderDepartmentNumber,
+      },
+      replacedProfessionnalAddress: {
+        field: replacedFields.professionnalAddress,
+        value: contract.replacedProfessionnalAddress,
+      },
+
+      substituteEmail: {
+        field: substituteFields.email,
+        value: contract.substituteEmail,
+      },
+
+      substituteName: {
+        field: substituteFields.name,
+        value: contract.substituteName,
+      },
+      substituteBirthday: {
+        field: substituteFields.birthday,
+        value: contract.substituteBirthday,
+      },
+      substituteBirthdayLocation: {
+        field: substituteFields.birthdayLoction,
+        value: contract.substituteBirthdayLocation,
+      },
+      substituteOrderDepartement: {
+        field: substituteFields.orderDepartement,
+        value: contract.substituteOrderDepartement,
+      },
+      substituteOrderDepartmentNumber: {
+        field: substituteFields.orderDepartmentNumber,
+        value: contract.substituteOrderDepartmentNumber,
+      },
+    };
+
+    Object.keys(contractFieldsLink).forEach((key) => {
+      const field =
+        contractFieldsLink[key as keyof typeof contractFieldsLink].field;
+      const value =
+        contractFieldsLink[key as keyof typeof contractFieldsLink].value;
+      HandlerInputChangePDFEditor(field, value as string);
+      if (Array.isArray(field)) {
+        field.forEach((field) => this.handleInputChange(field, value));
+      } else {
+        this.handleInputChange(field, value);
+      }
+    });
   }
 
   saveModifiedPdf() {
     const contract: ContractEntity = {
       authorName: this.OCD.authorName,
       authorEmail: this.OCD.authorEmail,
-      authorStatus: this.OCD.authorStatus,
+      authorStatut: this.OCD.authorStatus,
 
       startDate: this.getFieldValue("122R"),
       endDate: this.getFieldValue("123R"),
@@ -241,8 +361,6 @@ export class PDFTool {
   }
 
   handleInputChange(fieldId: any, newValue: any) {
-    // console.log(fieldId);
-
     this.formFields = this.formFields?.map((page) => {
       return {
         ...page,
@@ -347,7 +465,7 @@ export class PDFTool {
   getContractInformationFields() {
     return {
       startDate: "122R",
-      enDate: "123R",
+      endDate: "123R",
       percentReversedToSubstitute: "130R",
       reversedBefore: "131R",
       NonInstallationRadius: "134R",

@@ -11,7 +11,7 @@ interface LabeledSelectProps {
 export function LabeledSelect(props: LabeledSelectProps) {
   return (
     <div class="labeled-select">
-      <label for="author">Autheur du contrat</label>
+      <label for="author">{props.label}</label>
       <select name={props.id} id={props.id} onChange={props.onChange}>
         {props.options.map((option) => (
           <option

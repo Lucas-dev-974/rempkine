@@ -1,0 +1,7 @@
+.floating-bottom-menu-container {
+  @apply fixed bottom-5 w-full flex justify-center overflow-visible z-0;
+}
+
+.floating-bottom-menu {
+  @apply bg-[#030712] text-white shadow-2xl rounded-xl px-5 py-2 flex gap-10 min-w-[100px] justify-center;
+}

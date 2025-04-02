@@ -1,3 +1,4 @@
+import { error } from "pdf-lib";
 import { NotificationService } from "../utils/notification.service";
 import storeService from "../utils/store.service";
 
@@ -50,12 +51,13 @@ class Fetcher {
 
     const okStatusCode = [200, 201, 204];
     if (!okStatusCode.includes(response.status)) {
-      console.log("error ");
-
+      // console.log("error ", responseJson);
       NotificationService.push({
         content: responseJson.error,
         type: "error",
       });
+
+      throw new Error("RequestError");
     }
 
     return responseJson;

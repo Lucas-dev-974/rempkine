@@ -8,8 +8,6 @@ import storeService from "./utils/store.service";
 import { RouteManager } from "./router/Router";
 import { loggedIn } from "./const.data";
 
-
-
 export function App() {
   onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
@@ -17,8 +15,8 @@ export function App() {
   return (
     <main>
       <Navbar />
-      <Notification />
       <FloatingMenu />
+      <Notification />
       <div class="w-full md:px-20 px-4 ">
         <RouteManager />
       </div>

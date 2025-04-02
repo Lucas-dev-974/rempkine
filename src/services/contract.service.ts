@@ -1,9 +1,14 @@
 import { ContractEntity } from "../models/contract.entity";
+import { NotificationService } from "../utils/notification.service";
 import { FetcherService } from "./fetch.service";
 
 class ContractService {
   async createContract(contract: ContractEntity): Promise<void> {
     const response = await FetcherService.post("/contract", contract);
+    NotificationService.push({
+      content: "Contrat sauvegarder",
+      type: "info",
+    });
     return response;
   }
 

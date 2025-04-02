@@ -1,4 +1,4 @@
-import { Route, Router, useNavigate } from "@solidjs/router";
+import { Route, Router } from "@solidjs/router";
 import { Home } from "../views/home/Home";
 import { Contracts } from "../views/Contracts";
 import { Authentication } from "../views/auth/Authentication";

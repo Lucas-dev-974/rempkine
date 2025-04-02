@@ -1,4 +1,5 @@
 import { createSignal, Match, Switch } from "solid-js";
+import { DocsViewContract } from "./bottom-menu-docs/DocsViewContract";
 
 enum DocsViewsEnum {
   contract = "contract",
@@ -17,7 +18,7 @@ const docsViewsItems = [
   },
   {
     title: "fiches clients",
-    action: () => chageCurrentDocsView(DocsViewsEnum.contract),
+    action: () => chageCurrentDocsView(DocsViewsEnum.clientFiles),
   },
 ];
 
@@ -38,10 +39,10 @@ export function BottomMenuDocs() {
 
       <Switch>
         <Match when={currentDocsView() == DocsViewsEnum.contract}>
-          <div>Contrats</div>
+          <DocsViewContract />
         </Match>
         <Match when={currentDocsView() == DocsViewsEnum.clientFiles}>
-          <div>Contrats</div>
+          <div>Fiche clients</div>
         </Match>
       </Switch>
     </div>

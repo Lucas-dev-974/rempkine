@@ -8,7 +8,7 @@ export function DialogTool() {
   return (
     <DialogWrapper
       btnText="Tester l'outil d'édition de contrat"
-      title="Test de l'outil d'édition de contrat"
+      title="Edition contrat"
     >
       <div class="dialog-tool-content">
         <div class="dialog-tool-form">

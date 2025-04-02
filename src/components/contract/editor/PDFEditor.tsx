@@ -1,13 +1,14 @@
+import { ContractEntity } from "../../../models/contract.entity";
+import { loadContract, loggedIn } from "../../../const.data";
+import { PreviousIcon } from "../../../icons/PreviousIcon";
 import { createSignal, onMount, Show } from "solid-js";
 import { NextIcon } from "../../../icons/NextIcon";
-import { PreviousIcon } from "../../../icons/PreviousIcon";
 import { Button } from "../../buttons/Button";
 import { PDFTool } from "./PDFTool";
 
-export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
-
 import "./PDFEditor.css";
-import { loggedIn } from "../../../const.data";
+
+export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
 
 const [fields, setFields] = createSignal<any[]>([]);
 
@@ -45,13 +46,16 @@ export function PDFEditor() {
   const [currentPage, setCurrentPage] = createSignal(1);
   const [numPages, setNumPages] = createSignal();
 
-  const PDFurl =
-    "http://localhost:3000/src/assets/contrat-type-de-remplacement-liberal-28-03-2023-.pdf";
+  const PDFurl = import.meta.env.VITE_PDF_FILE_PATH;
 
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
 
   onMount(async () => {
     await pdfTool.loadPdf();
+    if (loadContract()) {
+      pdfTool.setContractDataToPDFFields(loadContract() as ContractEntity);
+    }
+
     setPdfFile(pdfTool.pdfFile);
     setCurrentPage(pdfTool.currentPage);
     setNumPages(pdfTool.numPages);

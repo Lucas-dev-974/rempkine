@@ -56,7 +56,7 @@ export function ContractInformationsFields(
 
     setEndDate(
       currentPDF()?.getFieldValue(
-        currentPDF()?.getContractInformationFields().enDate as string
+        currentPDF()?.getContractInformationFields().endDate as string
       ) || ""
     );
 
@@ -172,7 +172,7 @@ export function ContractInformationsFields(
         type="date"
         onInput={(e) => {
           HandlerInputChangePDFEditor(
-            currentPDF()?.getContractInformationFields().enDate as string,
+            currentPDF()?.getContractInformationFields().endDate as string,
             e.target.value
           );
           setFieldUpdatedEvent(!fieldUpdatedEvent());

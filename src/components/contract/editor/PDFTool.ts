@@ -225,7 +225,7 @@ export class PDFTool {
     };
 
     const response = contractService.createContract(contract);
-    console.log(response);
+    // TODO : what todo with this data ?
   }
 
   async loadPdf() {

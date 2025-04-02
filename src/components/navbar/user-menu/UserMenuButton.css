@@ -1,0 +1,3 @@
+.user-menu-button {
+  @apply hover:bg-gray-700 px-4 py-3 w-[140px] cursor-pointer;
+}

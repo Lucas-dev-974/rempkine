@@ -36,7 +36,6 @@ export function RegisterCard() {
     }
 
     setFormData(data); // Mettez à jour l'état si nécessaire
-
     await authService.register(formData() as Partial<UserEntity>);
   }
 
@@ -125,12 +124,12 @@ export function RegisterCard() {
         label="Status"
         options={[
           { label: "Etudiant", value: "student" },
-          { label: "Professionnel", value: "professional" },
+          { label: "Professionnel", value: "professionnal" },
         ]}
       />
       <LabeledSelect
         id="gender"
-        label="Status"
+        label="Genre"
         options={[
           { label: "Homme", value: "male" },
           { label: "Femme", value: "female" },

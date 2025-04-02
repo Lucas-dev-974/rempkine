@@ -17,20 +17,71 @@ interface AccordionFieldsProps {
   items: AccordionItemType[] | (() => AccordionItemType[]);
 }
 
-export function SubstituteFields(props: AccordionFieldsProps) {
-  const [fieldUpdatedEvent, setFieldUpdatedEvent] = createSignal(false);
+const [fieldUpdatedEvent, setFieldUpdatedEvent] = createSignal(false);
 
-  // ------------ Input fields signals ------------
-  const [Gender, setGender] = createSignal();
-  const [email, setEmail] = createSignal<string>("");
-  const [name, setName] = createSignal<string>("");
-  const [birthday, setBirthday] = createSignal<string>("");
-  const [birthdayLocation, setBirthdayLocation] = createSignal<string>("");
-  const [orderDepartement, setOrderDepartement] = createSignal<string>("");
-  const [professionnalAddress, setProfessionnalAddress] =
-    createSignal<string>("");
-  const [orderDepartmentNumber, setOrderDepartmentNumber] =
-    createSignal<string>("");
+// ------------ Input fields signals ------------
+const [Gender, setGender] = createSignal();
+const [email, setEmail] = createSignal<string>("");
+const [name, setName] = createSignal<string>("");
+const [birthday, setBirthday] = createSignal<string>("");
+const [birthdayLocation, setBirthdayLocation] = createSignal<string>("");
+const [orderDepartement, setOrderDepartement] = createSignal<string>("");
+const [professionnalAddress, setProfessionnalAddress] =
+  createSignal<string>("");
+const [orderDepartmentNumber, setOrderDepartmentNumber] =
+  createSignal<string>("");
+
+function SubHandleInputChangePDFEditor(
+  field:
+    | "name"
+    | "birthday"
+    | "birthdayLoction"
+    | "orderDepartement"
+    | "orderDepartmentNumber"
+    | "address"
+    | "email",
+  value: string
+) {
+  HandlerInputChangePDFEditor(
+    currentPDF()?.getSubstituteFields(Gender() as GenderEnum)[
+      `${field}`
+    ] as unknown as string,
+    value
+  );
+}
+
+export function fillWithMyInformationsSubstitute() {
+  setFieldUpdatedEvent(!fieldUpdatedEvent());
+  // code
+  const userDatas: UserEntity = storeService.data.user;
+
+  const birth = userDatas.birthday;
+  const formattedDate = birth.toString().split("T")[0];
+
+  setEmail(userDatas.personalAdress);
+  setName(userDatas.fullname);
+  setBirthdayLocation(userDatas.bornLocation);
+  setBirthday(formattedDate);
+  setOrderDepartmentNumber(
+    userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+  );
+  setGender(userDatas.gender as GenderEnum);
+  setOrderDepartement(userDatas.department);
+  setProfessionnalAddress(userDatas.personalAdress as string);
+
+  SubHandleInputChangePDFEditor("email", userDatas.email);
+  SubHandleInputChangePDFEditor("name", userDatas.fullname);
+  SubHandleInputChangePDFEditor("birthday", userDatas.birthday.toString());
+  SubHandleInputChangePDFEditor("birthdayLoction", userDatas.bornLocation);
+  SubHandleInputChangePDFEditor("orderDepartement", userDatas.department);
+  SubHandleInputChangePDFEditor(
+    "orderDepartmentNumber",
+    userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
+  );
+  SubHandleInputChangePDFEditor("address", userDatas.personalAdress);
+}
+
+export function SubstituteFields(props: AccordionFieldsProps) {
   // ------------ Input fields signals ------------
 
   function updateFieldsWithCurrentPDF() {
@@ -83,53 +134,6 @@ export function SubstituteFields(props: AccordionFieldsProps) {
 
   createEffect(on(fieldUpdatedEvent, () => updateFieldsWithCurrentPDF()));
 
-  function SubHandleInputChangePDFEditor(
-    field:
-      | "name"
-      | "birthday"
-      | "birthdayLoction"
-      | "orderDepartement"
-      | "orderDepartmentNumber"
-      | "address"
-      | "email",
-    value: string
-  ) {
-    HandlerInputChangePDFEditor(
-      currentPDF()?.getSubstituteFields(Gender() as GenderEnum)[
-        `${field}`
-      ] as unknown as string,
-      value
-    );
-  }
-
-  function fillWithMyInformations() {
-    setFieldUpdatedEvent(!fieldUpdatedEvent());
-    // code
-    const userDatas: UserEntity = storeService.data.user;
-
-    setEmail(userDatas.personalAdress);
-    setName(userDatas.fullname);
-    setBirthdayLocation(userDatas.bornLocation);
-    setBirthday(userDatas.birthday.toString());
-    setOrderDepartmentNumber(
-      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
-    );
-    setGender(userDatas.gender as GenderEnum);
-    setOrderDepartement(userDatas.department);
-    setProfessionnalAddress(userDatas.personalAdress as string);
-
-    SubHandleInputChangePDFEditor("email", userDatas.email);
-    SubHandleInputChangePDFEditor("name", userDatas.fullname);
-    SubHandleInputChangePDFEditor("birthday", userDatas.birthday.toString());
-    SubHandleInputChangePDFEditor("birthdayLoction", userDatas.bornLocation);
-    SubHandleInputChangePDFEditor("orderDepartement", userDatas.department);
-    SubHandleInputChangePDFEditor(
-      "orderDepartmentNumber",
-      userDatas.orderNumber ? userDatas.orderNumber.toString() : ""
-    );
-    SubHandleInputChangePDFEditor("address", userDatas.personalAdress);
-  }
-
   return (
     <AccordionItem
       id={2}
@@ -141,7 +145,9 @@ export function SubstituteFields(props: AccordionFieldsProps) {
         )?.isOpen
       }
     >
-      <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformations} />
+      <FitFieldsWithUserData
+        fillWithMyInformations={fillWithMyInformationsSubstitute}
+      />
 
       <Dialog2InputRadio
         legend="Genre:"

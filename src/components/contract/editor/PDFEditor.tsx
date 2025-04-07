@@ -98,13 +98,11 @@ export function PDFEditor() {
             size="small"
           />
 
-          <Show when={loggedIn()}>
-            <Button
-              onClick={saveContractInDB}
-              text="Sauvegarder le PDF modifié"
-              size="small"
-            />
-          </Show>
+          <Button
+            onClick={saveContractInDB}
+            text="Sauvegarder le PDF modifié"
+            size="small"
+          />
         </div>
         <div class="flex items-center">
           <button

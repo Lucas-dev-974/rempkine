@@ -12,7 +12,8 @@ import {
   currentPDF,
   HandlerInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
-import { createSignal } from "solid-js";
+import { createSignal, Show } from "solid-js";
+import { loggedIn } from "../../../../const.data";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -88,25 +89,27 @@ export function ContractInformationsFields(
         )?.isOpen
       }
     >
-      <div class="flex w-full justify-end gap-2">
-        <Button
-          text="Je ne suis pas sur le contrat"
-          onClick={() => fillWithMyInformations("auhtor")}
-          size="small"
-        />
+      <Show when={loggedIn()}>
+        <div class="flex w-full justify-end gap-2">
+          <Button
+            text="Je ne suis pas sur le contrat"
+            onClick={() => fillWithMyInformations("auhtor")}
+            size="small"
+          />
 
-        <Button
-          text="Je suis remplacé"
-          onClick={() => fillWithMyInformations("author,replaced")}
-          size="small"
-        />
+          <Button
+            text="Je suis remplacé"
+            onClick={() => fillWithMyInformations("author,replaced")}
+            size="small"
+          />
 
-        <Button
-          text="Je remplace un confrère"
-          onClick={() => fillWithMyInformations("author,replaced")}
-          size="small"
-        />
-      </div>
+          <Button
+            text="Je remplace un confrère"
+            onClick={() => fillWithMyInformations("author,replaced")}
+            size="small"
+          />
+        </div>
+      </Show>
 
       {/* <LabeledSelect
         id="author"

@@ -1,3 +1,12 @@
+-------- last note ----------
+utilisateur non connecté, save in db and makez it unavaiable. 
+share contract link 
+sign 
+calcul  fiscal
+chat 
+--------------------------------
+
+
 Avoir une limite d'utilisation de l'outil si non connecter ?
 
 Rajouter des options d'administration pour les utilisateur admin

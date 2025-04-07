@@ -223,9 +223,34 @@ export class PDFTool {
       substituteOrderDepartement: this.getFieldValue("109R"),
       substituteOrderDepartmentNumber: +this.getFieldValue("108R"),
     };
+    return contract;
+  }
 
-    const response = contractService.createContract(contract);
-    // TODO : what todo with this data ?
+  isValidContract(contract: Partial<ContractEntity>) {
+    if (!contract.authorEmail) return false;
+    if (!contract.authorName) return false;
+    if (!contract.startDate) return false;
+    if (!contract.endDate) return false;
+    if (!contract.percentReturnToSubstitute) return false;
+    if (!contract.percentReturnToSubstituteBeforeDate) return false;
+    if (!contract.nonInstallationRadius) return false;
+    if (!contract.conciliationCDOMK) return false;
+    if (!contract.doneAtLocation) return false;
+    if (!contract.doneAtDate) return false;
+    if (!contract.replacedEmail) return false;
+    if (!contract.replacedName) return false;
+    if (!contract.replacedBirthday) return false;
+    if (!contract.replacedBirthdayLocation) return false;
+    if (!contract.replacedOrderDepartement) return false;
+    if (!contract.replacedOrderDepartmentNumber) return false;
+    if (!contract.replacedProfessionnalAddress) return false;
+    if (!contract.substituteEmail) return false;
+    if (!contract.substituteName) return false;
+    if (!contract.substituteBirthday) return false;
+    if (!contract.substituteBirthdayLocation) return false;
+    if (!contract.substituteOrderDepartement) return false;
+    if (!contract.substituteOrderDepartmentNumber) return false;
+    return true;
   }
 
   async loadPdf() {

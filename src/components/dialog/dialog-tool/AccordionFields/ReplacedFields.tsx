@@ -195,7 +195,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       />
       <LabeledInput
         id="birthday"
-        label="Anniversaire"
+        label="Née le"
         type="date"
         onInput={(e) => {
           subInputHandler("birthday", e.target.value);

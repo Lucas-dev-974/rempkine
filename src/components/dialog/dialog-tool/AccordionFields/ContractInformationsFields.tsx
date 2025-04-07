@@ -90,25 +90,25 @@ export function ContractInformationsFields(
     >
       <div class="flex w-full justify-end gap-2">
         <Button
-          text="Je suis l'auteur"
+          text="Je ne suis pas sur le contrat"
           onClick={() => fillWithMyInformations("auhtor")}
           size="small"
         />
 
         <Button
-          text="Je suis l'auteur et le remplacé"
+          text="Je suis remplacé"
           onClick={() => fillWithMyInformations("author,replaced")}
           size="small"
         />
 
         <Button
-          text="Je suis l'auteur et le remplaçant"
+          text="Je remplace un confrère"
           onClick={() => fillWithMyInformations("author,replaced")}
           size="small"
         />
       </div>
 
-      <LabeledSelect
+      {/* <LabeledSelect
         id="author"
         label="Status de l'auteur du contrat"
         options={selectAuhorOptions}
@@ -118,7 +118,7 @@ export function ContractInformationsFields(
           setAuthorStatus(e.target.value);
           setFieldUpdatedEvent(!fieldUpdatedEvent());
         }}
-      />
+      /> */}
 
       <LabeledInput
         id="author-email"
@@ -188,7 +188,7 @@ export function ContractInformationsFields(
 
       <LabeledInput
         id="percent-returned-to-subsitute-before-date"
-        label="Pourcentage reversé au remplaçant avant la date"
+        label="Date limite de paiement au lieu de pourcentage reversé "
         type="date"
         onInput={(e) => {
           HandlerInputChangePDFEditor(
@@ -203,7 +203,7 @@ export function ContractInformationsFields(
 
       <LabeledInput
         id="non-installation-radius"
-        label="Rayon de non installation"
+        label="Rayon de non installation (KM) si plus de 3 mois  "
         type="number"
         onInput={(e) => {
           HandlerInputChangePDFEditor(
@@ -217,7 +217,7 @@ export function ContractInformationsFields(
       />
       <LabeledInput
         id="conciliationCDOMK "
-        label="conciliation CDOMK "
+        label="Lieu de remplacement"
         type="text"
         onInput={(e) => {
           HandlerInputChangePDFEditor(

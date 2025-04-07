@@ -196,7 +196,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
       />
       <LabeledInput
         id="substitute-birthday"
-        label="Anniversaire"
+        label="Née le"
         type="date"
         onInput={(e) => {
           SubHandleInputChangePDFEditor("birthday", e.target.value);

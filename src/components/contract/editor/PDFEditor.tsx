@@ -7,6 +7,8 @@ import { Button } from "../../buttons/Button";
 import { PDFTool } from "./PDFTool";
 
 import "./PDFEditor.css";
+import { contractService } from "../../../services/contract.service";
+import { NotificationService } from "../../../utils/notification.service";
 
 export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
 
@@ -47,8 +49,19 @@ export function PDFEditor() {
   const [numPages, setNumPages] = createSignal();
 
   const PDFurl = import.meta.env.VITE_PDF_FILE_PATH;
-
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
+
+  async function saveContractInDB() {
+    const contract = pdfTool.saveModifiedPdf();
+    await contractService.createContract(contract);
+    if (!pdfTool.isValidContract(contract)) {
+      NotificationService.push({
+        content:
+          "Le contrat n'est pas valide, il a été sauvegardé vous pourrez le modifier plus tard.",
+        type: "error",
+      });
+    }
+  }
 
   onMount(async () => {
     await pdfTool.loadPdf();
@@ -87,7 +100,7 @@ export function PDFEditor() {
 
           <Show when={loggedIn()}>
             <Button
-              onClick={() => pdfTool.saveModifiedPdf()}
+              onClick={saveContractInDB}
               text="Sauvegarder le PDF modifié"
               size="small"
             />

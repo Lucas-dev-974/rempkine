@@ -188,8 +188,10 @@ export function PDFEditor() {
       });
       // Charger l'image
 
-      const signatureDataUrl = loadContract()!.replacedSignatureDataUrl;
-      signaturePad.fromDataURL(signatureDataUrl);
+      if (loadContract()) {
+        const signatureDataUrl = loadContract()!.replacedSignatureDataUrl;
+        signaturePad.fromDataURL(signatureDataUrl);
+      }
     }
   });
 

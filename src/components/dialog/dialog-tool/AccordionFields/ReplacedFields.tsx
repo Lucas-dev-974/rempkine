@@ -6,11 +6,12 @@ import { GenderEnum } from "../../../contract/editor/PDFTool";
 import { LabeledInput } from "../../../inputs/LabeledInput";
 import { UserEntity } from "../../../../models/user.entity";
 import storeService from "../../../../utils/store.service";
-import { createSignal, createEffect, on } from "solid-js";
+import { createSignal, createEffect, on, Show } from "solid-js";
 import {
   currentPDF,
   HandlerInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
+import { loggedIn } from "../../../../const.data";
 
 interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -143,9 +144,11 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         )?.isOpen ?? false
       }
     >
-      <FitFieldsWithUserData
-        fillWithMyInformations={fillWithMyInformationsReplaced}
-      />
+      <Show when={loggedIn()}>
+        <FitFieldsWithUserData
+          fillWithMyInformations={fillWithMyInformationsReplaced}
+        />
+      </Show>
 
       <Dialog2InputRadio
         legend="Genre:"

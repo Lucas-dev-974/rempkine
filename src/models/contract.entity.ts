@@ -1,6 +1,7 @@
 import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type ContractEntity = {
+  id: number;
   authorEmail: string;
   authorName: string;
   authorStatut: AuthorsEnum;
@@ -31,4 +32,7 @@ export type ContractEntity = {
   substituteBirthdayLocation: string;
   substituteOrderDepartement: string;
   substituteOrderDepartmentNumber: number;
+
+  replacedSignatureDataUrl: string;
+  substituteSignatureDataUrl: string;
 };

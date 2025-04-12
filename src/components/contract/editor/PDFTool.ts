@@ -3,7 +3,11 @@ import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../../models/contract.entity";
 import { contractService } from "../../../services/contract.service";
-import { HandlerInputChangePDFEditor } from "./PDFEditor";
+import {
+  canvasSignatureReplaced,
+  canvasSubstituted,
+  HandlerInputChangePDFEditor,
+} from "./PDFEditor";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   "node_modules/pdfjs-dist/build/pdf.worker.mjs";
@@ -191,8 +195,8 @@ export class PDFTool {
     });
   }
 
-  saveModifiedPdf() {
-    const contract: ContractEntity = {
+  getContractData() {
+    const contract: Omit<ContractEntity, "id"> = {
       authorName: this.OCD.authorName,
       authorEmail: this.OCD.authorEmail,
       authorStatut: this.OCD.authorStatus,
@@ -222,6 +226,14 @@ export class PDFTool {
       substituteBirthdayLocation: this.getFieldValue("103R"),
       substituteOrderDepartement: this.getFieldValue("109R"),
       substituteOrderDepartmentNumber: +this.getFieldValue("108R"),
+
+      replacedSignatureDataUrl: canvasSignatureReplaced()
+        ? canvasSignatureReplaced()!.toDataURL("image/png")
+        : "",
+
+      substituteSignatureDataUrl: canvasSubstituted()
+        ? canvasSubstituted()!.toDataURL("image/png")
+        : "",
     };
     return contract;
   }
@@ -412,6 +424,44 @@ export class PDFTool {
       const pdfData = new Uint8Array(reader.result as ArrayBufferLike);
 
       const pdfDoc_ = await PDFDocument.load(pdfData);
+
+      // Récupérer la page où les canvases doivent être ajoutés (par exemple, page 6)
+      const page = pdfDoc_.getPage(5); // Les pages sont indexées à partir de 0
+
+      if (canvasSignatureReplaced() && canvasSubstituted()) {
+        // Convertir les canvases en images
+        const canvas1Image = canvasSignatureReplaced()!.toDataURL("image/png");
+        const canvas2Image = canvasSubstituted()!.toDataURL("image/png");
+
+        // Intégrer les images dans le PDF
+        const canvas1ImageBytes = await fetch(canvas1Image).then((res) =>
+          res.arrayBuffer()
+        );
+        const canvas2ImageBytes = await fetch(canvas2Image).then((res) =>
+          res.arrayBuffer()
+        );
+
+        const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+        const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
+
+        // Obtenir les dimensions de la page
+        const { width, height } = page.getSize();
+
+        // Dessiner les images sur la page
+        page.drawImage(canvas1ImageEmbed, {
+          x: width * 0.05, // 5% du côté gauche
+          y: height * 0.12, // 15% du bas
+          width: width * 0.4, // 40% de la largeur de la page
+          height: height * 0.2, // 20% de la hauteur de la page
+        });
+
+        page.drawImage(canvas2ImageEmbed, {
+          x: width * 0.55, // 55% du côté gauche
+          y: height * 0.12, // 15% du bas
+          width: width * 0.4, // 40% de la largeur de la page
+          height: height * 0.2, // 20% de la hauteur de la page
+        });
+      }
 
       // Récupère et met à jour les champs de formulaire
       const form = pdfDoc_.getForm();

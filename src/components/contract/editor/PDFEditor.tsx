@@ -1,17 +1,18 @@
+import { NotificationService } from "../../../utils/notification.service";
+import { contractService } from "../../../services/contract.service";
 import { ContractEntity } from "../../../models/contract.entity";
+import { createEffect, createSignal, onMount } from "solid-js";
 import { loadContract, loggedIn } from "../../../const.data";
 import { PreviousIcon } from "../../../icons/PreviousIcon";
-import { createSignal, onMount, Show } from "solid-js";
+import storeService from "../../../utils/store.service";
 import { NextIcon } from "../../../icons/NextIcon";
 import { Button } from "../../buttons/Button";
+import SignaturePad from "signature_pad";
 import { PDFTool } from "./PDFTool";
 
 import "./PDFEditor.css";
-import { contractService } from "../../../services/contract.service";
-import { NotificationService } from "../../../utils/notification.service";
 
 export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
-
 const [fields, setFields] = createSignal<any[]>([]);
 
 export function HandlerInputChangePDFEditor(
@@ -43,6 +44,12 @@ export function HandlerInputChangePDFEditor(
   }
 }
 
+export const [canvasSignatureReplaced, setCanvasSignatureReplaced] =
+  createSignal<HTMLCanvasElement>();
+
+export const [canvasSubstituted, setCanvasSubstituted] =
+  createSignal<HTMLCanvasElement>();
+
 export function PDFEditor() {
   const [pdfFile, setPdfFile] = createSignal();
   const [currentPage, setCurrentPage] = createSignal(1);
@@ -52,14 +59,31 @@ export function PDFEditor() {
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
 
   async function saveContractInDB() {
-    const contract = pdfTool.saveModifiedPdf();
-    await contractService.createContract(contract);
-    if (!pdfTool.isValidContract(contract)) {
+    const contractFromPDF = pdfTool.getContractData();
+    const contract = await contractService.createContract(contractFromPDF);
+    if (!pdfTool.isValidContract(contractFromPDF)) {
       NotificationService.push({
         content:
           "Le contrat n'est pas valide, il a été sauvegardé vous pourrez le modifier plus tard.",
         type: "error",
       });
+    }
+    if (!loggedIn()) {
+      NotificationService.push({
+        content:
+          "Le contrat sera supprimmé dans 3 mois, connnectez-vous ou télécharger pour le garder.",
+        type: "error",
+      });
+
+      console.log(contract);
+      if (!storeService.proxy.contractIds) {
+        storeService.proxy.contractIds = [contract.id];
+      } else {
+        storeService.proxy.contractIds = [
+          ...storeService.proxy.contractIds,
+          contract.id,
+        ];
+      }
     }
   }
 
@@ -86,7 +110,88 @@ export function PDFEditor() {
     }
     setCurrentPage(pdfTool.currentPage);
     setNumPages(pdfTool.numPages);
+
+    // TODO: refactor
+    // Check if the current page is 6
+    if (pdfTool.currentPage === 6) {
+      const parentCanvas = document.getElementById("pdf-canvas");
+
+      if (parentCanvas) {
+        const parentContainer = parentCanvas.parentElement;
+
+        if (parentContainer) {
+          // Create the first canvas
+          const canvas1 = document.createElement("canvas");
+          setCanvasSignatureReplaced(canvas1);
+          canvas1.style.position = "absolute";
+          canvas1.style.bottom = "12%"; // 5% from the bottom
+          canvas1.style.left = "5%"; // 5% from the left
+          canvas1.style.width = "40%"; // 40% of parent width
+          canvas1.style.height = "13%"; // 20% of parent height
+          canvas1.style.border = "1px solid black";
+
+          // Create the second canvas
+          const canvas2 = document.createElement("canvas");
+          setCanvasSubstituted(canvas2);
+          canvas2.style.position = "absolute";
+          canvas2.style.bottom = "12%"; // 5% from the bottom
+          canvas2.style.left = "55%"; // Positioned 55% from the left
+          canvas2.style.width = "40%"; // 40% of parent width
+          canvas2.style.height = "13%"; // 20% of parent height
+          canvas2.style.border = "1px solid black";
+
+          // if (loadContract()) {
+          //   console.log("drawing signature");
+
+          //   const image = new Image();
+          //   image.src = loadContract()?.replacedSignatureDataUrl as string;
+
+          //   image.onload = async () => {
+          //     const ctx = canvas1.getContext("2d");
+          //     if (ctx) {
+          //       ctx.drawImage(image, 0, 0, canvas1.width, canvas1.height);
+          //     }
+          //   };
+          // }
+
+          // Append the canvases to the parent container
+          parentContainer.appendChild(canvas1);
+          parentContainer.appendChild(canvas2);
+
+          // Adjust canvas resolution to match their displayed size
+          const adjustCanvasResolution = (canvas: HTMLCanvasElement) => {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+          };
+
+          adjustCanvasResolution(canvas1);
+          adjustCanvasResolution(canvas2);
+          // Add a resize observer to make the canvases responsive
+          const resizeObserver = new ResizeObserver(() => {
+            adjustCanvasResolution(canvas1);
+            adjustCanvasResolution(canvas2);
+          });
+
+          resizeObserver.observe(parentContainer);
+        }
+      }
+    }
   }
+
+  createEffect(() => {
+    if (canvasSignatureReplaced()) {
+      const signaturePad = new SignaturePad(canvasSignatureReplaced()!, {
+        minWidth: 2,
+        maxWidth: 4,
+        penColor: "rgb(66, 133, 244)",
+      });
+      // Charger l'image
+
+      const signatureDataUrl = loadContract()!.replacedSignatureDataUrl;
+      signaturePad.fromDataURL(signatureDataUrl);
+    }
+  });
 
   return (
     <div>

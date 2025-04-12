@@ -2,6 +2,8 @@ import { createSignal, JSX, Show } from "solid-js";
 import { Button } from "../buttons/Button";
 
 import "./DialogWrapper.css";
+import { setLoadContrat } from "../../const.data";
+import { setCurrentPDF } from "../contract/editor/PDFEditor";
 
 interface DialogWrapperProps {
   children: JSX.Element;
@@ -12,7 +14,11 @@ interface DialogWrapperProps {
 // ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
 const [isOpen, setIsOpen] = createSignal(false);
 export const openDialogTool = () => setIsOpen(true);
-const closeDialogTool = () => setIsOpen(false);
+const closeDialogTool = () => {
+  setLoadContrat(undefined);
+  setCurrentPDF(undefined);
+  setIsOpen(false);
+};
 
 export function DialogWrapper(props: DialogWrapperProps) {
   return (

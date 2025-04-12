@@ -2,14 +2,23 @@ import { contractService } from "../../../../../services/contract.service";
 import { ContractEntity } from "../../../../../models/contract.entity";
 import { openDialogTool } from "../../../../dialog/DialogWrapper";
 import { TrashIcon } from "../../../../../icons/TrashIcon";
-import { setLoadContrat } from "../../../../../const.data";
+import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { OpenIcon } from "../../../../../icons/OpenIcon";
 import { createSignal, onMount } from "solid-js";
+import storeService from "../../../../../utils/store.service";
 
 export function DocsViewContract() {
   const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 
-  onMount(async () => setContracts(await contractService.list()));
+  onMount(async () => {
+    if (!loggedIn()) {
+      setContracts(
+        await contractService.listFromIDS(storeService.proxy.contractIds)
+      );
+    } else {
+      setContracts(await contractService.list());
+    }
+  });
 
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);
@@ -23,7 +32,7 @@ export function DocsViewContract() {
     setContracts(result);
   }
   return (
-    <div class="mt-5">
+    <div class="mt-5 overflow-auto max-h-[60vh]">
       <div class="w-full my-2">
         <input
           type="text"
@@ -32,7 +41,7 @@ export function DocsViewContract() {
           onInput={InputSearchInputHandler}
         />
       </div>
-      <table class="min-w-full border border-gray-300 shadow-lg rounded-lg overflow-hidden ">
+      <table class="min-w-full border border-gray-300 shadow-lg rounded-lg  ">
         <thead>
           <tr class="bg-blue-500 text-white">
             <th class="px-4 py-2 text-left">Remplaçé</th>

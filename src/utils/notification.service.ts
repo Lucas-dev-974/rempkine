@@ -20,8 +20,6 @@ export class NotificationService {
       newId = newId + 1;
     }
 
-    console.log("push notif");
-
     setNotifications((prev) => {
       if (!prev) return prev;
 
@@ -35,7 +33,5 @@ export class NotificationService {
 
       return newnotif;
     });
-
-    console.log(notifications());
   }
 }

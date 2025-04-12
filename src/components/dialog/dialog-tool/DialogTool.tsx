@@ -1,3 +1,4 @@
+import { loadContract } from "../../../const.data";
 import { PDFEditor } from "../../contract/editor/PDFEditor";
 import { DialogWrapper } from "../DialogWrapper";
 import { FormFields } from "./AccordionFields/FormFields";
@@ -8,7 +9,11 @@ export function DialogTool() {
   return (
     <DialogWrapper
       btnText="Tester l'outil d'édition de contrat"
-      title="Edition contrat"
+      title={
+        loadContract()
+          ? "Mettre à jour  un contrat"
+          : "Edité un nouveau contrat"
+      }
     >
       <div class="dialog-tool-content">
         <div class="dialog-tool-form">

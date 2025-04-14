@@ -5,7 +5,7 @@ import { ContractEntity } from "../../../models/contract.entity";
 import { contractService } from "../../../services/contract.service";
 import {
   canvasSignatureReplaced,
-  canvasSubstituted,
+  canvasSignatureSubstitute,
   HandlerInputChangePDFEditor,
 } from "./PDFEditor";
 
@@ -231,8 +231,8 @@ export class PDFTool {
         ? canvasSignatureReplaced()!.toDataURL("image/png")
         : "",
 
-      substituteSignatureDataUrl: canvasSubstituted()
-        ? canvasSubstituted()!.toDataURL("image/png")
+      substituteSignatureDataUrl: canvasSignatureSubstitute()
+        ? canvasSignatureSubstitute()!.toDataURL("image/png")
         : "",
     };
     return contract;
@@ -428,10 +428,11 @@ export class PDFTool {
       // Récupérer la page où les canvases doivent être ajoutés (par exemple, page 6)
       const page = pdfDoc_.getPage(5); // Les pages sont indexées à partir de 0
 
-      if (canvasSignatureReplaced() && canvasSubstituted()) {
+      if (canvasSignatureReplaced() && canvasSignatureSubstitute()) {
         // Convertir les canvases en images
         const canvas1Image = canvasSignatureReplaced()!.toDataURL("image/png");
-        const canvas2Image = canvasSubstituted()!.toDataURL("image/png");
+        const canvas2Image =
+          canvasSignatureSubstitute()!.toDataURL("image/png");
 
         // Intégrer les images dans le PDF
         const canvas1ImageBytes = await fetch(canvas1Image).then((res) =>

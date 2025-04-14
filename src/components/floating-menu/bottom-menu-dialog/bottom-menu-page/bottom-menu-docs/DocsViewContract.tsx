@@ -6,6 +6,8 @@ import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { OpenIcon } from "../../../../../icons/OpenIcon";
 import { createSignal, onMount } from "solid-js";
 import storeService from "../../../../../utils/store.service";
+import { ButtonIcon } from "../../../../buttons/ButtonIcon";
+import { LinkIcon } from "../../../../../icons/LinkIcon";
 
 export function DocsViewContract() {
   const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
@@ -62,15 +64,23 @@ export function DocsViewContract() {
                 {contract.substituteName}
               </td>
               <td class="px-4 py-2 border-b text-right">
-                <button
-                  class="rounded-full p-1 w-7"
-                  onClick={() => openDialogTool_(contract)}
-                >
-                  <OpenIcon />
-                </button>
-                <button class="rounded-full p-1 w-7">
-                  <TrashIcon />
-                </button>
+                <div class="flex gap-2 justify-end">
+                  <ButtonIcon
+                    size="large"
+                    icons={<LinkIcon />}
+                    onClick={() => {}}
+                  />
+                  <ButtonIcon
+                    size="medium"
+                    icons={<OpenIcon />}
+                    onClick={() => openDialogTool_(contract)}
+                  />
+                  <ButtonIcon
+                    size="medium"
+                    icons={<TrashIcon />}
+                    onClick={() => {}}
+                  />
+                </div>
               </td>
             </tr>
           ))}

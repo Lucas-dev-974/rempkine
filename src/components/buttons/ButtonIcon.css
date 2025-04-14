@@ -1,3 +1,11 @@
-.button-icon {
+.button-icon.small {
+  @apply w-3 h-3;
+}
+
+.button-icon.medium {
+  @apply w-5 h-5;
+}
+
+.button-icon.large {
   @apply w-7 h-7;
 }

@@ -47,7 +47,7 @@ export function HandlerInputChangePDFEditor(
 export const [canvasSignatureReplaced, setCanvasSignatureReplaced] =
   createSignal<HTMLCanvasElement>();
 
-export const [canvasSubstituted, setCanvasSubstituted] =
+export const [canvasSignatureSubstitute, setCanvasSignatureSubstitute] =
   createSignal<HTMLCanvasElement>();
 
 export function PDFEditor() {
@@ -132,27 +132,13 @@ export function PDFEditor() {
 
           // Create the second canvas
           const canvas2 = document.createElement("canvas");
-          setCanvasSubstituted(canvas2);
+          setCanvasSignatureSubstitute(canvas2);
           canvas2.style.position = "absolute";
           canvas2.style.bottom = "12%"; // 5% from the bottom
           canvas2.style.left = "55%"; // Positioned 55% from the left
           canvas2.style.width = "40%"; // 40% of parent width
           canvas2.style.height = "13%"; // 20% of parent height
           canvas2.style.border = "1px solid black";
-
-          // if (loadContract()) {
-          //   console.log("drawing signature");
-
-          //   const image = new Image();
-          //   image.src = loadContract()?.replacedSignatureDataUrl as string;
-
-          //   image.onload = async () => {
-          //     const ctx = canvas1.getContext("2d");
-          //     if (ctx) {
-          //       ctx.drawImage(image, 0, 0, canvas1.width, canvas1.height);
-          //     }
-          //   };
-          // }
 
           // Append the canvases to the parent container
           parentContainer.appendChild(canvas1);
@@ -179,18 +165,35 @@ export function PDFEditor() {
     }
   }
 
+  // Create SignaturePad instances and load signatures when the component mounts if loadContract is available
   createEffect(() => {
-    if (canvasSignatureReplaced()) {
-      const signaturePad = new SignaturePad(canvasSignatureReplaced()!, {
+    if (canvasSignatureReplaced() && canvasSignatureSubstitute()) {
+      const signaturePadConfig = {
         minWidth: 2,
         maxWidth: 4,
         penColor: "rgb(66, 133, 244)",
-      });
-      // Charger l'image
+      };
+      const replacedSignaturePad = new SignaturePad(
+        canvasSignatureReplaced()!,
+        signaturePadConfig
+      );
+
+      const substituteSignaturePad = new SignaturePad(
+        canvasSignatureSubstitute()!,
+        signaturePadConfig
+      );
 
       if (loadContract()) {
-        const signatureDataUrl = loadContract()!.replacedSignatureDataUrl;
-        signaturePad.fromDataURL(signatureDataUrl);
+        const replacedSignatureDataUrl =
+          loadContract()!.replacedSignatureDataUrl;
+
+        const substituteSignatureDataUrl =
+          loadContract()!.substituteSignatureDataUrl;
+
+        setTimeout(() => {
+          replacedSignaturePad.fromDataURL(replacedSignatureDataUrl);
+          substituteSignaturePad.fromDataURL(substituteSignatureDataUrl);
+        }, 100);
       }
     }
   });

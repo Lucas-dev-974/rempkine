@@ -36,4 +36,3 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-# Ajoutez d'autres étapes de déploiement si nécessaire, par exemple, un déploiement sur un serveur de production, des notifications, etc.

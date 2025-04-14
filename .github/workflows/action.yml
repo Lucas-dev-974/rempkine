@@ -33,9 +33,10 @@ jobs:
         run: ls -la ./dist/
 
       - name: Déploiement via FTP
-        uses: lukka/ftp-deploy-action@v1
+        uses: sebastianpopp/ftp-action@v1
         with:
           host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USER }}
+          user: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
+          remote-dir: ./

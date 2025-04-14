@@ -32,11 +32,10 @@ jobs:
       - name: Vérification des fichiers construits
         run: ls -la ./dist/
 
-      - name: Déploiement sur le serveur FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      - name: Déploiement via FTP
+        uses: lukka/ftp-deploy-action@v1
         with:
-          local-dir: ./dist/ # Assurez-vous que c'est le bon chemin pour vos fichiers construits
-          server: ${{ secrets.FTP_SERVER }}
+          host: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ./
+          local-dir: ./dist/

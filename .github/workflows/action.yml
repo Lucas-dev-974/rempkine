@@ -33,7 +33,7 @@ jobs:
         run: ls -la ./dist/
 
       - name: Déploiement via FTP
-        uses: sebastianpopp/ftp-action@v1
+        uses: sebastianpopp/ftp-action@v2
         with:
           host: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USER }}

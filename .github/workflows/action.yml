@@ -29,6 +29,9 @@ jobs:
       - name: Build de l'application
         run: npm run build
 
+      - name: Vérification des fichiers construits
+        run: ls -la ./dist/
+
       - name: Déploiement sur le serveur FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:

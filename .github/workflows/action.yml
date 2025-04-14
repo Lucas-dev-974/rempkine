@@ -29,12 +29,11 @@ jobs:
       - name: Build de l'application
         run: npm run build
 
-      - name: Vérification des secrets
-        run: echo "Vérification des secrets : FTP_SERVER est défini"
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+      # - name: Vérification des secrets
+      #   run: echo "Vérification des secrets : FTP_SERVER est défini"
+      #   env:
+      #     FTP_SERVER: ${{ secrets.FTP_SERVER }}
 
-          
       - name: Déploiement sur le serveur FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:

@@ -1,3 +1,6 @@
+Ajout des canvas singature et chargement des signature si loadContrat et définie
+
+
 -------- last note ----------
 utilisateur non connecté, save in db and makez it unavaiable. 
 share contract link 

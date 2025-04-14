@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout du code source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configuration Node.js
         uses: actions/setup-node@v3
@@ -33,7 +33,7 @@ jobs:
         run: ls -la ./dist/
 
       - name: Déploiement via FTP
-        uses: sebastianpopp/ftp-action@v2
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           host: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USER }}

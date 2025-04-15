@@ -2,7 +2,6 @@ import { PDFDocument, values } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../../models/contract.entity";
-import { contractService } from "../../../services/contract.service";
 import {
   canvasSignatureReplaced,
   canvasSignatureSubstitute,
@@ -10,7 +9,8 @@ import {
 } from "./PDFEditor";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "node_modules/pdfjs-dist/build/pdf.worker.mjs";
+  location.origin + "/assets/pdf.worker.mjs";
+("node_modules/pdfjs-dist/build/pdf.worker.mjs");
 
 export enum GenderEnum {
   male = "male",

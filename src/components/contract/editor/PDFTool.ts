@@ -10,7 +10,6 @@ import {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   location.origin + "/assets/pdf.worker.mjs";
-("node_modules/pdfjs-dist/build/pdf.worker.mjs");
 
 export enum GenderEnum {
   male = "male",

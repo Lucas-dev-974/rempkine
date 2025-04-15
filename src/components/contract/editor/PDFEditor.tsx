@@ -57,7 +57,7 @@ export function PDFEditor() {
 
   const PDFurl =
     import.meta.env.VITE_PDF_FILE_PATH ||
-    "http://" + location.host + "/assets/contrat.pdf";
+    "https://" + location.host + "/assets/contrat.pdf";
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
 
   async function saveContractInDB() {

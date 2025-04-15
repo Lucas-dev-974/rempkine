@@ -55,7 +55,9 @@ export function PDFEditor() {
   const [currentPage, setCurrentPage] = createSignal(1);
   const [numPages, setNumPages] = createSignal();
 
-  const PDFurl = import.meta.env.VITE_PDF_FILE_PATH;
+  const PDFurl =
+    import.meta.env.VITE_PDF_FILE_PATH ||
+    "http://" + location.host + "/contrat.pdf";
   const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
 
   async function saveContractInDB() {

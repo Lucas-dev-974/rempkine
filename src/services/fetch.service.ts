@@ -5,9 +5,7 @@ import storeService from "../utils/store.service";
 class Fetcher {
   host = "http://localhost:3001/api";
   token = storeService.proxy.token;
-  constructor() {
-    console.log(this.token);
-  }
+  constructor() {}
   setHost(host: string) {
     this.host = host;
   }

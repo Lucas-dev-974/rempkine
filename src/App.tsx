@@ -10,6 +10,8 @@ import { loggedIn } from "./const.data";
 
 export function App() {
   onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));
+  console.log("host:", import.meta.env.VITE_HOST);
+
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
 
   return (

@@ -6,11 +6,11 @@ import { loadContract, loggedIn } from "../../../const.data";
 import { PreviousIcon } from "../../../icons/PreviousIcon";
 import storeService from "../../../utils/store.service";
 import { NextIcon } from "../../../icons/NextIcon";
-import { Button } from "../../buttons/Button";
 import SignaturePad from "signature_pad";
 import { PDFTool } from "./PDFTool";
 
 import "./PDFEditor.css";
+import { Button } from "../../buttons/Button";
 
 export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
 const [fields, setFields] = createSignal<any[]>([]);
@@ -207,13 +207,13 @@ export function PDFEditor() {
           <Button
             onClick={() => pdfTool.downloadModifiedPdf(pdfFile() as File)}
             text="Télécharger le PDF modifié"
-            size="small"
+            size="xs"
           />
 
           <Button
             onClick={saveContractInDB}
             text="Sauvegarder le PDF modifié"
-            size="small"
+            size="xs"
           />
         </div>
         <div class="flex items-center">

@@ -7,13 +7,13 @@ import { LabeledSelect } from "../../../inputs/LabeledSelect";
 import { LabeledInput } from "../../../inputs/LabeledInput";
 import { UserEntity } from "../../../../models/user.entity";
 import storeService from "../../../../utils/store.service";
-import { Button } from "../../../buttons/Button";
 import {
   currentPDF,
   HandlerInputChangePDFEditor,
 } from "../../../contract/editor/PDFEditor";
 import { createSignal, Show } from "solid-js";
 import { loggedIn } from "../../../../const.data";
+import { Button } from "../../../buttons/Button";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -94,19 +94,19 @@ export function ContractInformationsFields(
           <Button
             text="Je ne suis pas sur le contrat"
             onClick={() => fillWithMyInformations("auhtor")}
-            size="small"
+            size="xs"
           />
 
           <Button
             text="Je suis remplacé"
             onClick={() => fillWithMyInformations("author,replaced")}
-            size="small"
+            size="xs"
           />
 
           <Button
             text="Je remplace un confrère"
             onClick={() => fillWithMyInformations("author,replaced")}
-            size="small"
+            size="xs"
           />
         </div>
       </Show>

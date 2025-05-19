@@ -8,7 +8,7 @@ export function FitFieldsWithUserData(props: {
       <Button
         text="Remplire avec mes informations"
         onClick={() => props.fillWithMyInformations()}
-        size="small"
+        size="xs"
       />
     </div>
   );

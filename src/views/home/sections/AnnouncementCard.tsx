@@ -1,10 +1,8 @@
-import { CalendarIcon } from "../../icons/CalendarIcon";
-import { HouseIcon } from "../../icons/HouseIcon";
-import { PeopleIcon } from "../../icons/PeopleIcon";
-import { PercentIcon } from "../../icons/PercentIcon";
-import { NotificationService } from "../../utils/notification.service";
-import storeService from "../../utils/store.service";
-import { Button } from "../../components/buttons/Button";
+import { CalendarIcon, HouseIcon, PercentIcon } from "lucide-solid";
+import { PeopleIcon } from "../../../icons/PeopleIcon";
+import { NotificationService } from "../../../utils/notification.service";
+import storeService from "../../../utils/store.service";
+import { Button } from "../../../components/buttons/Button";
 
 export interface AnnoucementCardProps {
   duration: {

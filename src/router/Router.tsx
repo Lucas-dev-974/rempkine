@@ -1,22 +1,30 @@
-import { Route, Router } from "@solidjs/router";
-import { Home } from "../views/home/Home";
 import { Contracts } from "../views/Contracts";
 import { Authentication } from "../views/auth/Authentication";
-import { For } from "solid-js";
+import { createSignal, For, Match, Switch } from "solid-js";
+import HomePage from "../views/home/HomePage";
 
-const routes = [
-  { path: "/", component: Home },
+export const routes = [
+  { path: "/", component: HomePage },
   { path: "/contracts", component: Contracts },
-  { path: "/register", component: Authentication },
-  { path: "/login", component: Authentication },
+  { path: "/auth", component: Authentication },
 ];
 
+// Dynamically infer the type of all possible paths
+type RoutePaths = (typeof routes)[number]["path"];
+
+export const [page, setPage] = createSignal<RoutePaths>("/");
+export function navigateTo(path: RoutePaths) {
+  setPage(path);
+  window.history.pushState({}, "", path);
+}
 export function RouteManager() {
   return (
-    <Router>
+    <Switch>
       <For each={routes}>
-        {(route) => <Route path={route.path} component={route.component} />}
+        {(route) => (
+          <Match when={route.path == page()} children={<route.component />} />
+        )}
       </For>
-    </Router>
+    </Switch>
   );
 }

@@ -1,27 +1,21 @@
-import { Notification } from "./components/notification/Notification";
 import { FetcherService } from "./services/fetch.service";
-import { FloatingMenu } from "./components/floating-menu/FloatingMenu";
 
 import { createEffect, on, onMount } from "solid-js";
-import { Navbar } from "./components/navbar/Navbar";
 import storeService from "./utils/store.service";
-import { RouteManager } from "./router/Router";
+import { RouteManager, setPage } from "./router/Router";
 import { loggedIn } from "./const.data";
+import Layout from "./components/layout/Layout";
 
 export function App() {
-  onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));
-  console.log("host:", import.meta.env.VITE_HOST);
+  onMount(() => {
+    FetcherService.setHost(import.meta.env.VITE_HOST);
 
+    window.addEventListener("popstate", () =>
+      setPage(window.location.pathname)
+    );
+  });
+  console.log("host:", import.meta.env.VITE_HOST);
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
 
-  return (
-    <main>
-      <Navbar />
-      <FloatingMenu />
-      <Notification />
-      <div class="w-full md:px-20 px-4 ">
-        <RouteManager />
-      </div>
-    </main>
-  );
+  return <Layout children={<RouteManager />} />;
 }

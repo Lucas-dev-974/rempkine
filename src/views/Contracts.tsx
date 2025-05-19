@@ -1,5 +1,5 @@
-import { Button } from "../components/buttons/Button";
 import { ContractList } from "../components/contract/contract-list/ContractList";
+import { Button } from "../components/buttons/Button";
 
 export function Contracts() {
   function createContract() {

@@ -19,9 +19,12 @@
     "vite-plugin-solid": "^2.8.2"
   },
   "dependencies": {
+    "@motionone/solid": "^10.16.4",
     "@solidjs/router": "^0.14.10",
     "dotenv": "^16.4.7",
     "jspdf": "^2.5.2",
+    "lucide-solid": "^0.507.0",
+    "motion": "^12.9.4",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.7.76",
     "quill": "^2.0.2",

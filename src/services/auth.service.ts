@@ -33,6 +33,13 @@ class AuthService {
     location.href = "/";
     return response;
   }
+
+  logout() {
+    setLoggedIn(false);
+    storeService.proxy.token = null;
+    storeService.proxy.user = null;
+    location.href = "/auth";
+  }
 }
 
 export const authService = new AuthService();

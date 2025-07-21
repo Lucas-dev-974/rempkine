@@ -1,3 +1,11 @@
 .title-1 {
-  @apply text-3xl md:text-5xl my-3 font-bold;
+  @apply text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl ;
+}
+
+.title-1.normal {
+  @apply text-neutral-900
+}
+
+.title-1.primary{
+  @apply text-primary-500
 }

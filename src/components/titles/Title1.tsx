@@ -1,9 +1,13 @@
+import { mergeProps } from "solid-js";
 import "./Title1.css";
 
 interface Title1Props {
   text: string;
+  color?: "primary" | "normal"
 }
 
 export function Title1(props: Title1Props) {
-  return <h1 class="title-1">{props.text}</h1>;
+  const mergedProps = mergeProps({ color: "normal" }, props)
+
+  return <h1 class={`title-1 ${mergedProps.color}`}>{props.text}</h1>;
 }

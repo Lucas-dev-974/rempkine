@@ -1,4 +1,3 @@
-import { Show } from "solid-js";
 import "./AccordionItem.css";
 
 type AccordionItemProps = {

@@ -1,16 +1,14 @@
 import { ContractEntity } from "../models/contract.entity";
-import { NotificationService } from "../utils/notification.service";
 import { FetcherService } from "./fetch.service";
 
 class ContractService {
-  async createContract(
-    contract: Partial<ContractEntity>
-  ): Promise<Partial<ContractEntity>> {
+  async createContract(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
     const response = await FetcherService.post("/contract", contract);
-    NotificationService.push({
-      content: "Contrat sauvegarder",
-      type: "info",
-    });
+    return response;
+  }
+
+  async upadte(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
+    const response = await FetcherService.patch("/contract", contract);
     return response;
   }
 
@@ -34,6 +32,10 @@ class ContractService {
       "/contract/signature?imageName=" + imgName
     );
     return response;
+  }
+
+  async delete(id: string): Promise<void> {
+    return await FetcherService.delete("/contract/" + id);
   }
 }
 export const contractService = new ContractService();

@@ -29,6 +29,8 @@ export function UserMenu(props: UserMenuProps) {
   }
 
   onMount(() => {
+    console.log(loggedIn());
+
     if (storeService.proxy.isLogin)
       document.addEventListener("click", handleClickOutside);
   });
@@ -44,6 +46,7 @@ export function UserMenu(props: UserMenuProps) {
         <ButtonIcon
           icons={<UserProfileIcon fill="white" />}
           onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
+          size="large"
         />
         <UserMenuDialog openDialog={isMenuDialogOpen()} />
       </div>

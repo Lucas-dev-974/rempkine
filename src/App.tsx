@@ -5,8 +5,8 @@ import { FloatingMenu } from "./components/floating-menu/FloatingMenu";
 import { createEffect, on, onMount } from "solid-js";
 import { Navbar } from "./components/navbar/Navbar";
 import storeService from "./utils/store.service";
-import { RouteManager } from "./router/Router";
 import { loggedIn } from "./const.data";
+import { Router } from "./router/router";
 
 export function App() {
   onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));
@@ -20,7 +20,7 @@ export function App() {
       <FloatingMenu />
       <Notification />
       <div class="w-full md:px-20 px-4 ">
-        <RouteManager />
+        <Router />
       </div>
     </main>
   );

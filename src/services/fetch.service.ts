@@ -6,7 +6,7 @@ class Fetcher {
   host = "http://localhost:3001/api";
   token = storeService.proxy.token;
 
-  constructor() {}
+  constructor() { }
   setHost(host: string) {
     this.host = host;
   }
@@ -33,10 +33,7 @@ class Fetcher {
   }
 
   async delete(url: string) {
-    const response = await this.fetcher(url, {
-      method: "DELETE",
-    });
-    return await response;
+    return await this.fetcher(url, { method: "DELETE" });
   }
 
   async fetcher(url: string, init?: RequestInit) {
@@ -48,16 +45,15 @@ class Fetcher {
       },
     });
 
-    const responseJson = await response.json();
-
+    const responseJson = await response.json() ?? "ok";
     const okStatusCode = [200, 201, 204];
+
     if (!okStatusCode.includes(response.status)) {
       // console.log("error ", responseJson);
       NotificationService.push({
         content: responseJson.error,
         type: "error",
       });
-
       throw new Error("RequestError");
     }
 

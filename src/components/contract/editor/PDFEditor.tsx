@@ -1,173 +1,254 @@
+import { createEffect, createSignal, onMount, onCleanup } from "solid-js";
 import { NotificationService } from "../../../utils/notification.service";
 import { contractService } from "../../../services/contract.service";
 import { ContractEntity } from "../../../models/contract.entity";
-import { createEffect, createSignal, onMount } from "solid-js";
-import { loadContract, loggedIn } from "../../../const.data";
-import { PreviousIcon } from "../../../icons/PreviousIcon";
 import storeService from "../../../utils/store.service";
-import { NextIcon } from "../../../icons/NextIcon";
-import { Button } from "../../buttons/Button";
+import { loadContract, loggedIn, setLoadContrat } from "../../../const.data";
+import { CTAPDFViewer } from "./CTAPDFViewer";
 import SignaturePad from "signature_pad";
-import { PDFTool } from "./PDFTool";
+import { PDFFields, PDFTool } from "./PDFTool";
+import { PDFCanvas } from "./PDFCanvas";
 
 import "./PDFEditor.css";
+import { setCanvasInputs } from "./PDFInputsOnCanvas";
 
-export const [currentPDF, setCurrentPDF] = createSignal<PDFTool>();
-const [fields, setFields] = createSignal<any[]>([]);
+/**
+ * Génère un identifiant unique basé sur timestamp et nombre aléatoire
+ * @returns string - Identifiant unique
+ */
+function createUniqueId(): string {
+  const timestamp = Date.now().toString(36);
+  const randomPart = Math.random().toString(36).substring(2, 8);
+  return `${timestamp}-${randomPart}`;
+}
 
-export function HandlerInputChangePDFEditor(
-  fieldID: string | string[],
-  value: string
-) {
+export const [canvasSignatureReplaced, setCanvasSignatureReplaced] = createSignal<HTMLCanvasElement>();
+export const [canvasSignatureSubstitute, setCanvasSignatureSubstitute] = createSignal<HTMLCanvasElement>();
+
+export const [currentPDFTool, setCurrentPDFTool] = createSignal<PDFTool>();
+
+
+/**
+ * Updates both the on-canvas PDF input overlays and the underlying PDFTool fields.
+ * - If `fieldID` is an array, updates each corresponding field.
+ * - Synchronizes Solid state (`canvasInputs`) and the PDF model (`PDFTool.handlerToUpdatePDFFields`).
+ *
+ * @param fieldID The PDF input id or a list of ids to update (string or string[])
+ * @param value The new value to set for the input(s)
+ */
+
+export function updateCanvasInput(id: string, value: string) {
+  setCanvasInputs(prev => {
+    if (!prev) return prev
+    prev = [...prev.map(input => {
+      if (input.id == id) {
+        input.value = value
+      }
+      return input
+    })]
+    return prev
+  })
+}
+
+export function HandlerToUpdateCanvasInputs(fieldID: string | string[], value: string, updateContractData: boolean = true) {
+
   if (Array.isArray(fieldID)) {
     fieldID.forEach((id) => {
-      setFields((prev) => {
-        if (!prev) return prev;
-        const field = prev.find((f) => f.id === id);
-        if (!field) return prev;
-        field.value = value;
-        return [...prev];
-      });
-
-      currentPDF()?.handleInputChange(id, value);
+      currentPDFTool()?.updateContractDataAndPDFFields(id, value, updateContractData)
+      updateCanvasInput(id, value)
     });
   } else {
-    setFields((prev) => {
-      if (!prev) return prev;
-      const field = prev.find((f) => f.id === fieldID);
-      if (!field) return prev;
-      field.value = value;
-      return [...prev];
-    });
-
-    currentPDF()?.handleInputChange(fieldID, value);
+    currentPDFTool()?.updateContractDataAndPDFFields(fieldID, value, updateContractData);
+    updateCanvasInput(fieldID, value)
   }
 }
 
-export const [canvasSignatureReplaced, setCanvasSignatureReplaced] =
-  createSignal<HTMLCanvasElement>();
-
-export const [canvasSignatureSubstitute, setCanvasSignatureSubstitute] =
-  createSignal<HTMLCanvasElement>();
-
 export function PDFEditor() {
-  const [pdfFile, setPdfFile] = createSignal();
+  const [pdfFile, setPdfFile] = createSignal<File>();
   const [currentPage, setCurrentPage] = createSignal(1);
   const [numPages, setNumPages] = createSignal();
 
-  const PDFurl =
-    import.meta.env.VITE_PDF_FILE_PATH ||
-    location.origin + "/assets/contrat.pdf";
-  const pdfTool = new PDFTool(PDFurl, "pdf-canvas");
+  // Todo: remove ?
+  const [PDFInputFieldsRef, setPDFInputFieldsRef] = createSignal<HTMLElement>()
 
-  async function saveContractInDB() {
-    const contractFromPDF = pdfTool.getContractData();
-    const contract = await contractService.createContract(contractFromPDF);
-    if (!pdfTool.isValidContract(contractFromPDF)) {
-      NotificationService.push({
-        content:
-          "Le contrat n'est pas valide, il a été sauvegardé vous pourrez le modifier plus tard.",
-        type: "error",
-      });
-    }
-    if (!loggedIn()) {
-      NotificationService.push({
-        content:
-          "Le contrat sera supprimmé dans 3 mois, connnectez-vous ou télécharger pour le garder.",
-        type: "error",
-      });
+  const [signaturePad1, setSignaturePad1] = createSignal<SignaturePad>()
+  const [signaturePad2, setSignaturePad2] = createSignal<SignaturePad>()
 
-      console.log(contract);
-      if (!storeService.proxy.contractIds) {
-        storeService.proxy.contractIds = [contract.id];
-      } else {
-        storeService.proxy.contractIds = [
-          ...storeService.proxy.contractIds,
-          contract.id,
-        ];
-      }
-    }
-  }
+  const PDFurl = import.meta.env.VITE_PDF_FILE_PATH || location.origin + "/assets/contrat.pdf";
 
   onMount(async () => {
-    await pdfTool.loadPdf();
-    if (loadContract()) {
-      pdfTool.setContractDataToPDFFields(loadContract() as ContractEntity);
-    }
+    const pdfTool = new PDFTool(PDFurl, "pdf-canvas")
+    await pdfTool.initialize();
 
-    setPdfFile(pdfTool.pdfFile);
-    setCurrentPage(pdfTool.currentPage);
-    setNumPages(pdfTool.numPages);
-    setCurrentPDF(pdfTool);
+    setCurrentPDFTool(pdfTool)
+    setPdfFile(currentPDFTool()!.pdfFile);
+    setCurrentPage(currentPDFTool()!.currentPage);
+    setNumPages(currentPDFTool()!.numPages);
   });
 
-  async function changePage(page: number) {
-    if (page === -1 && pdfTool.currentPage == 1) return 1;
-    if (page === +1 && pdfTool.currentPage == 6) return 6;
+  onCleanup(() => {
+    if (currentPDFTool()) currentPDFTool()?.resetContractData
+  })
 
-    await pdfTool.renderPage(pdfTool.currentPage + page);
-    const fieldsFromForm = pdfTool.getCurrentPageFieldsFromFormFields();
-    if (fieldsFromForm) {
-      setFields(fieldsFromForm);
+  async function saveContract() {
+    const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.contractData
+    console.log("contract from pdf", contractFromPDF);
+
+    //  * If Logged in then create or update contract
+    if (loggedIn()) {
+      if (!loadContract()) {
+        await contractService.createContract(contractFromPDF);
+        NotificationService.push({
+          content: "Contrat sauvegarder comme brouillon",
+          type: "info",
+        });
+      } else {
+        await contractService.upadte(contractFromPDF);
+        NotificationService.push({
+          content: "Contrat mis à jour",
+          type: "info",
+        });
+      }
+
+    } else {
+      if (!storeService.proxy.contracts) storeService.proxy.contracts = []
+
+      if (!loadContract()) {
+        storeService.proxy.contracts = [
+          ...storeService.proxy.contracts,
+          {
+            id: createUniqueId(),
+            logoutCreate: true,
+            ...contractFromPDF,
+          },
+        ];
+
+        setLoadContrat(contractFromPDF)
+
+        NotificationService.push({
+          content: "Contrat sauvegarder comme brouillon",
+          type: "info",
+        });
+
+      } else {
+        let contracts: Partial<ContractEntity>[] = storeService.proxy.contracts
+        storeService.proxy.contracts = contracts.map(contract => {
+          if (contract.id == contractFromPDF.id) {
+            contract = contractFromPDF
+          }
+          return contract
+        })
+
+        NotificationService.push({
+          content: "Contrat mis à jour",
+          type: "info",
+        });
+      }
     }
-    setCurrentPage(pdfTool.currentPage);
-    setNumPages(pdfTool.numPages);
 
-    // TODO: refactor
-    // Check if the current page is 6
-    if (pdfTool.currentPage === 6) {
-      const parentCanvas = document.getElementById("pdf-canvas");
+  }
 
-      if (parentCanvas) {
-        const parentContainer = parentCanvas.parentElement;
+  function updateCanvasInput() {
+    currentPDFTool()?.setContractDataToPDFInputsFields(currentPDFTool()?.contractData!)
+    const fields = currentPDFTool()?.PDFInputsFieldsMetadata?.filter(page => page.page == currentPage())[0].fields
 
-        if (parentContainer) {
-          // Create the first canvas
-          const canvas1 = document.createElement("canvas");
-          setCanvasSignatureReplaced(canvas1);
-          canvas1.style.position = "absolute";
-          canvas1.style.bottom = "12%"; // 5% from the bottom
-          canvas1.style.left = "5%"; // 5% from the left
-          canvas1.style.width = "40%"; // 40% of parent width
-          canvas1.style.height = "13%"; // 20% of parent height
-          canvas1.style.border = "1px solid black";
+    // ! necessary to update canvas inputs fields with the data contract
+    setCanvasInputs(prev => {
+      if (!prev) return prev
+      prev = [...fields as PDFFields[]]
+      return prev
+    })
+  }
 
-          // Create the second canvas
-          const canvas2 = document.createElement("canvas");
-          setCanvasSignatureSubstitute(canvas2);
-          canvas2.style.position = "absolute";
-          canvas2.style.bottom = "12%"; // 5% from the bottom
-          canvas2.style.left = "55%"; // Positioned 55% from the left
-          canvas2.style.width = "40%"; // 40% of parent width
-          canvas2.style.height = "13%"; // 20% of parent height
-          canvas2.style.border = "1px solid black";
+  function setUpOfCanvasDomProps() {
+    const parentCanvas = document.getElementById("pdf-canvas");
+    const parentContainer = parentCanvas!.parentElement;
 
-          // Append the canvases to the parent container
-          parentContainer.appendChild(canvas1);
-          parentContainer.appendChild(canvas2);
+    // Check if the current page is 6 and if canvas is not set then setup the canvas properties and they signals
+    if (currentPDFTool()!.currentPage === 6 && !signaturePad1()) {
+      if (parentCanvas && parentContainer) {
+        const setCanvasProperties = (canvas: HTMLCanvasElement, left55?: boolean) => {
+          canvas.style.position = "absolute";
+          canvas.style.bottom = "12%";
+          canvas.style.left = left55 ? "55%" : "5%";
+          canvas.style.width = "40%";
+          canvas.style.height = "13%";
+          canvas.style.border = "1px solid black";
+        }
 
-          // Adjust canvas resolution to match their displayed size
-          const adjustCanvasResolution = (canvas: HTMLCanvasElement) => {
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-          };
+        // Create the first canvas
+        const canvas1 = document.createElement("canvas");
+        setCanvasSignatureReplaced(canvas1);
+        setCanvasProperties(canvas1)
 
+        // Create the second canvas
+        const canvas2 = document.createElement("canvas");
+        setCanvasSignatureSubstitute(canvas2);
+        setCanvasProperties(canvas2, true)
+
+        // Append the canvases to the parent container
+        parentContainer.appendChild(canvas1);
+        parentContainer.appendChild(canvas2);
+
+        // Adjust canvas resolution to match their displayed size
+        const adjustCanvasResolution = (canvas: HTMLCanvasElement) => {
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        };
+
+        adjustCanvasResolution(canvas1);
+        adjustCanvasResolution(canvas2);
+
+        // TODO: review this is not working currently
+        // Add a resize observer to make the canvases responsive
+        const resizeObserver = new ResizeObserver(() => {
           adjustCanvasResolution(canvas1);
           adjustCanvasResolution(canvas2);
-          // Add a resize observer to make the canvases responsive
-          const resizeObserver = new ResizeObserver(() => {
-            adjustCanvasResolution(canvas1);
-            adjustCanvasResolution(canvas2);
-          });
+        });
 
-          resizeObserver.observe(parentContainer);
-        }
+        resizeObserver.observe(parentContainer);
+
       }
+    } else if (currentPDFTool()!.currentPage === 6 && signaturePad1()) {
+      const canvas1 = parentContainer?.childNodes[2] as HTMLElement;
+      const canvas2 = parentContainer?.childNodes[3] as HTMLElement;
+
+      if (canvas1) canvas1.style.setProperty("display", 'block')
+      if (canvas2) canvas2.style.setProperty("display", 'block')
     }
   }
 
-  // Create SignaturePad instances and load signatures when the component mounts if loadContract is available
+  function initSignaturPad() {
+    const parentCanvas = document.getElementById("pdf-canvas");
+    const parentContainer = parentCanvas!.parentElement;
+
+    // If signaturePads is defined then  get they node and hide them
+    if (signaturePad1() || signaturePad2()) {
+      const canvas1 = parentContainer?.childNodes[2] as HTMLElement;
+      const canvas2 = parentContainer?.childNodes[3] as HTMLElement;
+
+      if (canvas1) canvas1.style.setProperty("display", 'none')
+      if (canvas2) canvas2.style.setProperty("display", 'none')
+    }
+
+    setUpOfCanvasDomProps()
+  }
+
+  async function pagination(page: number) {
+    if (page === -1 && currentPDFTool()!.currentPage == 1) return 1;
+    if (page === +1 && currentPDFTool()!.currentPage == 6) return 6;
+
+    await currentPDFTool()!.renderPage(currentPDFTool()!.currentPage + page);
+
+    setCurrentPage(currentPDFTool()!.currentPage);
+    setNumPages(currentPDFTool()!.numPages);
+
+    updateCanvasInput()
+    initSignaturPad()
+  }
+
+  // Create SignaturePad instances and load signatures when the component is mounted & if loadContract is available
   createEffect(() => {
     if (canvasSignatureReplaced() && canvasSignatureSubstitute()) {
       const signaturePadConfig = {
@@ -175,88 +256,27 @@ export function PDFEditor() {
         maxWidth: 4,
         penColor: "rgb(66, 133, 244)",
       };
-      const replacedSignaturePad = new SignaturePad(
-        canvasSignatureReplaced()!,
-        signaturePadConfig
-      );
 
-      const substituteSignaturePad = new SignaturePad(
-        canvasSignatureSubstitute()!,
-        signaturePadConfig
-      );
+      setSignaturePad1(new SignaturePad(canvasSignatureReplaced()!, signaturePadConfig))
+      setSignaturePad2(new SignaturePad(canvasSignatureSubstitute()!, signaturePadConfig))
 
       if (loadContract()) {
-        const replacedSignatureDataUrl =
-          loadContract()!.replacedSignatureDataUrl;
-
-        const substituteSignatureDataUrl =
-          loadContract()!.substituteSignatureDataUrl;
+        const replacedSignatureDataUrl = loadContract()!.replacedSignatureDataUrl;
+        const substituteSignatureDataUrl = loadContract()!.substituteSignatureDataUrl;
 
         setTimeout(() => {
-          replacedSignaturePad.fromDataURL(replacedSignatureDataUrl);
-          substituteSignaturePad.fromDataURL(substituteSignatureDataUrl);
+          signaturePad1()?.fromDataURL(replacedSignatureDataUrl!);
+          signaturePad2()?.fromDataURL(substituteSignatureDataUrl!);
         }, 100);
       }
     }
   });
 
+
   return (
-    <div>
-      <div class="flex gap-2 my-4 justify-between">
-        <div class="flex gap-2">
-          <Button
-            onClick={() => pdfTool.downloadModifiedPdf(pdfFile() as File)}
-            text="Télécharger le PDF modifié"
-            size="small"
-          />
-
-          <Button
-            onClick={saveContractInDB}
-            text="Sauvegarder le PDF modifié"
-            size="small"
-          />
-        </div>
-        <div class="flex items-center">
-          <button
-            class="h-2 w-2 rounded-full flex items-center"
-            onClick={() => changePage(-1)}
-          >
-            <PreviousIcon />
-          </button>
-          <p class="mx-4 text-sm">
-            {currentPage()} sur {numPages() as number}
-          </p>
-          <button
-            class="h-2 w-2 rounded-full flex items-center"
-            onClick={() => changePage(+1)}
-          >
-            <NextIcon />
-          </button>
-        </div>
-      </div>
-
-      <div style="position: relative;">
-        <canvas
-          id="pdf-canvas"
-          class=" border border-gray-400 rounded-lg"
-        ></canvas>
-
-        {fields().map((field) => (
-          <input
-            class="pdf-input"
-            type="text"
-            value={field.value}
-            onInput={(e) => pdfTool.handleInputChange(field.id, e.target.value)}
-            style={{
-              position: "absolute",
-              left: `${field.left}px`,
-              top: `${field.top}px`,
-              width: `${field.width}px`,
-              height: `${field.height}px`,
-            }}
-          />
-        ))}
-      </div>
+    <div class="mx-auto flex flex-col gap-3 w-[90%]">
+      <CTAPDFViewer changePage={pagination} currentPage={currentPage} numPages={numPages} pdfFile={pdfFile} pdfTool={currentPDFTool()!} saveContractInDB={saveContract} />
+      <PDFCanvas setPDFInputFieldsRef={setPDFInputFieldsRef} />
     </div>
   );
 }

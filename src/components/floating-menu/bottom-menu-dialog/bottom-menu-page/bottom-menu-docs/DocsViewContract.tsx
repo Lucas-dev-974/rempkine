@@ -14,9 +14,8 @@ export function DocsViewContract() {
 
   onMount(async () => {
     if (!loggedIn()) {
-      setContracts(
-        await contractService.listFromIDS(storeService.proxy.contractIds)
-      );
+      const contracts = storeService.proxy.contracts ?? []
+      setContracts(contracts);
     } else {
       setContracts(await contractService.list());
     }
@@ -27,12 +26,20 @@ export function DocsViewContract() {
     openDialogTool();
   }
 
-  async function InputSearchInputHandler(
-    e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }
-  ) {
+  async function InputSearchInputHandler(e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }) {
     const result = await contractService.search(e.target.value);
     setContracts(result);
   }
+
+  async function deleteContract(contract: ContractEntity) {
+    if (loggedIn()) {
+      await contractService.delete(contract.id);
+      setContracts(contracts().filter((c) => c.id !== contract.id));
+    } else {
+      storeService.proxy.contracts = storeService.proxy.contracts.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
+    }
+  }
+
   return (
     <div class="mt-5 overflow-auto max-h-[60vh]">
       <div class="w-full my-2">
@@ -54,11 +61,7 @@ export function DocsViewContract() {
 
         <tbody>
           {contracts().map((contract, index) => (
-            <tr
-              class={`${
-                index % 2 === 0 ? "bg-gray-100" : "bg-white"
-              } hover:bg-blue-100 transition-colors`}
-            >
+            <tr class={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors`} >
               <td class="px-4 py-2 border-b">{contract.replacedName}</td>
               <td class="px-4 py-2 border-b text-center">
                 {contract.substituteName}
@@ -68,7 +71,7 @@ export function DocsViewContract() {
                   <ButtonIcon
                     size="large"
                     icons={<LinkIcon />}
-                    onClick={() => {}}
+                    onClick={() => { }}
                   />
                   <ButtonIcon
                     size="medium"
@@ -78,7 +81,7 @@ export function DocsViewContract() {
                   <ButtonIcon
                     size="medium"
                     icons={<TrashIcon />}
-                    onClick={() => {}}
+                    onClick={() => deleteContract(contract)}
                   />
                 </div>
               </td>

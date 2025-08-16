@@ -1,24 +1,24 @@
 import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type ContractEntity = {
-  id: number;
+  id: string;
   authorEmail: string;
   authorName: string;
-  authorStatut: AuthorsEnum;
+
   startDate: string;
   endDate: string;
   percentReturnToSubstitute: number;
-  percentReturnToSubstituteBeforeDate: Date;
+  percentReturnToSubstituteBeforeDate: string;
   nonInstallationRadius: number;
   conciliationCDOMK: string;
   doneAtLocation: string;
-  doneAtDate: Date;
+  doneAtDate: string;
 
   // -- ReplacedFields
   replacedGender: GenderEnum;
   replacedEmail: string;
   replacedName: string;
-  replacedBirthday: Date;
+  replacedBirthday: string;
   replacedBirthdayLocation: string;
   replacedOrderDepartement: string;
   replacedOrderDepartmentNumber: number;
@@ -28,11 +28,14 @@ export type ContractEntity = {
   substituteGender: GenderEnum;
   substituteEmail: string;
   substituteName: string;
-  substituteBirthday: Date;
+  substituteBirthday: string;
   substituteBirthdayLocation: string;
   substituteOrderDepartement: string;
   substituteOrderDepartmentNumber: number;
+  substituteAdress: string
 
   replacedSignatureDataUrl: string;
   substituteSignatureDataUrl: string;
+
+  logoutCreate?: boolean
 };

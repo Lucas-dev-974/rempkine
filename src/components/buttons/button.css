@@ -1,11 +1,26 @@
+.xs-button {
+  @apply !text-xs  !px-4   !py-2;
+}
+
 .small-button {
   @apply !text-sm  !px-3 !py-1;
 }
 
 .default-button {
-  @apply text-base bg-blue-base px-4 py-2 rounded-full hover:bg-blue-light cursor-pointer text-white duration-700 hover:shadow-lg;
+  @apply text-base bg-blue-base px-4 py-2 rounded-lg       hover:bg-blue-light cursor-pointer text-white duration-700 hover:shadow-lg;
 }
 
 .large-button {
   @apply !text-lg  !px-5 !py-3;
+}
+
+.responsive-button {
+  @apply !text-xs !px-3 !py-1;
+  @apply md:!text-sm md:!px-4 md:!py-2;
+  @apply 2xl:text-base 2xl:px-4 2xl:py-2;     
+  @apply xl:!text-lg xl:!px-5 xl:!py-3;
+}
+
+.full-mobile-button{
+  @apply w-full md:w-auto
 }

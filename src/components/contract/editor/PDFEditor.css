@@ -4,11 +4,15 @@
 }
 
 .pdf-input{
-    @apply border-none inset-0 overflow-visible text-sm
+    @apply border-none inset-0 overflow-visible 
 }
 
 .pdf-input:focus,
 .pdf-input:active {
     @apply border-none;
     outline: none;
+}
+
+.signature-canvas-hidden {
+    display: none !important;
 }

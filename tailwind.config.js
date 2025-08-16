@@ -10,6 +10,12 @@ module.exports = {
         "blue-base": "#019fc5",
         "blue-light": "#00b8e5",
         "red-base": "#DD2A2A",
+
+        // ----------------
+
+        "green-primary": "#619e90",
+        "green-dark": "#153C33",
+        "green-light": "#e6efed"
       },
     },
   },

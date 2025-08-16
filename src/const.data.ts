@@ -7,4 +7,4 @@ export const [loggedIn, setLoggedIn] = createSignal<boolean>(
 );
 
 // * Contract Signal
-export const [loadContract, setLoadContrat] = createSignal<ContractEntity>();
+export const [loadContract, setLoadContrat] = createSignal<Partial<ContractEntity>>();

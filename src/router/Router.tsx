@@ -1,22 +1,35 @@
-import { Route, Router } from "@solidjs/router";
+import { createSignal, createEffect, on, Switch, Match } from "solid-js";
+import { RouterUtils } from "./router.utils";
 import { Home } from "../views/home/Home";
-import { Contracts } from "../views/Contracts";
 import { Authentication } from "../views/auth/Authentication";
-import { For } from "solid-js";
 
-const routes = [
-  { path: "/", component: Home },
-  { path: "/contracts", component: Contracts },
-  { path: "/register", component: Authentication },
-  { path: "/login", component: Authentication },
-];
+export enum PagesEnum {
+    home = "/",
+    login = "/login",
+    register = "/register",
+}
 
-export function RouteManager() {
-  return (
-    <Router>
-      <For each={routes}>
-        {(route) => <Route path={route.path} component={route.component} />}
-      </For>
-    </Router>
-  );
+export const [onPage, setPage] = createSignal<PagesEnum>(PagesEnum.home)
+export const publicPages: PagesEnum[] = [PagesEnum.home, PagesEnum.login, PagesEnum.register]
+
+export function Router() {
+    createEffect(() => RouterUtils.initRouter());
+
+    createEffect(on(onPage, async (page) => {
+        RouterUtils.checkPublicPage(page)
+        RouterUtils.updateUrl(page);
+    }));
+
+    const cleanParams = (onPage: PagesEnum) => {
+        return onPage.toString().split("?")[0]
+    }
+
+    return <Switch>
+        <Match when={cleanParams(onPage()) == PagesEnum.home}>
+            <Home />
+        </Match>
+        <Match when={cleanParams(onPage()) == PagesEnum.login || cleanParams(onPage()) == PagesEnum.register}>
+            <Authentication />
+        </Match>
+    </Switch>
 }

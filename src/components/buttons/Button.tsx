@@ -1,10 +1,12 @@
+import { JSXElement } from "solid-js";
 import "./button.css";
 
 interface ButtonProps {
   text: string;
+  icon?: JSXElement;
   onClick: () => void;
   class?: string;
-  size?: "small" | "medium" | "large";
+  size?: "xs" | "small" | "medium" | "large" | "responsive" | "full-mobile";
 }
 
 export function Button(props: ButtonProps) {
@@ -13,7 +15,8 @@ export function Button(props: ButtonProps) {
       class={(props.size ? props.size + "-button  " : "") + "default-button "}
       onClick={props.onClick}
     >
-      {props.text}
+
+      {props.icon ? props.icon : props.text}
     </button>
   );
 }

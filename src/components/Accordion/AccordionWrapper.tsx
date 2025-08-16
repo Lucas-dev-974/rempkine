@@ -27,13 +27,13 @@ export function AccordionWrapper(
 
   // Initialisation des items
   onMount(() => {
-    const initialItems = props.children(() => {}, []);
+    const initialItems = props.children(() => { }, []);
     setItems(
       Array.isArray(initialItems)
         ? initialItems.map((_, index) => ({
-            id: index + 1,
-            isOpen: false,
-          }))
+          id: index + 1,
+          isOpen: false,
+        }))
         : []
     );
   });
@@ -42,12 +42,12 @@ export function AccordionWrapper(
     setItems((prevItems) => {
       return props.multiple
         ? prevItems.map((item) =>
-            item.id === id ? { ...item, isOpen: !item.isOpen } : item
-          )
+          item.id === id ? { ...item, isOpen: !item.isOpen } : item
+        )
         : prevItems.map((item) => ({
-            ...item,
-            isOpen: item.id === id ? !item.isOpen : false,
-          }));
+          ...item,
+          isOpen: item.id === id ? !item.isOpen : false,
+        }));
     });
   }
 

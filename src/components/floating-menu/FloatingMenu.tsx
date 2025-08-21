@@ -1,6 +1,6 @@
 import { FloatingMenuItems } from "./bottom-menu-dialog/FloatingMenuItems";
 import { BottomMenuDialog } from "./bottom-menu-dialog/BottomMenuDialog";
-import { onPage, PagesEnum } from "../../router/router.types";
+import { onPage, PagesEnum } from "../../router/RouterTypes";
 import { Show } from "solid-js";
 
 import "./FloatingMenu.css";

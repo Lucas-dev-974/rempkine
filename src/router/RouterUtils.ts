@@ -1,6 +1,6 @@
 
 import { createSignal } from "solid-js";
-import { onPage, PagesEnum, publicPages, setPage } from "./router.types";
+import { onPage, PagesEnum, publicPages, setPage } from "./RouterTypes";
 import { loggedIn } from "../const.data";
 
 export const [urlParams, setUrlParams] = createSignal(new URLSearchParams(window.location.search))

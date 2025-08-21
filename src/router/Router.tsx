@@ -1,8 +1,8 @@
 import { createEffect, on, Switch, Match } from "solid-js";
-import { RouterUtils } from "./router.utils";
+import { RouterUtils } from "./RouterUtils";
 import { Home } from "../views/home/Home";
 import { Authentication } from "../views/auth/Authentication";
-import { onPage, PagesEnum } from "./router.types";
+import { onPage, PagesEnum } from "./RouterTypes";
 
 export function Router() {
     createEffect(() => RouterUtils.initRouter());

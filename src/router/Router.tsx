@@ -1,16 +1,8 @@
-import { createSignal, createEffect, on, Switch, Match } from "solid-js";
+import { createEffect, on, Switch, Match } from "solid-js";
 import { RouterUtils } from "./router.utils";
 import { Home } from "../views/home/Home";
 import { Authentication } from "../views/auth/Authentication";
-
-export enum PagesEnum {
-    home = "/",
-    login = "/login",
-    register = "/register",
-}
-
-export const [onPage, setPage] = createSignal<PagesEnum>(PagesEnum.home)
-export const publicPages: PagesEnum[] = [PagesEnum.home, PagesEnum.login, PagesEnum.register]
+import { onPage, PagesEnum } from "./router.types";
 
 export function Router() {
     createEffect(() => RouterUtils.initRouter());

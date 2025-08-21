@@ -1,25 +1,28 @@
-import { currentPDFTool } from "./PDFEditor"
 import { createSignal, onMount, Setter, onCleanup } from "solid-js"
-import { PDFFields } from "./PDFTool";
 import { loadContract } from "../../../const.data";
+import { currentPDFTool } from "./PDFEditor"
+import { PDFFields } from "./PDFTool";
+import { formatDate } from "../../dialog/EditContractDialog/AccordionFields/ContractInformationsFields";
 
 export const [canvasInputs, setCanvasInputs] = createSignal<PDFFields[]>([]);
 
 export function PDFInputsOnCanvas(props: { setPDFInputFieldsRef: Setter<HTMLElement | undefined> }) {
-    onMount(() => {
-        if (loadContract() && currentPDFTool()) {
-
-        }
-    })
-
     onCleanup(() => setCanvasInputs([]))
 
+    function parseDisplayData(fields: PDFFields): string {
+        const dateFields = ["96R", "102R", "122R", "123R", "131R", "138R"]
+        if (dateFields.includes(fields.id)) {
+            const dateFormat = formatDate(fields.value)
+            return dateFormat
+        }
+        return fields.value ?? ""
+    }
     return <div ref={props.setPDFInputFieldsRef} class="text-sm  md:text-sm lg:text-md ">
         {canvasInputs().map((field) => (
             <input
                 class="pdf-input"
                 type="text"
-                value={field.value ?? ""}
+                value={parseDisplayData(field)}
                 onInput={(e) => currentPDFTool()!.updateContractDataAndPDFFields(field.id, e.target.value)}
                 style={{
                     position: "absolute",

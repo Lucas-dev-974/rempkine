@@ -1,7 +1,7 @@
 import { Show } from "solid-js";
 import "./navbar.css";
 import { UserMenu } from "./user-menu/UserMenu";
-import { onPage, PagesEnum } from "../../router/Router";
+import { onPage, PagesEnum } from "../../router/RouterTypes";
 
 export function Navbar() {
   return (

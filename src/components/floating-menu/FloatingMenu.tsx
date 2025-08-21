@@ -1,9 +1,9 @@
 import { FloatingMenuItems } from "./bottom-menu-dialog/FloatingMenuItems";
 import { BottomMenuDialog } from "./bottom-menu-dialog/BottomMenuDialog";
+import { onPage, PagesEnum } from "../../router/router.types";
+import { Show } from "solid-js";
 
 import "./FloatingMenu.css";
-import { Show } from "solid-js";
-import { onPage, PagesEnum } from "../../router/router";
 
 export function FloatingMenu() {
   return (

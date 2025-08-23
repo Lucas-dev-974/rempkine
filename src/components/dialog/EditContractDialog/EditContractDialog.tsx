@@ -13,7 +13,7 @@ export function EditContractDialog() {
       title={loadContract() ? "Mettre à jour  un contrat" : "Edité un nouveau contrat"}
     >
       <div class="lg:w-[80vw] w-full flex flex-wrap max-h-[80vh]">
-        <div class=" lg:w-[60%] w-full px-5 overflow-y-auto max-h-[80vh] my-3">
+        <div class="lg:w-[60%] w-full px-5 overflow-y-auto max-h-[80vh] my-3">
           <Show when={currentPDFTool() instanceof PDFTool}>
             <AccordionInputsForm />
           </Show>

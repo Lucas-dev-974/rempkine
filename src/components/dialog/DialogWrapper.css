@@ -7,9 +7,9 @@
 }
 
 .dialog-header {
-  @apply  text-white text-lg p-3  font-bold lg:text-2xl items-center flex justify-between bg-green-primary;
+  @apply  text-white text-lg p-3  font-bold lg:text-2xl items-center flex justify-between bg-primary;
 }
 
 .close-button {
-  @apply  bg-none border-none text-3xl cursor-pointer text-red-300  ;
+  @apply  bg-none border-none text-3xl cursor-pointer text-red-300;
 }

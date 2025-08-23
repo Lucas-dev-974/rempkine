@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
+import { LabeledInput } from "../../components/inputs/LabeledInput";
 
 export function LoginCard() {
   // Créez un signal pour gérer l'état du formulaire
@@ -33,7 +34,7 @@ export function LoginCard() {
       }
     }
 
-    setFormData(data); // Mettez à jour l'état si nécessaire
+    setFormData(data); // Mettez à jour l'état si nécessaire          
     await authService.login(
       formData() as Pick<UserEntity, "email" | "password">
     );
@@ -43,49 +44,25 @@ export function LoginCard() {
     <form
       ref={setFormRef}
       onSubmit={handleSubmit}
-      class="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg space-y-6 my-5"
+      class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/3"
     >
-      <h2 class="text-2xl font-bold text-gray-700">Formulaire de connexion</h2>
+      <h2 class="text-2xl font-bold  bg-primary p-3  rounded-t-md  text-white ">Formulaire de connexion</h2>
 
-      <div class="grid grid-cols-1  gap-6">
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-        </div>
+      <div class="flex flex-col gap-2 p-6">
+        <LabeledInput label="email" type="mail" onInput={() => { }} id="email" />
+        <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" />
 
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            Mot de passe
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            required
-          />
-          <a href="#" class="text-xs">
-            Mot de passe oublié ?
-          </a>
+
+        <div class="flex justify-end">
+          <button
+            type="submit"
+            class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          >
+            Se connecter
+          </button>
         </div>
       </div>
 
-      <div class="flex justify-end">
-        <button
-          type="submit"
-          class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-        >
-          Se connecter
-        </button>
-      </div>
     </form>
   );
 }

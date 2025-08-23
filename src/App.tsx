@@ -5,12 +5,13 @@ import { FloatingMenu } from "./components/floating-menu/FloatingMenu";
 import { createEffect, on, onMount } from "solid-js";
 import { Navbar } from "./components/navbar/Navbar";
 import storeService from "./utils/store.service";
-import { Router } from "./router/Router";
 import { loggedIn } from "./const.data";
+import { Router } from "./router/Router";
 
 export function App() {
-  onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST));
-  console.log("host:", import.meta.env.VITE_HOST);
+  const host = location.protocol + "//api." + location.host + "/api "
+  onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST ?? host));
+  console.log("host:", import.meta.env.VITE_HOST, host);
 
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
 

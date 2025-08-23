@@ -8,8 +8,7 @@ class Fetcher {
 
   constructor() {
     const host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api "
-    console.log(this.host);
-
+    console.log("fetcher host", this.host);
   }
 
   async get(url: string) {

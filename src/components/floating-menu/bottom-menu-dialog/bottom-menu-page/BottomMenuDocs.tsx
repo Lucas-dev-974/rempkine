@@ -6,23 +6,17 @@ enum DocsViewsEnum {
   clientFiles = "fiches clients",
 }
 
-const [currentDocsView, setCurrentDocsView] = createSignal<DocsViewsEnum>(
-  DocsViewsEnum.contract
-);
-const chageCurrentDocsView = (view: DocsViewsEnum) => setCurrentDocsView(view);
-
-const docsViewsItems = [
-  {
-    title: "contrats",
-    action: () => chageCurrentDocsView(DocsViewsEnum.contract),
-  },
-  {
-    title: "fiches clients",
-    action: () => chageCurrentDocsView(DocsViewsEnum.clientFiles),
-  },
-];
-
 export function BottomMenuDocs() {
+  const [currentDocsView, setCurrentDocsView] = createSignal<DocsViewsEnum>(DocsViewsEnum.contract);
+  const changeCurrentDocsView = (view: DocsViewsEnum) => setCurrentDocsView(view);
+
+  const docsViewsItems = [
+    {
+      title: "contrats",
+      action: () => changeCurrentDocsView(DocsViewsEnum.contract),
+    },
+  ];
+
   return (
     <div class="py-5 xl:mx-40">
       <p class="text-3xl font-semibold py-2">Mes documents</p>

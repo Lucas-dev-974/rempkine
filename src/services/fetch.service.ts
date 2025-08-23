@@ -6,9 +6,10 @@ class Fetcher {
   host = "http://localhost:3001/api";
   token = storeService.proxy.token;
 
-  constructor() { }
-  setHost(host: string) {
-    this.host = host;
+  constructor() {
+    const host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api "
+    console.log(this.host);
+
   }
 
   async get(url: string) {
@@ -37,6 +38,8 @@ class Fetcher {
   }
 
   async fetcher(url: string, init?: RequestInit) {
+
+
     const response = await fetch(this.host + url, {
       ...init,
       headers: {

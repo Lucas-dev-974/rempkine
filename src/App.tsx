@@ -9,10 +9,6 @@ import { loggedIn } from "./const.data";
 import { Router } from "./router/Router";
 
 export function App() {
-  const host = location.protocol + "//api." + location.host + "/api "
-  onMount(() => FetcherService.setHost(import.meta.env.VITE_HOST ?? host));
-  console.log("host:", import.meta.env.VITE_HOST, host);
-
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
 
   return (

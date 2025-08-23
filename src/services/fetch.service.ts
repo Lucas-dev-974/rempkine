@@ -1,13 +1,11 @@
-import { error } from "pdf-lib";
 import { NotificationService } from "../utils/notification.service";
 import storeService from "../utils/store.service";
 
 class Fetcher {
-  host = "http://localhost:3001/api";
+  host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api "
   token = storeService.proxy.token;
 
   constructor() {
-    const host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api "
     console.log("fetcher host", this.host);
   }
 

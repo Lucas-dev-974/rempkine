@@ -2,7 +2,7 @@ import { NotificationService } from "../utils/notification.service";
 import storeService from "../utils/store.service";
 
 class Fetcher {
-  host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api "
+  host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api"
   token = storeService.proxy.token;
 
   constructor() {

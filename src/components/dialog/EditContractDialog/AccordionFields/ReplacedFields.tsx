@@ -11,7 +11,7 @@ import storeService from "../../../../utils/store.service";
 import { createSignal, Show, onMount } from "solid-js";
 import { formatDateForInput } from "./FormFields";
 
-interface AccordionFieldsProps {
+export interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: AccordionItemType[] | (() => AccordionItemType[]);
 }
@@ -166,7 +166,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       />
       <LabeledInput
         id="department-number-order"
-        label="Numéro"
+        label="Numéro d'ordre"
         type="text"
         onInput={(e) => {
           HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", e.target.value);

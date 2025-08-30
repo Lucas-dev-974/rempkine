@@ -2,8 +2,8 @@ import { PDFDocument, values } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../../models/contract.entity";
-import { canvasSignatureReplaced, canvasSignatureSubstitute } from "./PDFEditor";
 import { loadContract } from "../../../const.data";
+import { canvasSignature, canvasSignatureReplaced, canvasSignatureSubstitute } from "../../dialog/EditContractDialog/AccordionFields/Singatures";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
 
@@ -50,12 +50,15 @@ export class PDFTool {
   url: string | undefined;
   isRendering: boolean = false;
 
+
   public pdfFile: File | undefined;
   public numPages: number | undefined;
   public currentPage: number = 1;
 
   public PDFInputsFieldsMetadata: PDFFieldsOfPages[];
   public contractData: Partial<ContractEntity>;
+
+  private canvasElement?: HTMLCanvasElement
 
   constructor(url: string, canvasID: string) {
     this.PDFInputsFieldsMetadata = []
@@ -64,7 +67,7 @@ export class PDFTool {
     this.url = url;
   }
 
-  async initialize() {
+  async initialize(render = true) {
     await this.loadPdf();
 
     if (loadContract()) {
@@ -259,8 +262,6 @@ export class PDFTool {
   }
 
   isValidContract(contract: Partial<ContractEntity>) {
-    if (!contract.authorEmail) return false;
-    if (!contract.authorName) return false;
     if (!contract.startDate) return false;
     if (!contract.endDate) return false;
     if (!contract.percentReturnToSubstitute) return false;
@@ -293,14 +294,11 @@ export class PDFTool {
     const pdfUint8Array = new Uint8Array(arrayBuffer);
 
     this.pdfBlob = new Blob([pdfUint8Array], { type: "application/pdf" });
-    this.pdfFile = new File([this.pdfBlob], "document.pdf", {
-      type: "application/pdf",
-    });
+    this.pdfFile = new File([this.pdfBlob], "document.pdf", { type: "application/pdf" });
 
     this.pdfDoc = await pdfjsLib.getDocument(pdfUint8Array).promise;
     this.numPages = this.pdfDoc.numPages;
 
-    this.renderPage(1);
     await this.getPagesFields();
   }
 
@@ -313,31 +311,32 @@ export class PDFTool {
     for (let i = 0; i != pages; i++) {
       const page = await this.pdfDoc!.getPage(i + 1);
       const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
-      const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
-      const scale = canvasDisplayWidth / pdfWidth;
+      if (dimensions) {
+        const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
+        const scale = canvasDisplayWidth / pdfWidth;
+        const viewport = page.getViewport({ scale });
+        const annotations = await page.getAnnotations();
 
-      const viewport = page.getViewport({ scale });
 
-      const annotations = await page.getAnnotations();
+        const fields = annotations
+          .filter((annotation) => annotation.subtype === "Widget")
+          .map((annotation) => ({
+            id: annotation.id as string,
+            type: annotation.fieldType as string,
+            name: annotation.fieldName as string,
+            value: annotation.fieldValue || ("" as string),
+            rect: annotation.rect,
+            width: ((annotation.rect[2] - annotation.rect[0]) * scale) as number,
+            height: ((annotation.rect[3] - annotation.rect[1]) * scale) as number,
+            top: (viewport.height - annotation.rect[3] * scale) as number,
+            left: (annotation.rect[0] * scale) as number,
+          }));
 
-      const fields = annotations
-        .filter((annotation) => annotation.subtype === "Widget")
-        .map((annotation) => ({
-          id: annotation.id as string,
-          type: annotation.fieldType as string,
-          name: annotation.fieldName as string,
-          value: annotation.fieldValue || ("" as string),
-          rect: annotation.rect,
-          width: ((annotation.rect[2] - annotation.rect[0]) * scale) as number,
-          height: ((annotation.rect[3] - annotation.rect[1]) * scale) as number,
-          top: (viewport.height - annotation.rect[3] * scale) as number,
-          left: (annotation.rect[0] * scale) as number,
-        }));
-
-      formFields.push({ page: i + 1, fields: fields });
+        formFields.push({ page: i + 1, fields: fields });
+      }
     }
 
-    this.PDFInputsFieldsMetadata = formFields;
+    this.PDFInputsFieldsMetadata = [...this.PDFInputsFieldsMetadata, ...formFields];
   }
 
   async getDimensions(pdfDoc: any, canvasId: any) {
@@ -350,66 +349,57 @@ export class PDFTool {
 
     // Récupère les dimensions du canvas en affichage (style CSS appliqué)
     const canvas = document.getElementById(canvasId);
-    const canvasDisplayWidth = canvas!.clientWidth;
-    const canvasDisplayHeight = canvas!.clientHeight;
+    if (canvas) {
+      const canvasDisplayWidth = canvas!.clientWidth;
+      const canvasDisplayHeight = canvas!.clientHeight;
+      const data = {
+        pdfWidth,
+        pdfHeight,
+        canvasDisplayWidth,
+        canvasDisplayHeight,
+      }
 
-    return {
-      pdfWidth,
-      pdfHeight,
-      canvasDisplayWidth,
-      canvasDisplayHeight,
-    };
+      return data
+    }
+    return null
   }
 
-  async renderPage(pageNum: number) {
+  async renderPage(pageNum: number, canvasElement?: HTMLCanvasElement) {
+
     if (this.isRendering) return;
     this.isRendering = true;
 
+    if (!this.canvasElement && canvasElement) {
+      this.canvasElement = canvasElement
+    }
+
+    if (!this.canvasElement && !canvasElement) {
+      throw new Error("Impossible de traité le rendue")
+    }
+
     const page = await this.pdfDoc!.getPage(pageNum);
-    const canvas = document.getElementById(this.canvasID) as HTMLCanvasElement;
-    const context = canvas.getContext("2d");
-
-    // const scale = getOptimalScale(892.8, 380);
+    const context = this.canvasElement!.getContext("2d");
     const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
-    const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
-    const scale = (canvasDisplayWidth / pdfWidth) * 2;
 
-    const viewport = page.getViewport({ scale });
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    if (dimensions) {
+      const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
+      const scale = (canvasDisplayWidth / pdfWidth) * 2;
 
-    const renderContext = {
-      canvasContext: context,
-      viewport: viewport,
-    };
+      const viewport = page.getViewport({ scale });
+      if (this.canvasElement) {
+        this.canvasElement.height = viewport.height;
+        this.canvasElement.width = viewport.width;
+      }
 
-    await page.render(renderContext as RenderParameters).promise;
-    this.isRendering = false;
-    this.currentPage = pageNum;
+      const renderContext = {
+        canvasContext: context,
+        viewport: viewport,
+      };
 
-    // Récupérer les annotations (champs de formulaire)
-    const annotations = await page.getAnnotations();
-    const fields = annotations
-      .filter((annotation) => annotation.subtype === "Widget")
-      .map((annotation) => ({
-        id: annotation.id,
-        type: annotation.fieldType,
-        name: annotation.fieldName,
-        value: annotation.fieldValue || "",
-        rect: annotation.rect,
-        width: (annotation.rect[2] - annotation.rect[0]) * scale,
-        height: (annotation.rect[3] - annotation.rect[1]) * scale,
-
-        top: viewport.height - annotation.rect[3] * scale,
-        left: annotation.rect[0] * scale,
-      }));
-
-    const formFields_ = this.PDFInputsFieldsMetadata
-      ? this.PDFInputsFieldsMetadata.filter((form) => form.page == page.pageNumber)[0]
-      : null;
-
-    // if (formFields_) this.fields = formFields_?.fields;
-    // else this.fields = fields;
+      await page.render(renderContext as RenderParameters).promise;
+      this.isRendering = false;
+      this.currentPage = pageNum;
+    }
   }
 
   getCurrentPageFieldsFromFormFields() {
@@ -417,15 +407,12 @@ export class PDFTool {
   }
 
   updateContractDataAndPDFFields(fieldId: any, newValue: any, updateContractData: boolean = true) {
-    // * update this.contractData then emit 
     const key = this.getContractFieldNameFromInputPDFID(fieldId);
     if (updateContractData && key) {
       this.contractData = { ...this.contractData, [key]: newValue } as Partial<ContractEntity>;
-      // console.log("update contract: ", fieldId, key, newValue, updateContractData);
     }
 
-    // console.log("update fields");
-    this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata?.map((page) => {
+    this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => {
       return {
         ...page, fields: page.fields.map((field) => {
           if (field.id === fieldId) {
@@ -435,8 +422,6 @@ export class PDFTool {
         }),
       };
     });
-
-    this.renderPage(this.currentPage);
   }
 
   async downloadModifiedPdf(pdfFile: File) {
@@ -449,11 +434,10 @@ export class PDFTool {
       // Récupérer la page où les canvases doivent être ajoutés (par exemple, page 6)
       const page = pdfDoc_.getPage(5); // Les pages sont indexées à partir de 0
 
-      if (canvasSignatureReplaced() && canvasSignatureSubstitute()) {
+      if (canvasSignature()) {
         // Convertir les canvases en images
         const canvas1Image = canvasSignatureReplaced()!.toDataURL("image/png");
-        const canvas2Image =
-          canvasSignatureSubstitute()!.toDataURL("image/png");
+        const canvas2Image = canvasSignatureSubstitute()!.toDataURL("image/png");
 
         // Intégrer les images dans le PDF
         const canvas1ImageBytes = await fetch(canvas1Image).then((res) =>
@@ -576,8 +560,6 @@ export class PDFTool {
   resetContractData() {
     this.contractData = {
       id: "",
-      authorEmail: "",
-      authorName: "",
       conciliationCDOMK: "",
       doneAtDate: "",
       doneAtLocation: "",

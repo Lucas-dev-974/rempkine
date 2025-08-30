@@ -11,6 +11,7 @@ interface DialogWrapperProps {
   btnText: string;
   title: string;
   onClose?: () => void
+  dialogClass?: string
 }
 
 // ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
@@ -30,7 +31,7 @@ export function DialogWrapper(props: DialogWrapperProps) {
       <Button text={props.btnText} onClick={openDialogTool} />
       <Show when={isOpen()} fallback={null}>
         <div class="dialog-overlay" onClick={closeDialogTool}>
-          <div class="dialog" onClick={(e) => e.stopPropagation()}>
+          <div onClick={(e) => e.stopPropagation()} class={(props.dialogClass ?? "") + " dialog"}>
             <div class="dialog-header">
               <h3 class="text-xl font-bold">{props.title}</h3>
               <button class="close-button" onClick={closeDialogTool}>

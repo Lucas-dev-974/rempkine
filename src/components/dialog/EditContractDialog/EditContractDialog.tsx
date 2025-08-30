@@ -11,17 +11,14 @@ export function EditContractDialog() {
     <DialogWrapper
       btnText="Tester l'outil d'édition de contrat"
       title={loadContract() ? "Mettre à jour  un contrat" : "Edité un nouveau contrat"}
+      dialogClass="w-[90vw]"
     >
-      <div class="lg:w-[80vw] w-full flex flex-wrap max-h-[80vh]">
-        <div class="lg:w-[60%] w-full px-5 overflow-y-auto max-h-[80vh] my-3">
-          <Show when={currentPDFTool() instanceof PDFTool}>
-            <AccordionInputsForm />
-          </Show>
-        </div>
+      <div class="p-3 max-h-[70vh]">
+        <Show when={currentPDFTool() instanceof PDFTool}>
+          <AccordionInputsForm />
+        </Show>
 
-        <div class="lg:w-[40%] w-full flex justify-center items-center">
-          <PDFEditor />
-        </div>
+        <PDFEditor />
       </div>
     </DialogWrapper>
   );

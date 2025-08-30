@@ -2,8 +2,8 @@ import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
 
 export type ContractEntity = {
   id: string;
-  authorEmail: string;
-  authorName: string;
+  // authorEmail: string;
+  // authorName: string;
 
   startDate: string;
   endDate: string;

@@ -13,7 +13,7 @@ export function AccordionItem(props: AccordionItemProps & { children?: any }) {
       <div class="accordion-header" onClick={() => props.toggle(props.id)}>
         <p>{props.title}</p>
       </div>
-      {props.isOpen && <div class="accordion-content">{props.children}</div>}
+      {props.isOpen && <div class="accordion-content ">{props.children}</div>}
     </div>
   );
 }

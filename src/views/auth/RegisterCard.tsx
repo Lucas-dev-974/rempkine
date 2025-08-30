@@ -3,6 +3,7 @@ import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
 import { LabeledSelect } from "../../components/inputs/LabeledSelect";
+import { TitleForm } from "../../components/titles/TitleForm";
 
 export function RegisterCard() {
   // Créez un signal pour gérer l'état du formulaire
@@ -40,13 +41,8 @@ export function RegisterCard() {
   }
 
   return (
-    <form
-      ref={setFormRef}
-      onSubmit={handleSubmit}
-      class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/3"
-    >
-      <h2 class="text-2xl font-bold  bg-primary p-3  rounded-t-md  text-white ">Je rejoin la platform</h2>
-
+    <form ref={setFormRef} onSubmit={handleSubmit} class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/4" >
+      <TitleForm title="Je rejoin la platform" />
       <div class="flex flex-col gap-2  p-6">
         <LabeledInput
           label="Nom et Prénom"

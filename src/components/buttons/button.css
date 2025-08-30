@@ -7,7 +7,7 @@
 }
 
 .default-button {
-  @apply text-base bg-blue-base px-4 py-2 rounded-lg       hover:bg-blue-light cursor-pointer text-white duration-700 hover:shadow-lg;
+  @apply text-base bg-primary hover:bg-primaryHover  px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg;
 }
 
 .large-button {

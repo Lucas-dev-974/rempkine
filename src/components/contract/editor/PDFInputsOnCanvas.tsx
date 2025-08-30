@@ -6,7 +6,7 @@ import { formatDate } from "../../dialog/EditContractDialog/AccordionFields/Cont
 
 export const [canvasInputs, setCanvasInputs] = createSignal<PDFFields[]>([]);
 
-export function PDFInputsOnCanvas(props: { setPDFInputFieldsRef: Setter<HTMLElement | undefined> }) {
+export function PDFInputsOnCanvas() {
     onCleanup(() => setCanvasInputs([]))
 
     function parseDisplayData(fields: PDFFields): string {
@@ -17,10 +17,11 @@ export function PDFInputsOnCanvas(props: { setPDFInputFieldsRef: Setter<HTMLElem
         }
         return fields.value ?? ""
     }
-    return <div ref={props.setPDFInputFieldsRef} class="text-sm  md:text-sm lg:text-md ">
+
+    return <div class="text-sm  md:text-sm lg:text-md ">
         {canvasInputs().map((field) => (
             <input
-                class="pdf-input"
+                class={"pdf-input"}
                 type="text"
                 value={parseDisplayData(field)}
                 onInput={(e) => currentPDFTool()!.updateContractDataAndPDFFields(field.id, e.target.value)}

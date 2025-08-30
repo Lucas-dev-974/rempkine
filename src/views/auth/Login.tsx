@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
+import { TitleForm } from "../../components/titles/TitleForm";
 
 export function LoginCard() {
   // Créez un signal pour gérer l'état du formulaire
@@ -41,23 +42,14 @@ export function LoginCard() {
   };
 
   return (
-    <form
-      ref={setFormRef}
-      onSubmit={handleSubmit}
-      class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/3"
-    >
-      <h2 class="text-2xl font-bold  bg-primary p-3  rounded-t-md  text-white ">Formulaire de connexion</h2>
+    <form ref={setFormRef} onSubmit={handleSubmit} class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/4 " >
+      <TitleForm title="Je me connecte" />
 
       <div class="flex flex-col gap-2 p-6">
         <LabeledInput label="email" type="mail" onInput={() => { }} id="email" />
         <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" />
-
-
         <div class="flex justify-end">
-          <button
-            type="submit"
-            class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
+          <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" >
             Se connecter
           </button>
         </div>

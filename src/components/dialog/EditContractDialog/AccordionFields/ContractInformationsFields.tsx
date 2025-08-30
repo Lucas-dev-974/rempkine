@@ -31,8 +31,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   const [nonInstallationRadius, setNonInstallationRadius] = createSignal<number>();
   const [conciliationCDOMK, setConciliationCDOMK] = createSignal<string>();
   const [doneAtLocation, setDoneAtLocation] = createSignal<string>();
-  const [authorEmail, setAuthorEmail] = createSignal<string>();
-  const [authorName, setAuthorName] = createSignal<string>();
   const [startDate, setStartDate] = createSignal<string>();
   const [endDate, setEndDate] = createSignal<string>();
   const [doneAt, setDoneAt] = createSignal<string>();
@@ -42,15 +40,11 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
     // setFieldUpdatedEvent(!fieldUpdatedEvent());
     const userDatas: UserEntity = storeService.data.user;
 
-    setAuthorEmail(userDatas.email);
-    setAuthorName(userDatas.fullname);
 
     setCurrentPDFTool((prev) => {
       if (!prev) return prev
       prev.contractData = {
         ...prev.contractData,
-        authorName: userDatas.fullname,
-        authorEmail: userDatas.email,
       }
       return prev
     })
@@ -73,8 +67,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       setNonInstallationRadius(loadContract()!.nonInstallationRadius)
       setConciliationCDOMK(loadContract()!.conciliationCDOMK)
       setDoneAtLocation(loadContract()!.doneAtLocation)
-      setAuthorEmail(loadContract()!.authorEmail)
-      setAuthorName(loadContract()!.authorName)
 
       setPercentReturnToSubstituteBeforeDate(formatDateForInput(loadContract()!.percentReturnToSubstituteBeforeDate))
       setStartDate(formatDateForInput(loadContract()!.startDate))
@@ -115,43 +107,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       </Show>
 
 
-      <LabeledInput
-        id="author-email"
-        label="Email de l'auteur du contrat"
-        type="text"
-        onInput={(e) => {
-          setCurrentPDFTool(prev => {
-            if (!prev) return prev
-            prev.contractData = {
-              ...prev.contractData,
-              authorEmail: e.target.value
-            }
-            return prev
-          })
-          setAuthorEmail(e.target.value);
-          setFieldUpdatedEvent(!fieldUpdatedEvent());
-        }}
-        value={authorEmail()}
-      />
-
-      <LabeledInput
-        id="author-name"
-        label="Nom de l'auteur du contrat"
-        type="text"
-        onInput={(e) => {
-          setCurrentPDFTool(prev => {
-            if (!prev) return prev
-            prev.contractData = {
-              ...prev.contractData,
-              authorName: e.target.value
-            }
-            return prev
-          })
-          setAuthorName(e.target.value);
-          setFieldUpdatedEvent(!fieldUpdatedEvent());
-        }}
-        value={authorName()}
-      />
 
       <LabeledInput
         id="start-date"
@@ -220,7 +175,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       />
       <LabeledInput
         id="conciliationCDOMK "
-        label="conciliation C.D.O.M.K"
+        label="Département de l'ordre concerné si conciliation"
         type="text"
         onInput={(e) => {
           HandlerToUpdateCanvasInputs(

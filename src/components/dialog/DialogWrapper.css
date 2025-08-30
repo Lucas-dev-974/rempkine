@@ -3,7 +3,7 @@
 }
 
 .dialog {
-  @apply bg-green-light rounded-lg relative overflow-auto z-50 max-w-[98vw];
+  @apply bg-slate-200 rounded-lg relative overflow-auto z-50 max-w-[98vw];
 }
 
 .dialog-header {

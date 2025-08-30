@@ -3,6 +3,7 @@ import { ContractInformationsFields } from "./ContractInformationsFields";
 import { SubstituteFields } from "./SubstituteFields";
 import { ReplacedFields } from "./ReplacedFields";
 import { createSignal } from "solid-js";
+import { Signatures } from "./Singatures";
 
 export const [toggleItemEvent, setToggleItemEvent] = createSignal(false);
 
@@ -20,6 +21,7 @@ export function AccordionInputsForm() {
           <ContractInformationsFields items={items} toggleItem={toggleItem} />
           <ReplacedFields items={items} toggleItem={toggleItem} />
           <SubstituteFields items={items} toggleItem={toggleItem} />
+          <Signatures items={items} toggleItem={toggleItem} />
         </>
       )}
     </AccordionWrapper>

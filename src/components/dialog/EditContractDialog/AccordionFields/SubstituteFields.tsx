@@ -154,7 +154,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
       />
       <LabeledInput
         id="department-number-order"
-        label="Numéro"
+        label="Numéro d'ordre"
         type="number"
         onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", e.target.value)}
         value={orderDepartmentNumber()}

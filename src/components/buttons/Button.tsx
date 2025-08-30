@@ -12,7 +12,7 @@ interface ButtonProps {
 export function Button(props: ButtonProps) {
   return (
     <button
-      class={(props.size ? props.size + "-button  " : "") + "default-button "}
+      class={(props.size ? props.size + "-button  " : "") + "default-button " + (props.class ?? " ")}
       onClick={props.onClick}
     >
 

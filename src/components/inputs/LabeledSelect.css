@@ -1,5 +1,5 @@
 .labeled-select {
-  @apply grid grid-cols-1 my-5;
+  @apply grid grid-cols-1 ;
 }
 
 .labeled-select > select {

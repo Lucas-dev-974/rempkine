@@ -9,12 +9,12 @@ import { contractService } from "../../../services/contract.service";
 import { NotificationService } from "../../../utils/notification.service";
 import storeService from "../../../utils/store.service";
 import { PDFViewerPrevisualisationDialog } from "../../dialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
+import { useSignatureManager } from "../../dialog/EditContractDialog/AccordionFields";
 
 
 export function CTAPDFViewer() {
     async function saveContractInDB() {
         const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.contractData
-        console.log("contract from pdf", contractFromPDF);
 
         //  * If Logged in then create or update contract
         if (loggedIn()) {
@@ -67,12 +67,15 @@ export function CTAPDFViewer() {
                 });
             }
         }
+    }
 
+    function downloadPDF() {
+        currentPDFTool()!.downloadModifiedPdfWithStoredSignatures(currentPDFTool()!.pdfFile as File)
     }
 
     return <div class="flex justify-end gap-2 my-2">
         <Button
-            onClick={() => currentPDFTool()!.downloadModifiedPdf(currentPDFTool()!.pdfFile as File)}
+            onClick={downloadPDF}
             text="Télécharger le PDF modifié"
             size="xs"
             icon={<VsFilePdf size={19} />}

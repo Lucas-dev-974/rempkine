@@ -3,7 +3,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../../models/contract.entity";
 import { loadContract } from "../../../const.data";
-import { canvasSignature, canvasSignatureReplaced, canvasSignatureSubstitute } from "../../dialog/EditContractDialog/AccordionFields/Singatures";
+import { Accessor } from "solid-js";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
 
@@ -424,49 +424,65 @@ export class PDFTool {
     });
   }
 
-  async downloadModifiedPdf(pdfFile: File) {
+  async downloadModifiedPdf(pdfFile: File, signatures: Accessor<{ replaced?: string; substitute?: string } | undefined>) {
     const reader = new FileReader();
     reader.onload = async () => {
       const pdfData = new Uint8Array(reader.result as ArrayBufferLike);
 
       const pdfDoc_ = await PDFDocument.load(pdfData);
 
-      // Récupérer la page où les canvases doivent être ajoutés (par exemple, page 6)
-      const page = pdfDoc_.getPage(5); // Les pages sont indexées à partir de 0
+      // Récupérer la dernière page du PDF (page 6)
+      const lastPageIndex = pdfDoc_.getPageCount() - 1;
+      const page = pdfDoc_.getPage(lastPageIndex);
 
-      if (canvasSignature()) {
-        // Convertir les canvases en images
-        const canvas1Image = canvasSignatureReplaced()!.toDataURL("image/png");
-        const canvas2Image = canvasSignatureSubstitute()!.toDataURL("image/png");
+      const signatureData = signatures();
+      const replacedSignatureDataUrl = signatureData?.replaced;
+      const substituteSignatureDataUrl = signatureData?.substitute;
 
-        // Intégrer les images dans le PDF
-        const canvas1ImageBytes = await fetch(canvas1Image).then((res) =>
-          res.arrayBuffer()
-        );
-        const canvas2ImageBytes = await fetch(canvas2Image).then((res) =>
-          res.arrayBuffer()
-        );
+      console.log("Signatures DataURL récupérées:", {
+        replaced: replacedSignatureDataUrl ? "disponible" : "non disponible",
+        substitute: substituteSignatureDataUrl ? "disponible" : "non disponible"
+      });
 
-        const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
-        const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
+      if (replacedSignatureDataUrl && substituteSignatureDataUrl) {
+        try {
+          // Intégrer les images dans le PDF directement depuis les DataURL
+          const canvas1ImageBytes = await fetch(replacedSignatureDataUrl).then((res) =>
+            res.arrayBuffer()
+          );
+          const canvas2ImageBytes = await fetch(substituteSignatureDataUrl).then((res) =>
+            res.arrayBuffer()
+          );
 
-        // Obtenir les dimensions de la page
-        const { width, height } = page.getSize();
+          const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+          const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
 
-        // Dessiner les images sur la page
-        page.drawImage(canvas1ImageEmbed, {
-          x: width * 0.05, // 5% du côté gauche
-          y: height * 0.12, // 15% du bas
-          width: width * 0.4, // 40% de la largeur de la page
-          height: height * 0.2, // 20% de la hauteur de la page
-        });
+          // Obtenir les dimensions de la page
+          const { width, height } = page.getSize();
 
-        page.drawImage(canvas2ImageEmbed, {
-          x: width * 0.55, // 55% du côté gauche
-          y: height * 0.12, // 15% du bas
-          width: width * 0.4, // 40% de la largeur de la page
-          height: height * 0.2, // 20% de la hauteur de la page
-        });
+          console.log("Dimensions de la page:", { width, height });
+
+          // Dessiner les images sur la page avec des dimensions ajustées
+          page.drawImage(canvas1ImageEmbed, {
+            x: width * 0.05, // 5% du côté gauche
+            y: height * 0.15, // 15% du bas
+            width: width * 0.35, // 35% de la largeur de la page
+            height: height * 0.15, // 15% de la hauteur de la page
+          });
+
+          page.drawImage(canvas2ImageEmbed, {
+            x: width * 0.6, // 60% du côté gauche
+            y: height * 0.15, // 15% du bas
+            width: width * 0.35, // 35% de la largeur de la page
+            height: height * 0.15, // 15% de la hauteur de la page
+          });
+
+          console.log("Signatures ajoutées au PDF depuis les DataURL");
+        } catch (error) {
+          console.error("Erreur lors de l'ajout des signatures:", error);
+        }
+      } else {
+        console.warn("Signatures DataURL non disponibles:", { replacedSignatureDataUrl, substituteSignatureDataUrl });
       }
 
       // Récupère et met à jour les champs de formulaire
@@ -586,5 +602,146 @@ export class PDFTool {
       substituteOrderDepartement: "",
       substituteOrderDepartmentNumber: 0
     }
+  }
+
+  updateSignaturesInContract(
+    signatures: Accessor<{ replaced?: string; substitute?: string } | undefined>
+  ) {
+    const signatureData = signatures();
+
+    console.log("Mise à jour des signatures dans le contrat:", {
+      hasReplaced: !!signatureData?.replaced,
+      hasSubstitute: !!signatureData?.substitute,
+      replacedLength: signatureData?.replaced?.length || 0,
+      substituteLength: signatureData?.substitute?.length || 0
+    });
+
+    if (signatureData?.replaced) {
+      this.contractData.replacedSignatureDataUrl = signatureData.replaced;
+      console.log("Signature remplacé mise à jour:", signatureData.replaced.substring(0, 50) + "...");
+    }
+
+    if (signatureData?.substitute) {
+      this.contractData.substituteSignatureDataUrl = signatureData.substitute;
+      console.log("Signature remplaçant mise à jour:", signatureData.substitute.substring(0, 50) + "...");
+    }
+
+    // Vérification après mise à jour
+    console.log("État du contrat après mise à jour:", {
+      replacedInContract: !!this.contractData.replacedSignatureDataUrl,
+      substituteInContract: !!this.contractData.substituteSignatureDataUrl,
+      replacedContractLength: this.contractData.replacedSignatureDataUrl?.length || 0,
+      substituteContractLength: this.contractData.substituteSignatureDataUrl?.length || 0
+    });
+  }
+
+  // Méthode de débogage pour vérifier l'état des signatures
+  debugSignatures() {
+    console.log("=== DÉBOGAGE DES SIGNATURES ===");
+    console.log("Signatures dans contractData:", {
+      replaced: this.contractData.replacedSignatureDataUrl ? "disponible" : "non disponible",
+      substitute: this.contractData.substituteSignatureDataUrl ? "disponible" : "non disponible",
+      replacedLength: this.contractData.replacedSignatureDataUrl?.length || 0,
+      substituteLength: this.contractData.substituteSignatureDataUrl?.length || 0
+    });
+
+    if (this.contractData.replacedSignatureDataUrl) {
+      console.log("Signature remplacé (début):", this.contractData.replacedSignatureDataUrl.substring(0, 100) + "...");
+    }
+
+    if (this.contractData.substituteSignatureDataUrl) {
+      console.log("Signature remplaçant (début):", this.contractData.substituteSignatureDataUrl.substring(0, 100) + "...");
+    }
+    console.log("=== FIN DÉBOGAGE ===");
+  }
+
+  // Méthode alternative qui utilise les signatures stockées dans contractData
+  async downloadModifiedPdfWithStoredSignatures(pdfFile: File) {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const pdfData = new Uint8Array(reader.result as ArrayBufferLike);
+      const pdfDoc_ = await PDFDocument.load(pdfData);
+
+      // Récupérer la dernière page du PDF
+      const lastPageIndex = pdfDoc_.getPageCount() - 1;
+      const page = pdfDoc_.getPage(lastPageIndex);
+
+      console.log("Page cible pour les signatures:", { lastPageIndex, totalPages: pdfDoc_.getPageCount() });
+
+      // Déboguer l'état des signatures avant utilisation
+      // this.debugSignatures();
+
+      // Utiliser les signatures stockées dans contractData
+      const replacedSignatureUrl = this.contractData.replacedSignatureDataUrl;
+      const substituteSignatureUrl = this.contractData.substituteSignatureDataUrl;
+
+      console.log("Signatures stockées dans contractData:", {
+        replaced: replacedSignatureUrl ? "disponible" : "non disponible",
+        substitute: substituteSignatureUrl ? "disponible" : "non disponible",
+        replacedLength: replacedSignatureUrl?.length || 0,
+        substituteLength: substituteSignatureUrl?.length || 0
+      });
+
+      // Vérifier si les signatures sont valides (commencent par "data:image")
+      const isReplacedValid = replacedSignatureUrl && replacedSignatureUrl.startsWith("data:image");
+      const isSubstituteValid = substituteSignatureUrl && substituteSignatureUrl.startsWith("data:image");
+
+      console.log("Validation des signatures:", {
+        isReplacedValid,
+        isSubstituteValid
+      });
+
+      const { width, height } = page.getSize();
+
+      if (isReplacedValid) {
+        const canvas1ImageBytes = await fetch(replacedSignatureUrl).then((res) => res.arrayBuffer());
+        const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+
+        // Dessiner les images sur la page avec des positions ajustées
+        page.drawImage(canvas1ImageEmbed, {
+          x: width * 0.05, // 5% du côté gauche
+          y: height * 0.10, // 5% du bas (plus haut que 0.15)
+          width: width * 0.35, // 35% de la largeur de la page
+          height: height * 0.15, // 15% de la hauteur de la page
+        });
+
+      }
+      if (isSubstituteValid) {
+        const canvas2ImageBytes = await fetch(substituteSignatureUrl).then((res) => res.arrayBuffer());
+        const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
+
+        page.drawImage(canvas2ImageEmbed, {
+          x: width * 0.6, // 60% du côté gauche
+          y: height * 0.10, // 5% du bas (plus haut que 0.15)
+          width: width * 0.35, // 35% de la largeur de la page
+          height: height * 0.15, // 15% de la hauteur de la page
+        });
+      }
+
+      // Mettre à jour les champs de formulaire
+      const form = pdfDoc_.getForm();
+      this.PDFInputsFieldsMetadata!.forEach((page) => {
+        page.fields.forEach((field) => {
+          const pdfField = form.getTextField(field.name);
+          if (pdfField) {
+            pdfField.setText(field.value);
+          }
+        });
+      });
+
+      // Générer et télécharger le PDF
+      const modifiedPdfBytes = await pdfDoc_.save();
+      const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = "modified.pdf";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    };
+
+    reader.readAsArrayBuffer(pdfFile as File);
   }
 }

@@ -3,7 +3,6 @@ import { currentPage, currentPDFTool, numPages, setCurrentPage, setNumPages, sig
 import { canvasInputs, PDFInputsOnCanvas, setCanvasInputs } from "./PDFInputsOnCanvas";
 import { PDFPagination } from "../PDFPagination";
 import { PDFFields } from "./PDFTool";
-import { setCanvasSignature } from "../../dialog/EditContractDialog/AccordionFields/Singatures";
 
 export function PDFCanvas() {
     onMount(() => {
@@ -65,12 +64,10 @@ export function PDFCanvas() {
 
                 // Create the first canvas
                 const canvas1 = document.createElement("canvas");
-                // setCanvasSignature(canvas1);
                 setCanvasProperties(canvas1)
 
                 // Create the second canvas
                 const canvas2 = document.createElement("canvas");
-                // setCanvasSignatureSubstitute(canvas2);
                 setCanvasProperties(canvas2, true)
 
                 // Append the canvases to the parent container

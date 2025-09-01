@@ -58,8 +58,6 @@ export class PDFTool {
   public PDFInputsFieldsMetadata: PDFFieldsOfPages[];
   public contractData: Partial<ContractEntity>;
 
-  private canvasElement?: HTMLCanvasElement
-
   constructor(url: string, canvasID: string) {
     this.PDFInputsFieldsMetadata = []
     this.contractData = {};
@@ -364,21 +362,18 @@ export class PDFTool {
     return null
   }
 
-  async renderPage(pageNum: number, canvasElement?: HTMLCanvasElement) {
-
+  async renderPage(pageNum: number, canvasElement: HTMLCanvasElement) {
     if (this.isRendering) return;
     this.isRendering = true;
 
-    if (!this.canvasElement && canvasElement) {
-      this.canvasElement = canvasElement
-    }
 
-    if (!this.canvasElement && !canvasElement) {
-      throw new Error("Impossible de traité le rendue")
-    }
+    // if (!canvasElement) {
+
+    //   throw new Error("Impossible de traité le rendue")
+    // }
 
     const page = await this.pdfDoc!.getPage(pageNum);
-    const context = this.canvasElement!.getContext("2d");
+    const context = canvasElement!.getContext("2d");
     const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
 
     if (dimensions) {
@@ -386,9 +381,9 @@ export class PDFTool {
       const scale = (canvasDisplayWidth / pdfWidth) * 2;
 
       const viewport = page.getViewport({ scale });
-      if (this.canvasElement) {
-        this.canvasElement.height = viewport.height;
-        this.canvasElement.width = viewport.width;
+      if (canvasElement) {
+        canvasElement.height = viewport.height;
+        canvasElement.width = viewport.width;
       }
 
       const renderContext = {
@@ -397,8 +392,8 @@ export class PDFTool {
       };
 
       await page.render(renderContext as RenderParameters).promise;
-      this.isRendering = false;
       this.currentPage = pageNum;
+      this.isRendering = false;
     }
   }
 
@@ -686,10 +681,7 @@ export class PDFTool {
       const isReplacedValid = replacedSignatureUrl && replacedSignatureUrl.startsWith("data:image");
       const isSubstituteValid = substituteSignatureUrl && substituteSignatureUrl.startsWith("data:image");
 
-      console.log("Validation des signatures:", {
-        isReplacedValid,
-        isSubstituteValid
-      });
+
 
       const { width, height } = page.getSize();
 

@@ -9,18 +9,16 @@ export function PDFCanvas() {
         const canvas = document.getElementById("pdf-canvas") as HTMLCanvasElement
         currentPDFTool()!.getPagesFields()
         currentPDFTool()!.renderPage(1, canvas)
-
     })
 
     async function pagination(page: number) {
-        if (page === -1 && currentPDFTool()!.currentPage == 1) return 1;
+        const canvas = document.getElementById("pdf-canvas") as HTMLCanvasElement
+
         if (page === +1 && currentPDFTool()!.currentPage == 6) return 6;
+        if (page === -1 && currentPDFTool()!.currentPage == 1) return 1;
 
-        console.log("ok 1");
-        const canvas: HTMLCanvasElement = document.getElementById("pdf-canvas") as HTMLCanvasElement
-        console.log("canvas 2D", canvas.getContext("2d"));
 
-        await currentPDFTool()!.renderPage(currentPDFTool()!.currentPage + page);
+        await currentPDFTool()!.renderPage(currentPDFTool()!.currentPage + page, canvas);
 
 
         setCurrentPage(currentPDFTool()!.currentPage);

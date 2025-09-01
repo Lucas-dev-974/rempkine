@@ -17,9 +17,7 @@ export function PDFCanvas() {
         if (page === +1 && currentPDFTool()!.currentPage == 6) return 6;
         if (page === -1 && currentPDFTool()!.currentPage == 1) return 1;
 
-
         await currentPDFTool()!.renderPage(currentPDFTool()!.currentPage + page, canvas);
-
 
         setCurrentPage(currentPDFTool()!.currentPage);
         setNumPages(currentPDFTool()!.numPages);

@@ -24,6 +24,15 @@ const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
 const [birthday, setBirthday] = createSignal<string>("");
 const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
+const [valid, setValid] = createSignal<boolean>(false);
+
+function isValid() {
+  if (name() && email() && birthday() && birthdayLocation() && orderDepartement() && orderDepartmentNumber() && professionnalAddress()) {
+    setValid(true);
+  } else {
+    setValid(false);
+  }
+}
 
 function HandlerToUpdateFormInputsAndPDFInputs(
   field: "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "professionnalAddress" | "email",
@@ -43,6 +52,7 @@ function HandlerToUpdateFormInputsAndPDFInputs(
 
   HandlerToUpdateCanvasInputs(fieldsIdsByGender, value);
   handlerToUpdateFormInputsWithContratData()
+  isValid()
 }
 
 export function fillWithMyInformationsReplaced() {
@@ -69,12 +79,14 @@ function handlerToUpdateFormInputsWithContratData() {
 }
 
 export function ReplacedFields(props: AccordionFieldsProps) {
-
   onMount(() => {
     if (loadContract()) {
       handlerToUpdateFormInputsWithContratData()
+      isValid()
     }
   })
+
+
   return (
     <AccordionItem
       id={1}
@@ -85,6 +97,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
           (i: { id: number }) => i.id === 1
         )?.isOpen ?? false
       }
+      valid={valid()}
     >
       <Show when={loggedIn()}>
         <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformationsReplaced} />
@@ -152,6 +165,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         type="text"
         onInput={(e) => {
           HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", e.target.value);
+
         }}
         value={birthdayLocation()}
       />
@@ -161,6 +175,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         type="text"
         onInput={(e) => {
           HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", e.target.value);
+
         }}
         value={orderDepartement()}
       />
@@ -170,6 +185,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         type="text"
         onInput={(e) => {
           HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", e.target.value);
+
         }}
         value={orderDepartmentNumber()}
       />
@@ -179,6 +195,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         type="text"
         onInput={(e) => {
           HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", e.target.value);
+
         }}
         value={professionnalAddress()}
       />

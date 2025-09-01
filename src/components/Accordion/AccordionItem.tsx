@@ -1,10 +1,16 @@
+import { FaRegularCircleCheck } from 'solid-icons/fa'
+import { IoCloseCircleOutline } from 'solid-icons/io'
+
 import "./AccordionItem.css";
+import { Show } from 'solid-js';
+
 
 type AccordionItemProps = {
   id: number;
   toggle: (id: number) => void;
   isOpen?: boolean;
   title: string;
+  valid?: boolean;
 };
 
 export function AccordionItem(props: AccordionItemProps & { children?: any }) {
@@ -12,6 +18,12 @@ export function AccordionItem(props: AccordionItemProps & { children?: any }) {
     <div class="accordion-item">
       <div class="accordion-header" onClick={() => props.toggle(props.id)}>
         <p>{props.title}</p>
+        <Show when={props.valid}>
+          <FaRegularCircleCheck color="green" />
+        </Show>
+        <Show when={!props.valid}>
+          <IoCloseCircleOutline color="red" />
+        </Show>
       </div>
       {props.isOpen && <div class="accordion-content ">{props.children}</div>}
     </div>

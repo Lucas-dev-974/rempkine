@@ -25,13 +25,22 @@ const [birthday, setBirthday] = createSignal<string>("");
 const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
 const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
+const [valid, setValid] = createSignal<boolean>(false);
+
+
+function isValid() {
+  if (name() && email() && birthday() && birthdayLocation() && orderDepartement() && orderDepartmentNumber() && professionnalAddress()) {
+    setValid(true);
+  } else {
+    setValid(false);
+  }
+}
 
 function HandlerToUpdateFormInputsAndPDFInputs(
   field: | "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "address" | "email",
-  value: string
+  value: string,
 ) {
   const fieldsIdsByGender = currentPDFTool()?.getSubstituteFieldsIds(gender() as GenderEnum)[`${field}`] as unknown as string
-  // console.log("field: ", field, value);
 
   // if update name and gender changed clear the wrong gender fields in canvas inputs
   if (field == "name") {
@@ -45,6 +54,7 @@ function HandlerToUpdateFormInputsAndPDFInputs(
   }
   HandlerToUpdateCanvasInputs(fieldsIdsByGender, value);
   handlerToUpdateFormInputsWithContratData()
+  isValid()
 }
 
 export function fillWithMyInformationsSubstitute() {
@@ -75,12 +85,14 @@ export function SubstituteFields(props: AccordionFieldsProps) {
   onMount(() => {
     if (loadContract()) handlerToUpdateFormInputsWithContratData()
   })
+
   return (
     <AccordionItem
       id={2}
       title="Le remplacant"
       toggle={props.toggleItem}
       isOpen={(typeof props.items === "function" ? props.items() : props.items).find((i) => i.id === 2)?.isOpen}
+      valid={valid()}
     >
 
       <Show when={loggedIn()}>
@@ -114,6 +126,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
             };
             return prev
           })
+          isValid()
         }}
         value={gender() as GenderEnum}
       />
@@ -121,7 +134,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
         id="substitute-name"
         label="Nom, prénom"
         type="text"
-        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("name", e.target.value)}
+        onInput={(e) => { HandlerToUpdateFormInputsAndPDFInputs("name", e.target.value); isValid() }}
         value={name()}
       />
       <LabeledInput

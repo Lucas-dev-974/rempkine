@@ -23,7 +23,7 @@ export const formatDate = (date: string) => {
 
 
 export function ContractInformationsFields(props: ContractInformationsFieldsProps) {
-  const [fieldUpdatedEvent, setFieldUpdatedEvent] = createSignal(false);
+  const [valid, setValid] = createSignal<boolean>(false);
 
   // ------------ Input fields signals ------------
   const [percentReturnToSubstituteBeforeDate, setPercentReturnToSubstituteBeforeDate] = createSignal<string>();
@@ -77,12 +77,21 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
     }
   })
 
+  function isValid() {
+    if (startDate() && endDate() && percentReturnToSubstitute() && percentReturnToSubstituteBeforeDate() && nonInstallationRadius() && conciliationCDOMK() && doneAtLocation() && doneAt()) {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  }
+
   return (
     <AccordionItem
       id={3}
       title="Informations du contrat"
       toggle={props.toggleItem}
       isOpen={(typeof props.items === "function" ? props.items() : props.items).find((i) => i.id === 3)?.isOpen}
+      valid={valid()}
     >
       <Show when={loggedIn()}>
         <div class="flex flex-wrap w-full justify-end gap-2">
@@ -106,8 +115,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         </div>
       </Show>
 
-
-
       <LabeledInput
         id="start-date"
         label="Date de début"
@@ -117,6 +124,8 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             currentPDFTool()?.getContractInformationFieldsIds().startDate as string,
             formatDateForInput(e.target.value)
           );
+          setStartDate(e.target.value);
+          isValid()
         }}
         value={startDate()}
       />
@@ -129,6 +138,8 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             currentPDFTool()?.getContractInformationFieldsIds().endDate as string,
             formatDateForInput(e.target.value)
           );
+          setEndDate(e.target.value);
+          isValid()
         }}
         value={endDate()}
       />
@@ -141,6 +152,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
           HandlerToUpdateCanvasInputs(currentPDFTool()?.getContractInformationFieldsIds().percentReversedToSubstitute as string, e.target.value
           );
           setPercentReturnToSubstitute(e.target.value);
+          isValid()
         }}
         value={percentReturnToSubstitute()?.toString()}
       />
@@ -155,6 +167,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             formatDateForInput(e.target.value)
           );
           setPercentReturnToSubstituteBeforeDate(e.target.value);
+          isValid()
         }}
         value={percentReturnToSubstituteBeforeDate()?.toString()}
       />
@@ -170,6 +183,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             e.target.value
           );
           setNonInstallationRadius(e.target.value);
+          isValid()
         }}
         value={nonInstallationRadius()?.toString()}
       />
@@ -184,6 +198,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             e.target.value
           );
           setConciliationCDOMK(e.target.value);
+          isValid()
         }}
         value={conciliationCDOMK()}
       />
@@ -198,6 +213,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             e.target.value
           );
           setDoneAtLocation(e.target.value);
+          isValid()
         }}
         value={doneAtLocation()}
       />
@@ -211,6 +227,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
             formatDateForInput(e.target.value)
           );
           setDoneAt(e.target.value);
+          isValid()
         }}
         value={doneAt()}
       />

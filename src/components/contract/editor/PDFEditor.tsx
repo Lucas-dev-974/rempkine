@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onMount, onCleanup } from "solid-js";
+import { createEffect, createSignal, onMount, onCleanup, Setter } from "solid-js";
 import { loadContract } from "../../../const.data";
 import { CTAPDFViewer } from "./CTAPDFViewer";
 import SignaturePad from "signature_pad";

@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, onCleanup } from "solid-js";
 import { AccordionItem } from "../../../Accordion/AccordionItem";
 import { AccordionFieldsProps } from "./ReplacedFields";
 import { SignatureCanvas } from "./SignatureCanvas";
@@ -8,6 +8,7 @@ import { SignatureType } from "./types";
 import { currentPDFTool } from "../../../contract/editor/PDFEditor";
 
 export function Signatures(props: AccordionFieldsProps) {
+    const [valid, setValid] = createSignal(false);
     const [selectedSignatory, setSelectedSignatory] = createSignal<SignatureType>("replaced");
     const [isEditorOpen, setIsEditorOpen] = createSignal(false);
 
@@ -34,6 +35,7 @@ export function Signatures(props: AccordionFieldsProps) {
         currentPDFTool()!.updateSignaturesInContract(signatures);
 
         setIsEditorOpen(false);
+        isValid()
     };
 
     const handleCloseEditor = () => {
@@ -45,6 +47,20 @@ export function Signatures(props: AccordionFieldsProps) {
         return selectedSignatory() === "replaced" ? sigs?.replaced : sigs?.substitute;
     };
 
+    function isValid() {
+        if (signatures()?.replaced && signatures()?.substitute) {
+            setValid(true);
+        } else {
+            setValid(false);
+        }
+    }
+
+    onCleanup(() => {
+        useSignatureManager().setSignatures({
+            replaced: "",
+            substitute: "",
+        });
+    });
     return (
         <AccordionItem
             id={4}
@@ -55,6 +71,7 @@ export function Signatures(props: AccordionFieldsProps) {
                     (i: { id: number }) => i.id === 4
                 )?.isOpen ?? false
             }
+            valid={valid()}
         >
             <div class="flex flex-col gap-3">
                 <div class="flex justify-center sm:justify-between flex-wrap gap-1">

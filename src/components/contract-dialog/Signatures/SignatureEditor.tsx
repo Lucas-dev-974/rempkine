@@ -1,7 +1,7 @@
 import SignaturePad from "signature_pad";
 import { Component, createEffect, createSignal, on, onCleanup } from "solid-js";
-import { Button } from "../../../buttons/Button";
-import { BottomSlideDialog } from "../../BottomSlideDialog";
+import { Button } from "../../buttons/Button";
+import { BottomSlideDialog } from "../../dialog/BottomSlideDialog";
 import { SignatureEditorProps } from "./types";
 import { SIGNATURE_CONFIG, SIGNATURE_LABELS, SIGNATURE_TITLES } from "./constants";
 

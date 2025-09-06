@@ -66,30 +66,23 @@ class SignatureManager {
     get setSignatures() {
         return this._signatures[1];
     }
+
+    getSignatureInstance(): SignatureManager {
+        return this;
+    }
 }
 
-// Instance singleton
+// Instance singleton privée
 let signatureManagerInstance: SignatureManager | null = null;
 
 // Fonction pour obtenir l'instance singleton
-export function getSignatureManager(): SignatureManager {
+function getSignatureManagerInstance(): SignatureManager {
     if (!signatureManagerInstance) {
         signatureManagerInstance = new SignatureManager();
     }
     return signatureManagerInstance;
 }
 
-// Hook pour compatibilité avec l'API existante
-export function useSignatureManager() {
-    const manager = getSignatureManager();
+// Constante exportée qui utilise le vrai singleton
+export const signatureManager = getSignatureManagerInstance();
 
-    return {
-        canvasSignatureSubstitute: manager.canvasSignatureSubstitute,
-        setCanvasSignatureSubstitute: manager.setCanvasSignatureSubstitute,
-        canvasSignatureReplaced: manager.canvasSignatureReplaced,
-        setCanvasSignatureReplaced: manager.setCanvasSignatureReplaced,
-        signatures: manager.signatures,
-        setSignatures: manager.setSignatures,
-        updateSignature: manager.updateSignature,
-    };
-}

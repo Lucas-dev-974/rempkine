@@ -1,25 +1,17 @@
 import { createSignal, onCleanup } from "solid-js";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
-import { AccordionFieldsProps } from "./ReplacedFields";
+import { DropdownItem } from "../../Dropdown/DropdownItem";
+import { AccordionFieldsProps } from "../DropdownContratInformations/ReplacedFields";
 import { SignatureCanvas } from "./SignatureCanvas";
 import { SignatureEditor } from "./SignatureEditor";
-import { useSignatureManager } from "./index";
 import { SignatureType } from "./types";
-import { currentPDFTool } from "../../../contract/editor/PDFEditor";
+import { currentPDFTool } from "../../contract/editor/PDFEditor";
+import { signatureManager } from "./SignatureManager";
 
 export function Signatures(props: AccordionFieldsProps) {
     const [valid, setValid] = createSignal(false);
     const [selectedSignatory, setSelectedSignatory] = createSignal<SignatureType>("replaced");
     const [isEditorOpen, setIsEditorOpen] = createSignal(false);
 
-    const {
-        canvasSignatureSubstitute,
-        setCanvasSignatureSubstitute,
-        canvasSignatureReplaced,
-        setCanvasSignatureReplaced,
-        signatures,
-        updateSignature,
-    } = useSignatureManager();
 
     const handleEditSignature = (type: SignatureType) => {
         setSelectedSignatory(type);
@@ -27,12 +19,10 @@ export function Signatures(props: AccordionFieldsProps) {
     };
 
     const handleSaveSignature = (signatureData: string) => {
-        console.log("Sauvegarde de la signature:", selectedSignatory(), signatureData.substring(0, 50) + "...");
-
-        updateSignature(selectedSignatory(), signatureData);
+        signatureManager.updateSignature(selectedSignatory(), signatureData);
 
         // Mettre à jour les signatures dans le contrat après avoir mis à jour le signal
-        currentPDFTool()!.updateSignaturesInContract(signatures);
+        currentPDFTool()!.updateSignaturesInContract(signatureManager.signatures);
 
         setIsEditorOpen(false);
         isValid()
@@ -43,12 +33,12 @@ export function Signatures(props: AccordionFieldsProps) {
     };
 
     const getExistingSignature = () => {
-        const sigs = signatures();
+        const sigs = signatureManager.signatures();
         return selectedSignatory() === "replaced" ? sigs?.replaced : sigs?.substitute;
     };
 
     function isValid() {
-        if (signatures()?.replaced && signatures()?.substitute) {
+        if (signatureManager.signatures()?.replaced && signatureManager.signatures()?.substitute) {
             setValid(true);
         } else {
             setValid(false);
@@ -56,13 +46,13 @@ export function Signatures(props: AccordionFieldsProps) {
     }
 
     onCleanup(() => {
-        useSignatureManager().setSignatures({
+        signatureManager.setSignatures({
             replaced: "",
             substitute: "",
         });
     });
     return (
-        <AccordionItem
+        <DropdownItem
             id={4}
             title="Signatures"
             toggle={props.toggleItem}
@@ -78,12 +68,12 @@ export function Signatures(props: AccordionFieldsProps) {
                     <SignatureCanvas
                         type="replaced"
                         onEdit={handleEditSignature}
-                        canvasRef={setCanvasSignatureReplaced}
+                        canvasRef={signatureManager.setCanvasSignatureReplaced}
                     />
                     <SignatureCanvas
                         type="substitute"
                         onEdit={handleEditSignature}
-                        canvasRef={setCanvasSignatureSubstitute}
+                        canvasRef={signatureManager.setCanvasSignatureSubstitute}
                     />
                 </div>
             </div>
@@ -95,6 +85,6 @@ export function Signatures(props: AccordionFieldsProps) {
                 onSave={handleSaveSignature}
                 existingSignature={getExistingSignature()}
             />
-        </AccordionItem>
+        </DropdownItem>
     );
 }

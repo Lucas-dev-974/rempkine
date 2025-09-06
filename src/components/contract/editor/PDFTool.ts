@@ -301,6 +301,7 @@ export class PDFTool {
   }
 
   async getPagesFields() {
+    this.PDFInputsFieldsMetadata = [];
     if (!this.pdfDoc) throw new Error("PDF not loaded");
 
     const pages = this.pdfDoc!.numPages;
@@ -309,11 +310,12 @@ export class PDFTool {
     for (let i = 0; i != pages; i++) {
       const page = await this.pdfDoc!.getPage(i + 1);
       const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
+      const annotations = await page.getAnnotations();
+
       if (dimensions) {
         const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
         const scale = canvasDisplayWidth / pdfWidth;
         const viewport = page.getViewport({ scale });
-        const annotations = await page.getAnnotations();
 
 
         const fields = annotations
@@ -363,14 +365,9 @@ export class PDFTool {
   }
 
   async renderPage(pageNum: number, canvasElement: HTMLCanvasElement) {
+    await this.getPagesFields();
     if (this.isRendering) return;
     this.isRendering = true;
-
-
-    // if (!canvasElement) {
-
-    //   throw new Error("Impossible de traité le rendue")
-    // }
 
     const page = await this.pdfDoc!.getPage(pageNum);
     const context = canvasElement!.getContext("2d");
@@ -395,10 +392,6 @@ export class PDFTool {
       this.currentPage = pageNum;
       this.isRendering = false;
     }
-  }
-
-  getCurrentPageFieldsFromFormFields() {
-    return this.PDFInputsFieldsMetadata!.find((form) => form.page === this.currentPage)?.fields;
   }
 
   updateContractDataAndPDFFields(fieldId: any, newValue: any, updateContractData: boolean = true) {
@@ -510,19 +503,6 @@ export class PDFTool {
     reader.readAsArrayBuffer(pdfFile as File);
   }
 
-  getFieldValue(field: string): string {
-    let value = "";
-
-    this.PDFInputsFieldsMetadata?.forEach((fields) => {
-      fields.fields.forEach((_field) => {
-        if (_field.id == field) {
-          value = _field.value;
-        }
-      });
-    });
-
-    return value;
-  }
 
   getReplacedFieldsIds(gender?: GenderEnum) {
     return {

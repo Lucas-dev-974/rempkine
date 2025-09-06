@@ -23,9 +23,7 @@ export function BottomSlideDialog(props: BottomSlideDialogProps) {
             >
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold">{props.title}</h3>
-                    <button aria-label="Fermer" class="p-1" onClick={props.onClose}>
-                        ✕
-                    </button>
+                    <button aria-label="Fermer" class="p-1" onClick={props.onClose}> ✕ </button>
                 </div>
                 <div class="mt-4 h-[calc(60vh-56px)] overflow-auto">
                     {props.children}

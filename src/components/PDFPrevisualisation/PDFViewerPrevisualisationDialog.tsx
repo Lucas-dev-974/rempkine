@@ -1,7 +1,7 @@
 import { createSignal, Show } from "solid-js"
-import { Button } from "../../buttons/Button"
+import { Button } from "../buttons/Button"
 import { AiTwotoneEye } from 'solid-icons/ai'
-import { PDFCanvas } from "../../contract/editor/PDFCanvas"
+import { PDFCanvas } from "../contract/editor/PDFCanvas"
 
 export function PDFViewerPrevisualisationDialog() {
     const [open, setOpen] = createSignal(false)

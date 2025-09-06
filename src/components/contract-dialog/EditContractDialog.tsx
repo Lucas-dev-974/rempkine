@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
-import { loadContract } from "../../../const.data";
-import { currentPDFTool, PDFEditor } from "../../contract/editor/PDFEditor";
-import { DialogWrapper } from "../DialogWrapper";
-import { AccordionInputsForm } from "./AccordionFields/FormFields";
-import { PDFTool } from "../../contract/editor/PDFTool";
+import { loadContract } from "../../const.data";
+import { currentPDFTool, PDFEditor } from "../contract/editor/PDFEditor";
+import { DialogWrapper } from "../dialog/DialogWrapper";
+import { ContratInformationsDropdowns } from "./DropdownContratInformations/ContratInformationsDropdowns";
+import { PDFTool } from "../contract/editor/PDFTool";
 
 
 export function EditContractDialog() {
@@ -15,7 +15,7 @@ export function EditContractDialog() {
     >
       <div class="p-3 max-h-[70vh]">
         <Show when={currentPDFTool() instanceof PDFTool}>
-          <AccordionInputsForm />
+          <ContratInformationsDropdowns />
         </Show>
 
         <PDFEditor />

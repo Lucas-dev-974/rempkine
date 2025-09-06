@@ -65,6 +65,8 @@ export function PDFEditor() {
     setCurrentPDFTool(pdfTool)
     setCurrentPage(currentPDFTool()!.currentPage);
     setNumPages(currentPDFTool()!.numPages);
+
+    console.log(currentPDFTool()?.PDFInputsFieldsMetadata);
   });
 
   onCleanup(() => {

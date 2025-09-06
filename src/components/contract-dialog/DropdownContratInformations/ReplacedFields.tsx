@@ -1,19 +1,19 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../../contract/editor/PDFEditor";
-import { AccordionItemType } from "../../../Accordion/AccordionWrapper";
-import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
-import { loadContract, loggedIn } from "../../../../const.data";
+import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../contract/editor/PDFEditor";
+import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
+import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
+import { DropdownItem } from "../../Dropdown/DropdownItem";
+import { loadContract, loggedIn } from "../../../const.data";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
-import { GenderEnum } from "../../../contract/editor/PDFTool";
-import { LabeledInput } from "../../../inputs/LabeledInput";
-import { UserEntity } from "../../../../models/user.entity";
-import storeService from "../../../../utils/store.service";
+import { GenderEnum } from "../../contract/editor/PDFTool";
+import { LabeledInput } from "../../inputs/LabeledInput";
+import { UserEntity } from "../../../models/user.entity";
+import storeService from "../../../utils/store.service";
 import { createSignal, Show, onMount } from "solid-js";
-import { formatDateForInput } from "./FormFields";
+import { formatDateForInput } from "./ContratInformationsDropdowns";
 
 export interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
-  items: AccordionItemType[] | (() => AccordionItemType[]);
+  items: DorpdownItemType[] | (() => DorpdownItemType[]);
 }
 
 const [professionnalAddress, setProfessionnalAddress] = createSignal<string>("");
@@ -88,7 +88,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
 
 
   return (
-    <AccordionItem
+    <DropdownItem
       id={1}
       title="Le remplacé"
       toggle={props.toggleItem}
@@ -199,6 +199,6 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         }}
         value={professionnalAddress()}
       />
-    </AccordionItem>
+    </DropdownItem>
   );
 }

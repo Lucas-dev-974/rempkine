@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
 import { Button } from "../../components/buttons/Button";
-import { EditContractDialog } from "../../components/dialog/EditContractDialog/EditContractDialog";
 import { Title1 } from "../../components/titles/Title1";
 import storeService from "../../utils/store.service";
 import { Text } from "../../components/titles/Text";
+import { EditContractDialog } from "../../components/contract-dialog/EditContractDialog";
 
 export function HeroSection() {
     return (

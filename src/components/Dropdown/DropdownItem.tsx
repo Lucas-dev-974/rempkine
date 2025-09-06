@@ -1,11 +1,10 @@
 import { FaRegularCircleCheck } from 'solid-icons/fa'
 import { IoCloseCircleOutline } from 'solid-icons/io'
-
-import "./AccordionItem.css";
 import { Show } from 'solid-js';
 
+import "./DropdownItem.css";
 
-type AccordionItemProps = {
+type DropdownItemProps = {
   id: number;
   toggle: (id: number) => void;
   isOpen?: boolean;
@@ -13,7 +12,7 @@ type AccordionItemProps = {
   valid?: boolean;
 };
 
-export function AccordionItem(props: AccordionItemProps & { children?: any }) {
+export function DropdownItem(props: DropdownItemProps & { children?: any }) {
   return (
     <div class="accordion-item">
       <div class="accordion-header" onClick={() => props.toggle(props.id)}>

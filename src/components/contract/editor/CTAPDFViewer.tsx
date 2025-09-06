@@ -8,8 +8,7 @@ import { ContractEntity } from "../../../models/contract.entity";
 import { contractService } from "../../../services/contract.service";
 import { NotificationService } from "../../../utils/notification.service";
 import storeService from "../../../utils/store.service";
-import { PDFViewerPrevisualisationDialog } from "../../dialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
-import { useSignatureManager } from "../../dialog/EditContractDialog/AccordionFields";
+import { PDFViewerPrevisualisationDialog } from "../../PDFPrevisualisation/PDFViewerPrevisualisationDialog";
 
 
 export function CTAPDFViewer() {

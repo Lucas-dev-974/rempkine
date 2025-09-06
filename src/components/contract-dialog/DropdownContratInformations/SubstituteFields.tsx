@@ -1,19 +1,19 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../../contract/editor/PDFEditor";
-import { AccordionItemType } from "../../../Accordion/AccordionWrapper";
-import { Dialog2InputRadio } from "../../../inputs/Dialog2InputRadio";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
+import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../contract/editor/PDFEditor";
+import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
+import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
+import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
-import { GenderEnum } from "../../../contract/editor/PDFTool";
-import { UserEntity } from "../../../../models/user.entity";
-import { LabeledInput } from "../../../inputs/LabeledInput";
-import storeService from "../../../../utils/store.service";
-import { formatDateForInput } from "./FormFields";
-import { loadContract, loggedIn } from "../../../../const.data";
+import { GenderEnum } from "../../contract/editor/PDFTool";
+import { UserEntity } from "../../../models/user.entity";
+import { LabeledInput } from "../../inputs/LabeledInput";
+import storeService from "../../../utils/store.service";
+import { formatDateForInput } from "./ContratInformationsDropdowns";
+import { loadContract, loggedIn } from "../../../const.data";
 import { createSignal, onMount, Show } from "solid-js";
 
 interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
-  items: AccordionItemType[] | (() => AccordionItemType[]);
+  items: DorpdownItemType[] | (() => DorpdownItemType[]);
 }
 
 // ------------ Input fields signals ------------
@@ -87,7 +87,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
   })
 
   return (
-    <AccordionItem
+    <DropdownItem
       id={2}
       title="Le remplacant"
       toggle={props.toggleItem}
@@ -179,6 +179,6 @@ export function SubstituteFields(props: AccordionFieldsProps) {
         onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("address", e.target.value)}
         value={professionnalAddress()}
       />
-    </AccordionItem>
+    </DropdownItem>
   );
 }

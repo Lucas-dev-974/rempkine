@@ -1,33 +1,28 @@
 import { createSignal, JSX, onMount } from "solid-js";
 
-import "./Accordion.css";
+import "./Dropdown.css";
 
 type AccordionWrapperProps = {
   multiple?: boolean; // Permet plusieurs panneaux ouverts simultanément
   children: (
     toggleItem: (id: number) => void,
-    items: AccordionItemType[]
+    items: () => DorpdownItemType[]
   ) => JSX.Element;
 };
 
-export type AccordionItemType = {
+export type DorpdownItemType = {
   id: number;
   isOpen: boolean;
 };
 
-export function AccordionWrapper(
-  props: AccordionWrapperProps & {
-    children: (
-      toggle: (id: number) => void,
-      items: () => AccordionItemType[]
-    ) => any;
-  }
+export function DropdownWrapper(
+  props: AccordionWrapperProps
 ) {
-  const [items, setItems] = createSignal<AccordionItemType[]>([]);
+  const [items, setItems] = createSignal<DorpdownItemType[]>([]);
 
   // Initialisation des items
   onMount(() => {
-    const initialItems = props.children(() => { }, []);
+    const initialItems = props.children(() => { }, () => []);
     setItems(
       Array.isArray(initialItems)
         ? initialItems.map((_, index) => ({

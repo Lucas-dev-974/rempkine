@@ -1,20 +1,19 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../../contract/editor/PDFEditor";
-import { AccordionItemType } from "../../../Accordion/AccordionWrapper";
+import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../contract/editor/PDFEditor";
+import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { fillWithMyInformationsSubstitute } from "./SubstituteFields";
 import { fillWithMyInformationsReplaced } from "./ReplacedFields";
-import { AccordionItem } from "../../../Accordion/AccordionItem";
-import { AuthorsEnum } from "../../../contract/editor/PDFTool";
-import { LabeledInput } from "../../../inputs/LabeledInput";
-import { UserEntity } from "../../../../models/user.entity";
-import storeService from "../../../../utils/store.service";
-import { loadContract, loggedIn } from "../../../../const.data";
-import { Button } from "../../../buttons/Button";
-import { createEffect, createSignal, onMount, Show } from "solid-js";
-import { formatDateForInput } from "./FormFields";
+import { DropdownItem } from "../../Dropdown/DropdownItem";
+import { LabeledInput } from "../../inputs/LabeledInput";
+import { UserEntity } from "../../../models/user.entity";
+import storeService from "../../../utils/store.service";
+import { loadContract, loggedIn } from "../../../const.data";
+import { Button } from "../../buttons/Button";
+import { createSignal, onMount, Show } from "solid-js";
+import { formatDateForInput } from "./ContratInformationsDropdowns";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
-  items: AccordionItemType[] | (() => AccordionItemType[]);
+  items: DorpdownItemType[] | (() => DorpdownItemType[]);
 }
 export const formatDate = (date: string) => {
   const date_ = new Date(date)
@@ -78,7 +77,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   })
 
   function isValid() {
-    if (startDate() && endDate() && percentReturnToSubstitute() && percentReturnToSubstituteBeforeDate() && nonInstallationRadius() && conciliationCDOMK() && doneAtLocation() && doneAt()) {
+    if (startDate() && endDate() && percentReturnToSubstitute() && percentReturnToSubstituteBeforeDate() && conciliationCDOMK() && doneAtLocation() && doneAt()) {
       setValid(true);
     } else {
       setValid(false);
@@ -86,7 +85,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   }
 
   return (
-    <AccordionItem
+    <DropdownItem
       id={3}
       title="Informations du contrat"
       toggle={props.toggleItem}
@@ -231,6 +230,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         }}
         value={doneAt()}
       />
-    </AccordionItem>
+    </DropdownItem>
   );
 }

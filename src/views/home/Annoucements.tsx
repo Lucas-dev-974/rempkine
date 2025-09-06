@@ -1,9 +1,6 @@
 import { For } from "solid-js";
 import { AnnoucementCard } from "./AnnouncementCard";
-import {
-  announcements,
-  AnnouncementEntity,
-} from "../../models/announcement.entity";
+import { AnnouncementEntity } from "../../models/announcement.entity";
 
 export function Announcements(props: { announcements: AnnouncementEntity[] }) {
   return (

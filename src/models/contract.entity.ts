@@ -1,4 +1,4 @@
-import { AuthorsEnum, GenderEnum } from "../components/contract/editor/PDFTool";
+import { AuthorsEnum, GenderEnum } from "../components/ContractEditor/PDFTool";
 
 export type ContractEntity = {
   id: string;

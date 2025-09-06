@@ -1,7 +1,7 @@
 import { NextIcon } from "../../icons/NextIcon";
 import { PreviousIcon } from "../../icons/PreviousIcon";
 import { createSignal } from "solid-js";
-import { currentPDFTool } from "./editor/PDFEditor";
+import { currentPDFTool } from "./PDFEditor";
 
 interface PDFActionsProps {
     changePage: (index: number) => void;

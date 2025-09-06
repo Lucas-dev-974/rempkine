@@ -1,4 +1,4 @@
-import { GenderEnum } from "../contract/editor/PDFTool";
+import { GenderEnum } from "../ContractEditor/PDFTool";
 
 interface Dialog2InputRadioProps {
   legend: string;

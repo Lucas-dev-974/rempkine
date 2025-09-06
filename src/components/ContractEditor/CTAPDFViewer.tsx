@@ -1,14 +1,14 @@
 import { FiSave } from "solid-icons/fi";
 import { VsFilePdf } from "solid-icons/vs";
-import { Button } from "../../buttons/Button";
-import { currentPDFTool, } from "./PDFEditor";
+import { Button } from "../buttons/Button";
 import { createUniqueId } from "solid-js";
-import { loggedIn, loadContract, setLoadContrat } from "../../../const.data";
-import { ContractEntity } from "../../../models/contract.entity";
-import { contractService } from "../../../services/contract.service";
-import { NotificationService } from "../../../utils/notification.service";
-import storeService from "../../../utils/store.service";
-import { PDFViewerPrevisualisationDialog } from "../../PDFPrevisualisation/PDFViewerPrevisualisationDialog";
+import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
+import { ContractEntity } from "../../models/contract.entity";
+import { contractService } from "../../services/contract.service";
+import { NotificationService } from "../../utils/notification.service";
+import storeService from "../../utils/store.service";
+import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
+import { currentPDFTool } from "./PDFEditor";
 
 
 export function CTAPDFViewer() {

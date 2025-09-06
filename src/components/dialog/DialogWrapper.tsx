@@ -1,7 +1,7 @@
 import { createSignal, JSX, Show } from "solid-js";
 import { Button } from "../buttons/Button";
 import { setLoadContrat } from "../../const.data";
-import { setCurrentPDFTool } from "../contract/editor/PDFEditor";
+import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
 import "./DialogWrapper.css";

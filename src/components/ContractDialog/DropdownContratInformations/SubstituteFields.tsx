@@ -1,30 +1,32 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../contract/editor/PDFEditor";
+import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
-import { loadContract, loggedIn } from "../../../const.data";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
-import { GenderEnum } from "../../contract/editor/PDFTool";
-import { LabeledInput } from "../../inputs/LabeledInput";
+import { GenderEnum } from "../../ContractEditor/PDFTool";
 import { UserEntity } from "../../../models/user.entity";
+import { LabeledInput } from "../../inputs/LabeledInput";
 import storeService from "../../../utils/store.service";
-import { createSignal, Show, onMount } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
+import { loadContract, loggedIn } from "../../../const.data";
+import { createSignal, onMount, Show } from "solid-js";
 
-export interface AccordionFieldsProps {
+interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: DorpdownItemType[] | (() => DorpdownItemType[]);
 }
 
+// ------------ Input fields signals ------------
 const [professionnalAddress, setProfessionnalAddress] = createSignal<string>("");
 const [orderDepartmentNumber, setOrderDepartmentNumber] = createSignal<string>("");
 const [birthdayLocation, setBirthdayLocation] = createSignal<string>("");
 const [orderDepartement, setOrderDepartement] = createSignal<string>("");
-const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
 const [birthday, setBirthday] = createSignal<string>("");
 const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
+const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
 const [valid, setValid] = createSignal<boolean>(false);
+
 
 function isValid() {
   if (name() && email() && birthday() && birthdayLocation() && orderDepartement() && orderDepartmentNumber() && professionnalAddress()) {
@@ -35,27 +37,27 @@ function isValid() {
 }
 
 function HandlerToUpdateFormInputsAndPDFInputs(
-  field: "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "professionnalAddress" | "email",
-  value: string
+  field: | "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "address" | "email",
+  value: string,
 ) {
-  const fieldsIdsByGender = currentPDFTool()?.getReplacedFieldsIds(gender() as GenderEnum)[`${field}`] as unknown as string
+  const fieldsIdsByGender = currentPDFTool()?.getSubstituteFieldsIds(gender() as GenderEnum)[`${field}`] as unknown as string
 
+  // if update name and gender changed clear the wrong gender fields in canvas inputs
   if (field == "name") {
     if (gender() == GenderEnum.male) {
-      const fieldIdOfNameForFemaleGender = currentPDFTool()?.getReplacedFieldsIds(GenderEnum.female)[`${field}`] as unknown as string
-      HandlerToUpdateCanvasInputs(fieldIdOfNameForFemaleGender, "");
+      const fieldIdOfNameForFemaleGender = currentPDFTool()?.getSubstituteFieldsIds(GenderEnum.female)[`${field}`] as unknown as string
+      HandlerToUpdateCanvasInputs(fieldIdOfNameForFemaleGender, "", false);
     } else {
-      const fieldIdOfNameForMaleGender = currentPDFTool()?.getReplacedFieldsIds(GenderEnum.male)[`${field}`] as unknown as string
-      HandlerToUpdateCanvasInputs(fieldIdOfNameForMaleGender, "");
+      const fieldIdOfNameForMaleGender = currentPDFTool()?.getSubstituteFieldsIds(GenderEnum.male)[`${field}`] as unknown as string
+      HandlerToUpdateCanvasInputs(fieldIdOfNameForMaleGender, "", false);
     }
   }
-
   HandlerToUpdateCanvasInputs(fieldsIdsByGender, value);
   handlerToUpdateFormInputsWithContratData()
   isValid()
 }
 
-export function fillWithMyInformationsReplaced() {
+export function fillWithMyInformationsSubstitute() {
   const userDatas: UserEntity = storeService.data.user;
 
   HandlerToUpdateFormInputsAndPDFInputs("email", userDatas.email);
@@ -64,56 +66,52 @@ export function fillWithMyInformationsReplaced() {
   HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", userDatas.bornLocation);
   HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", userDatas.department);
   HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "");
-  HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", userDatas.officeAdress as string);
+  HandlerToUpdateFormInputsAndPDFInputs("address", userDatas.personalAdress);
 }
 
 function handlerToUpdateFormInputsWithContratData() {
-  setGender(currentPDFTool()?.contractData.replacedGender ?? GenderEnum.male);
-  setEmail(currentPDFTool()?.contractData.replacedEmail!);
-  setName(currentPDFTool()?.contractData.replacedName!);
-  setBirthday(formatDateForInput(currentPDFTool()?.contractData.replacedBirthday!))
-  setBirthdayLocation(currentPDFTool()?.contractData.replacedBirthdayLocation!);
-  setOrderDepartement(currentPDFTool()?.contractData.replacedOrderDepartement!);
-  setOrderDepartmentNumber(currentPDFTool()?.contractData.replacedOrderDepartmentNumber?.toString()!);
-  setProfessionnalAddress(currentPDFTool()?.contractData.replacedProfessionnalAddress!);
+  setGender(currentPDFTool()?.contractData.substituteGender ?? GenderEnum.male);
+  setEmail(currentPDFTool()?.contractData.substituteEmail!);
+  setName(currentPDFTool()?.contractData.substituteName!);
+  setBirthday(formatDateForInput(currentPDFTool()?.contractData.substituteBirthday!));
+  setBirthdayLocation(currentPDFTool()?.contractData.substituteBirthdayLocation!);
+  setOrderDepartement(currentPDFTool()?.contractData.substituteOrderDepartement!);
+  setOrderDepartmentNumber(currentPDFTool()?.contractData.substituteOrderDepartmentNumber?.toString()!);
+  setProfessionnalAddress(currentPDFTool()?.contractData.substituteAdress!);
+  setGender(currentPDFTool()?.contractData.substituteGender ?? GenderEnum.male);
 }
 
-export function ReplacedFields(props: AccordionFieldsProps) {
+export function SubstituteFields(props: AccordionFieldsProps) {
   onMount(() => {
-    if (loadContract()) {
-      handlerToUpdateFormInputsWithContratData()
-      isValid()
-    }
+    if (loadContract()) handlerToUpdateFormInputsWithContratData()
   })
-
 
   return (
     <DropdownItem
-      id={1}
-      title="Le remplacé"
+      id={2}
+      title="Le remplacant"
       toggle={props.toggleItem}
-      isOpen={
-        (typeof props.items === "function" ? props.items() : props.items).find(
-          (i: { id: number }) => i.id === 1
-        )?.isOpen ?? false
-      }
+      isOpen={(typeof props.items === "function" ? props.items() : props.items).find((i) => i.id === 2)?.isOpen}
       valid={valid()}
     >
+
       <Show when={loggedIn()}>
-        <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformationsReplaced} />
+        <FitFieldsWithUserData
+          fillWithMyInformations={fillWithMyInformationsSubstitute}
+        />
       </Show>
 
       <Dialog2InputRadio
         legend="Genre:"
-        name="replaced-gender"
+        name="substitute-gender"
         items={[
           {
-            id: "replaced-mister",
+            id: "substitute-mister",
             text: "Monsieur",
             value: GenderEnum.male,
           },
           {
-            id: "replaced-miss",
+            id: "substitute-miss",
             text: "Madame",
             value: GenderEnum.female,
           },
@@ -124,79 +122,61 @@ export function ReplacedFields(props: AccordionFieldsProps) {
             if (!prev) return prev
             prev.contractData = {
               ...prev.contractData,
-              replacedGender: target.value as GenderEnum,
+              substituteGender: target.value as GenderEnum,
             };
             return prev
           })
+          isValid()
         }}
-        value={gender()}
+        value={gender() as GenderEnum}
       />
-
       <LabeledInput
-        id="replaced-name"
+        id="substitute-name"
         label="Nom, prénom"
         type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("name", e.target.value);
-        }}
+        onInput={(e) => { HandlerToUpdateFormInputsAndPDFInputs("name", e.target.value); isValid() }}
         value={name()}
       />
       <LabeledInput
-        id="replaced-mail"
+        id="substitute-mail"
         label="Email"
         type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("email", e.target.value);
-        }}
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("email", e.target.value)}
         value={email()}
       />
       <LabeledInput
-        id="birthday"
+        id="substitute-birthday"
         label="Née le"
         type="date"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("birthday", e.target.value);
-        }}
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("birthday", e.target.value)}
         value={birthday()}
       />
       <LabeledInput
-        id="birthday-location"
+        id="substitute-birthday-location"
         label="Née à"
         type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", e.target.value);
-
-        }}
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", e.target.value)}
         value={birthdayLocation()}
       />
       <LabeledInput
         id="department-order"
         label="Département d'ordre"
         type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", e.target.value);
-
-        }}
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", e.target.value)}
         value={orderDepartement()}
       />
       <LabeledInput
         id="department-number-order"
         label="Numéro d'ordre"
-        type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", e.target.value);
-
-        }}
+        type="number"
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", e.target.value)}
         value={orderDepartmentNumber()}
       />
       <LabeledInput
-        id="professional-address"
-        label="Adresse profesionnel"
+        id="substitute-address"
+        label="Adresse"
         type="text"
-        onInput={(e) => {
-          HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", e.target.value);
-
-        }}
+        onInput={(e) => HandlerToUpdateFormInputsAndPDFInputs("address", e.target.value)}
         value={professionnalAddress()}
       />
     </DropdownItem>

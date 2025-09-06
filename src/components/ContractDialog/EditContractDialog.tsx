@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
 import { loadContract } from "../../const.data";
-import { currentPDFTool, PDFEditor } from "../contract/editor/PDFEditor";
+import { currentPDFTool, PDFEditor } from "../ContractEditor/PDFEditor";
 import { DialogWrapper } from "../dialog/DialogWrapper";
 import { ContratInformationsDropdowns } from "./DropdownContratInformations/ContratInformationsDropdowns";
-import { PDFTool } from "../contract/editor/PDFTool";
+import { PDFTool } from "../ContractEditor/PDFTool";
 
 
 export function EditContractDialog() {

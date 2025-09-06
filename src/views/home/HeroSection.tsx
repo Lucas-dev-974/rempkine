@@ -1,9 +1,9 @@
-import { Show } from "solid-js";
+import { EditContractDialog } from "../../components/ContractDialog/EditContractDialog";
 import { Button } from "../../components/buttons/Button";
 import { Title1 } from "../../components/titles/Title1";
 import storeService from "../../utils/store.service";
 import { Text } from "../../components/titles/Text";
-import { EditContractDialog } from "../../components/contract-dialog/EditContractDialog";
+import { Show } from "solid-js";
 
 export function HeroSection() {
     return (
@@ -11,7 +11,7 @@ export function HeroSection() {
             <div class="w-full lg:w-2/3 ">
                 <Title1 text="Simplifie la gestion de tes contrats avec tes collaborateurs" />
                 <Text
-                    text="RempKiné est un outil dédié aux kinésithérapeutes, conçu pour simplifier la création de contrats. Gagnez du temps en générant automatiquement des documents conformes et personnalisés en quelques clics."
+                    text="Kiné de poche est un outil dédié aux kinésithérapeutes, conçu pour simplifier la création de contrats. Gagnez du temps en générant automatiquement des documents conformes et personnalisés en quelques clics."
                     class="text-1-home "
                 />
 

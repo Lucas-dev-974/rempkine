@@ -1,4 +1,4 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../contract/editor/PDFEditor";
+import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { fillWithMyInformationsSubstitute } from "./SubstituteFields";
 import { fillWithMyInformationsReplaced } from "./ReplacedFields";

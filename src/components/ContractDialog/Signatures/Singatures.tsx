@@ -4,7 +4,7 @@ import { AccordionFieldsProps } from "../DropdownContratInformations/ReplacedFie
 import { SignatureCanvas } from "./SignatureCanvas";
 import { SignatureEditor } from "./SignatureEditor";
 import { SignatureType } from "./types";
-import { currentPDFTool } from "../../contract/editor/PDFEditor";
+import { currentPDFTool } from "../../ContractEditor/PDFEditor";
 import { signatureManager } from "./SignatureManager";
 
 export function Signatures(props: AccordionFieldsProps) {

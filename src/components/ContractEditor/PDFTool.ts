@@ -1,8 +1,8 @@
 import { PDFDocument, values } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
-import { ContractEntity } from "../../../models/contract.entity";
-import { loadContract } from "../../../const.data";
+import { ContractEntity } from "../../models/contract.entity";
+import { loadContract } from "../../const.data";
 import { Accessor } from "solid-js";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";

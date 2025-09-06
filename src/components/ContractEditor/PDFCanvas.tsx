@@ -1,9 +1,9 @@
 import { onMount, createEffect, createSignal } from "solid-js";
 import { currentPage, currentPDFTool, numPages, setCurrentPage, setNumPages, signaturePad1, signaturePad2, updateCanvasInput as updateCanvasInputField } from "./PDFEditor";
 import { PDFInputsOnCanvas, setCanvasInputs } from "./PDFInputsOnCanvas";
-import { PDFActions } from "../PDFActions";
+import { PDFActions } from "./PDFActions";
 import { PDFFields } from "./PDFTool";
-import { signatureManager } from "../../contract-dialog/Signatures";
+import { signatureManager } from "../ContractDialog/Signatures";
 
 export function PDFCanvas() {
     createEffect(async () => {

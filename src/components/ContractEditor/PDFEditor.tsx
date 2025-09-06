@@ -1,5 +1,5 @@
 import { createEffect, createSignal, onMount, onCleanup, Setter } from "solid-js";
-import { loadContract } from "../../../const.data";
+import { loadContract } from "../../const.data";
 import { CTAPDFViewer } from "./CTAPDFViewer";
 import SignaturePad from "signature_pad";
 import { PDFTool } from "./PDFTool";

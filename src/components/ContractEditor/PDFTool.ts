@@ -4,6 +4,7 @@ import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../models/contract.entity";
 import { loadContract } from "../../const.data";
 import { Accessor } from "solid-js";
+import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
 
@@ -361,7 +362,12 @@ export class PDFTool {
 
       return data
     }
-    return null
+    return {
+      canvasDisplayHeight: 299,
+      canvasDisplayWidth: 598,
+      pdfHeight: 841.68,
+      pdfWidth: 595.2,
+    }
   }
 
   async renderPage(pageNum: number, canvasElement: HTMLCanvasElement) {
@@ -372,6 +378,8 @@ export class PDFTool {
     const page = await this.pdfDoc!.getPage(pageNum);
     const context = canvasElement!.getContext("2d");
     const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
+    console.log(dimensions);
+
 
     if (dimensions) {
       const { pdfWidth, pdfHeight, canvasDisplayWidth } = dimensions;
@@ -692,11 +700,24 @@ export class PDFTool {
 
       // Mettre à jour les champs de formulaire
       const form = pdfDoc_.getForm();
+
+      const formatDate_ = (value: string) => {
+        try {
+          const formatedDate = formatDate(value)
+          return formatedDate == "Invalid Date" ? value : formatedDate
+        } catch (error) {
+          console.log("error:", error);
+          return value
+        }
+      }
       this.PDFInputsFieldsMetadata!.forEach((page) => {
         page.fields.forEach((field) => {
           const pdfField = form.getTextField(field.name);
+          console.log("set input: " + field.name + ", " + field.value);
+
           if (pdfField) {
-            pdfField.setText(field.value);
+
+            pdfField.setText(formatDate_(field.value));
           }
         });
       });

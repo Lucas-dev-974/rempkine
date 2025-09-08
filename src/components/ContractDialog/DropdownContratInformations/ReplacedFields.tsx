@@ -1,6 +1,6 @@
 import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
-import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
+import { RadioButtons } from "../../inputs/DialogToInputRadio";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { loadContract, loggedIn } from "../../../const.data";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
@@ -103,7 +103,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         <FitFieldsWithUserData fillWithMyInformations={fillWithMyInformationsReplaced} />
       </Show>
 
-      <Dialog2InputRadio
+      <RadioButtons
         legend="Genre:"
         name="replaced-gender"
         items={[

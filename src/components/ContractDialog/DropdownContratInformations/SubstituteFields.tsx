@@ -1,6 +1,6 @@
 import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
-import { Dialog2InputRadio } from "../../inputs/Dialog2InputRadio";
+import { RadioButtons } from "../../inputs/DialogToInputRadio";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
 import { GenderEnum } from "../../ContractEditor/PDFTool";
@@ -101,7 +101,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
         />
       </Show>
 
-      <Dialog2InputRadio
+      <RadioButtons
         legend="Genre:"
         name="substitute-gender"
         items={[

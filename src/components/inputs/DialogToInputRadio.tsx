@@ -1,21 +1,19 @@
 import { GenderEnum } from "../ContractEditor/PDFTool";
 
-interface Dialog2InputRadioProps {
+interface RadioButtonsProps {
+  name: string;
   legend: string;
+  value?: string;
   items: {
     id: string;
     value: string;
     text: string;
   }[];
 
-  name: string;
-
   onChange: (e: Event) => void;
-
-  value?: string;
 }
 
-export function Dialog2InputRadio(props: Dialog2InputRadioProps) {
+export function RadioButtons(props: RadioButtonsProps) {
   return (
     <fieldset class="flex gap-2">
       <legend>{props.legend}</legend>

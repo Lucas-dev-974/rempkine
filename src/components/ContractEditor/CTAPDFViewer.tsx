@@ -1,7 +1,7 @@
 import { FiSave } from "solid-icons/fi";
 import { VsFilePdf } from "solid-icons/vs";
 import { Button } from "../buttons/Button";
-import { createUniqueId } from "solid-js";
+import { createSignal, createUniqueId } from "solid-js";
 import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
 import { ContractEntity } from "../../models/contract.entity";
 import { contractService } from "../../services/contract.service";
@@ -9,9 +9,14 @@ import { NotificationService } from "../../utils/notification.service";
 import storeService from "../../utils/store.service";
 import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
 import { currentPDFTool } from "./PDFEditor";
-
+import { LabeledSelect } from "../inputs/LabeledSelect";
+import { FiSend } from 'solid-icons/fi'
 
 export function CTAPDFViewer() {
+    // const [replacedEmail, setReplacedEmail] = createSignal("")
+    // const [substituteEmail, setSubstituteEmail] = createSignal("")
+    const [selectedSentTo, selectedSendTo] = createSignal<"replaced" | "substitute" | "other">("other")
+
     async function saveContractInDB() {
         const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.contractData
 
@@ -72,21 +77,55 @@ export function CTAPDFViewer() {
         currentPDFTool()!.downloadModifiedPdfWithStoredSignatures(currentPDFTool()!.pdfFile as File)
     }
 
-    return <div class="flex justify-end gap-2 my-2">
-        <Button
-            onClick={downloadPDF}
-            text="Télécharger le PDF modifié"
-            size="xs"
-            icon={<VsFilePdf size={19} />}
-        />
+    function getReplacedEmail() {
+        console.log("get replaced email");
 
-        <Button
-            onClick={saveContractInDB}
-            text="Sauvegarder le PDF modifié"
-            size="xs"
-            icon={<FiSave size={19} />}
-        />
+        if (!currentPDFTool()?.contractData.replacedEmail) {
+            NotificationService.push({
+                content: "Veuillez entrer l'email du remplacé",
+                type: "info"
+            })
+        }
+        return currentPDFTool()?.contractData.replacedEmail!
+    }
 
-        <PDFViewerPrevisualisationDialog />
+    function getSubstituteEmail() {
+        if (!currentPDFTool()?.contractData.substituteEmail) {
+            NotificationService.push({
+                content: "Veuillez entrer l'email du remplaçant",
+                type: "info"
+            })
+            return ""
+        }
+        return currentPDFTool()?.contractData.substituteEmail!
+    }
+
+
+    return <div class="flex justify-between items-center gap-2 my-2">
+        {/* <div>
+            <LabeledSelect id="sendTo" label="Envoyé à" options={[
+                { label: "Remplacé", value: "replaced" },
+                { label: "Remplaçant", value: "substitute" },
+            ]} />
+
+            <Button onClick={() => { }} icon={<FiSend />} text="envoyé" />
+        </div> */}
+
+        <div>
+            <Button
+                onClick={downloadPDF}
+                text="Télécharger le PDF modifié"
+                size="xs"
+                icon={<VsFilePdf size={19} />}
+            />
+
+            <Button
+                onClick={saveContractInDB}
+                text="Sauvegarder le PDF modifié"
+                size="xs"
+                icon={<FiSave size={19} />}
+            />
+            <PDFViewerPrevisualisationDialog />
+        </div>
     </div>
 }

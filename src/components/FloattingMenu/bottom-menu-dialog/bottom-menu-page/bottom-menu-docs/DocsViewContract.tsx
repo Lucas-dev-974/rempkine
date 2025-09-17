@@ -7,18 +7,28 @@ import { OpenIcon } from "../../../../../icons/OpenIcon";
 import { createSignal, onMount } from "solid-js";
 import storeService from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
-import { LinkIcon } from "../../../../../icons/LinkIcon";
 
 export function DocsViewContract() {
   const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 
+  async function SynchronizeContracts() {
+    const contracts = storeService.proxy.contracts as Partial<ContractEntity>[]
+    const request: Partial<ContractEntity>[] = await contractService.registerLocaleContractToBDD(contracts)
+    storeService.proxy.contracts = request
+
+  }
+
   onMount(async () => {
-    if (!loggedIn()) {
-      const contracts = storeService.proxy.contracts ?? []
-      setContracts(contracts);
-    } else {
-      setContracts(await contractService.list());
+    const localContracts = storeService.proxy.contracts
+    if (loggedIn()) {
+      if (localContracts!.length > 0) {
+        SynchronizeContracts()
+      } else {
+        storeService.proxy.contracts = await contractService.list()
+      }
     }
+
+    setContracts(storeService.proxy.contracts as ContractEntity[])
   });
 
   function openDialogTool_(contract: ContractEntity) {
@@ -27,17 +37,32 @@ export function DocsViewContract() {
   }
 
   async function InputSearchInputHandler(e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }) {
-    const result = await contractService.search(e.target.value);
-    setContracts(result);
+    let contracts: ContractEntity[] = []
+    if (loggedIn()) {
+      contracts = await contractService.search(e.target.value);
+    } else {
+      contracts = storeService.proxy.contracts?.filter(contract =>
+        contract.replacedName?.startsWith(e.target.value) ||
+        contract.substituteName?.startsWith(e.target.value) ||
+        contract.replacedEmail?.startsWith(e.target.value) ||
+        contract.substituteEmail?.startsWith(e.target.value)
+      ) as ContractEntity[]
+    }
+    setContracts(contracts as ContractEntity[]);
   }
 
   async function deleteContract(contract: ContractEntity) {
     if (loggedIn()) {
       await contractService.delete(contract.id);
+      storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id != contract.id)
       setContracts(contracts().filter((c) => c.id !== contract.id));
     } else {
-      storeService.proxy.contracts = storeService.proxy.contracts.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
+      storeService.proxy.contracts = storeService.proxy.contracts!.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
     }
+  }
+
+  function getLocalContract(contract: ContractEntity) {
+    return storeService.proxy.contracts?.find(contract_ => contract_.id == contract.id)
   }
 
   return (
@@ -69,14 +94,9 @@ export function DocsViewContract() {
               <td class="px-4 py-2 border-b text-right">
                 <div class="flex gap-2 justify-end">
                   <ButtonIcon
-                    size="large"
-                    icons={<LinkIcon />}
-                    onClick={() => { }}
-                  />
-                  <ButtonIcon
                     size="medium"
                     icons={<OpenIcon />}
-                    onClick={() => openDialogTool_(contract)}
+                    onClick={() => openDialogTool_(getLocalContract(contract) as ContractEntity)}
                   />
                   <ButtonIcon
                     size="medium"

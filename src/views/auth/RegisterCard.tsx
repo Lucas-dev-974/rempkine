@@ -115,14 +115,6 @@ export function RegisterCard() {
           required
         />
         <LabeledSelect
-          id="status"
-          label="Status"
-          options={[
-            { label: "Etudiant", value: "student" },
-            { label: "Professionnel", value: "professionnal" },
-          ]}
-        />
-        <LabeledSelect
           id="gender"
           label="Genre"
           options={[
@@ -130,6 +122,7 @@ export function RegisterCard() {
             { label: "Femme", value: "female" },
           ]}
         />
+
         <div class="flex justify-end">
           <button
             type="submit"

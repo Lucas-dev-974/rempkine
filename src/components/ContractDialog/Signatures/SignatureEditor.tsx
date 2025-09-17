@@ -62,7 +62,7 @@ export const SignatureEditor: Component<SignatureEditorProps> = (props) => {
         const pad = signaturePad();
         if (!pad) return;
 
-        const dataURL = pad.toDataURL();
+        const dataURL = pad.toDataURL('image/png');
         if (!dataURL) return;
 
         props.onSave(dataURL);

@@ -67,7 +67,7 @@ export function fillWithMyInformationsReplaced() {
   HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", userDatas.officeAdress as string);
 }
 
-function handlerToUpdateFormInputsWithContratData() {
+export function handlerToUpdateFormInputsWithContratData() {
   setGender(currentPDFTool()?.contractData.replacedGender ?? GenderEnum.male);
   setEmail(currentPDFTool()?.contractData.replacedEmail!);
   setName(currentPDFTool()?.contractData.replacedName!);
@@ -82,8 +82,8 @@ export function ReplacedFields(props: AccordionFieldsProps) {
   onMount(() => {
     if (loadContract()) {
       handlerToUpdateFormInputsWithContratData()
-      isValid()
     }
+    isValid()
   })
 
 

@@ -15,6 +15,7 @@ interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
   items: DorpdownItemType[] | (() => DorpdownItemType[]);
 }
+
 export const formatDate = (date: string) => {
   const date_ = new Date(date)
   return date_.toLocaleDateString('fr-FR');
@@ -35,7 +36,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   const [doneAt, setDoneAt] = createSignal<string>();
 
 
-  function fillWithMyInformations(as: "auhtor" | "author,replaced" | "author,substitute") {
+  function fillWithMyInformations(as: "author,replaced" | "author,substitute") {
     // setFieldUpdatedEvent(!fieldUpdatedEvent());
     const userDatas: UserEntity = storeService.data.user;
 
@@ -71,9 +72,9 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       setStartDate(formatDateForInput(loadContract()!.startDate))
       const endDate = formatDateForInput(loadContract()?.endDate) == "NaN-NaN-NaN" ? loadContract()?.endDate : formatDateForInput(loadContract()?.endDate)
       setEndDate(endDate)
-
       setDoneAt(formatDateForInput(loadContract()!.doneAtDate))
     }
+    isValid()
   })
 
   function isValid() {
@@ -94,12 +95,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
     >
       <Show when={loggedIn()}>
         <div class="flex flex-wrap w-full justify-end gap-2">
-          <Button
-            text="Je ne suis pas sur le contrat"
-            onClick={() => fillWithMyInformations("auhtor")}
-            size="xs"
-          />
-
           <Button
             text="Je suis remplacé"
             onClick={() => fillWithMyInformations("author,replaced")}

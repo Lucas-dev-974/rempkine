@@ -7,10 +7,11 @@ import storeService from "./utils/store.service";
 import { loggedIn } from "./const.data";
 import { Router } from "./router/Router";
 import { FloatingMenu } from "./components/FloattingMenu/FloatingMenu";
+import { ContractEntity } from "./models/contract.entity";
+import { contractService } from "./services/contract.service";
 
 export function App() {
   createEffect(on(loggedIn, () => (storeService.proxy.isLogin = loggedIn())));
-
   return (
     <main>
       <Navbar />

@@ -1,10 +1,11 @@
-import { PDFDocument, values } from "pdf-lib";
+import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
+
+import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../models/contract.entity";
 import { loadContract } from "../../const.data";
 import { Accessor } from "solid-js";
-import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
 
@@ -71,6 +72,7 @@ export class PDFTool {
 
     if (loadContract()) {
       this.setContractDataToPDFInputsFields(loadContract() as ContractEntity);
+      // handlerToUpdateFormInputsWithContratData()
     } else {
       this.contractData.replacedGender = GenderEnum.male
       this.contractData.substituteGender = GenderEnum.male
@@ -258,7 +260,10 @@ export class PDFTool {
         this.updateContractDataAndPDFFields(field, value);
       }
     });
+
+    // Todo Add call to func to  fit signal input forms
   }
+
 
   isValidContract(contract: Partial<ContractEntity>) {
     if (!contract.startDate) return false;
@@ -405,7 +410,7 @@ export class PDFTool {
   updateContractDataAndPDFFields(fieldId: any, newValue: any, updateContractData: boolean = true) {
     const key = this.getContractFieldNameFromInputPDFID(fieldId);
     if (updateContractData && key) {
-      this.contractData = { ...this.contractData, [key]: newValue } as Partial<ContractEntity>;
+      this.contractData = { ...this.contractData, [key]: newValue, updatedAt: new Date(Date.now()) } as Partial<ContractEntity>;
     }
 
     this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => {
@@ -497,7 +502,7 @@ export class PDFTool {
       const modifiedPdfBytes = await pdfDoc_.save();
 
       // Crée un lien de téléchargement
-      const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+      const blob = new Blob([modifiedPdfBytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
 
@@ -592,21 +597,12 @@ export class PDFTool {
   ) {
     const signatureData = signatures();
 
-    console.log("Mise à jour des signatures dans le contrat:", {
-      hasReplaced: !!signatureData?.replaced,
-      hasSubstitute: !!signatureData?.substitute,
-      replacedLength: signatureData?.replaced?.length || 0,
-      substituteLength: signatureData?.substitute?.length || 0
-    });
-
     if (signatureData?.replaced) {
       this.contractData.replacedSignatureDataUrl = signatureData.replaced;
-      console.log("Signature remplacé mise à jour:", signatureData.replaced.substring(0, 50) + "...");
     }
 
     if (signatureData?.substitute) {
       this.contractData.substituteSignatureDataUrl = signatureData.substitute;
-      console.log("Signature remplaçant mise à jour:", signatureData.substitute.substring(0, 50) + "...");
     }
 
     // Vérification après mise à jour
@@ -641,6 +637,7 @@ export class PDFTool {
   // Méthode alternative qui utilise les signatures stockées dans contractData
   async downloadModifiedPdfWithStoredSignatures(pdfFile: File) {
     const reader = new FileReader();
+
     reader.onload = async () => {
       const pdfData = new Uint8Array(reader.result as ArrayBufferLike);
       const pdfDoc_ = await PDFDocument.load(pdfData);
@@ -674,28 +671,56 @@ export class PDFTool {
       const { width, height } = page.getSize();
 
       if (isReplacedValid) {
-        const canvas1ImageBytes = await fetch(replacedSignatureUrl).then((res) => res.arrayBuffer());
-        const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+        try {
+          const canvas1ImageBytes = await fetch(replacedSignatureUrl).then((res) => res.arrayBuffer());
 
-        // Dessiner les images sur la page avec des positions ajustées
-        page.drawImage(canvas1ImageEmbed, {
-          x: width * 0.05, // 5% du côté gauche
-          y: height * 0.10, // 5% du bas (plus haut que 0.15)
-          width: width * 0.35, // 35% de la largeur de la page
-          height: height * 0.15, // 15% de la hauteur de la page
-        });
+          // Détecter le format de l'image et utiliser la méthode appropriée
+          let canvas1ImageEmbed;
+          if (replacedSignatureUrl.includes('data:image/png')) {
+            canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+          } else if (replacedSignatureUrl.includes('data:image/jpeg') || replacedSignatureUrl.includes('data:image/jpg')) {
+            canvas1ImageEmbed = await pdfDoc_.embedJpg(canvas1ImageBytes);
+          } else {
+            // Par défaut, essayer PNG
+            canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
+          }
 
+          // Dessiner les images sur la page avec des positions ajustées
+          page.drawImage(canvas1ImageEmbed, {
+            x: width * 0.05, // 5% du côté gauche
+            y: height * 0.10, // 5% du bas (plus haut que 0.15)
+            width: width * 0.35, // 35% de la largeur de la page
+            height: height * 0.15, // 15% de la hauteur de la page
+          });
+        } catch (error) {
+          console.error('Erreur lors de l\'embedding de la signature remplacée:', error);
+        }
       }
-      if (isSubstituteValid) {
-        const canvas2ImageBytes = await fetch(substituteSignatureUrl).then((res) => res.arrayBuffer());
-        const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
 
-        page.drawImage(canvas2ImageEmbed, {
-          x: width * 0.6, // 60% du côté gauche
-          y: height * 0.10, // 5% du bas (plus haut que 0.15)
-          width: width * 0.35, // 35% de la largeur de la page
-          height: height * 0.15, // 15% de la hauteur de la page
-        });
+      if (isSubstituteValid) {
+        try {
+          const canvas2ImageBytes = await fetch(substituteSignatureUrl).then((res) => res.arrayBuffer());
+
+          // Détecter le format de l'image et utiliser la méthode appropriée
+          let canvas2ImageEmbed;
+          if (substituteSignatureUrl.includes('data:image/png')) {
+            canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
+          } else if (substituteSignatureUrl.includes('data:image/jpeg') || substituteSignatureUrl.includes('data:image/jpg')) {
+            canvas2ImageEmbed = await pdfDoc_.embedJpg(canvas2ImageBytes);
+          } else {
+            // Par défaut, essayer PNG
+            canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
+          }
+
+          page.drawImage(canvas2ImageEmbed, {
+            x: width * 0.6, // 60% du côté gauche
+            y: height * 0.10, // 5% du bas (plus haut que 0.15)
+            width: width * 0.35, // 35% de la largeur de la page
+            height: height * 0.15, // 15% de la hauteur de la page
+          });
+        } catch (error) {
+          console.error('Erreur lors de l\'embedding de la signature substitut:', error);
+        }
       }
 
       // Mettre à jour les champs de formulaire
@@ -724,12 +749,12 @@ export class PDFTool {
 
       // Générer et télécharger le PDF
       const modifiedPdfBytes = await pdfDoc_.save();
-      const blob = new Blob([modifiedPdfBytes], { type: "application/pdf" });
+      const blob = new Blob([modifiedPdfBytes as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
 
       a.href = url;
-      a.download = "modified.pdf";
+      a.download = "contrat.pdf";
       a.click();
 
       URL.revokeObjectURL(url);

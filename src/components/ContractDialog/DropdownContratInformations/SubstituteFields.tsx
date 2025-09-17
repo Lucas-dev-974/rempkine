@@ -69,7 +69,7 @@ export function fillWithMyInformationsSubstitute() {
   HandlerToUpdateFormInputsAndPDFInputs("address", userDatas.personalAdress);
 }
 
-function handlerToUpdateFormInputsWithContratData() {
+export function handlerToUpdateFormInputsWithContratData() {
   setGender(currentPDFTool()?.contractData.substituteGender ?? GenderEnum.male);
   setEmail(currentPDFTool()?.contractData.substituteEmail!);
   setName(currentPDFTool()?.contractData.substituteName!);
@@ -83,7 +83,10 @@ function handlerToUpdateFormInputsWithContratData() {
 
 export function SubstituteFields(props: AccordionFieldsProps) {
   onMount(() => {
-    if (loadContract()) handlerToUpdateFormInputsWithContratData()
+    if (loadContract()) {
+      handlerToUpdateFormInputsWithContratData()
+    }
+    isValid()
   })
 
   return (

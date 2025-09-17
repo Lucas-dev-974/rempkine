@@ -1,14 +1,18 @@
 // import { UserAttributes } from "../models/User";
 
+import { ContractEntity } from "../models/contract.entity";
+
 type StoreDataType = {
   [key: string]: any;
   isLogin: boolean | undefined;
+  contracts?: Partial<ContractEntity>[]
 };
 
 class StoreService {
   public data: StoreDataType = {
     // user: undefined,
     isLogin: undefined,
+    contracts: []
   };
 
   public proxy = new Proxy(this.data, {

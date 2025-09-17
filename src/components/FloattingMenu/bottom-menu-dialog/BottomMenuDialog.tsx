@@ -10,7 +10,7 @@ export const toggleDialog = () => setBottomMenuDialog(!bottomMenuDialog());
 export const [bottomMenuPage, setBottomMenuPage] = createSignal("");
 export enum BottomMenuPageEnum {
   account = "Compte",
-  docs = "Docs",
+  contracts = "Contract",
   none = "none",
 }
 
@@ -33,7 +33,7 @@ export function BottomMenuDialog() {
         }}
       >
         <Switch>
-          <Match when={bottomMenuPage() === BottomMenuPageEnum.docs}>
+          <Match when={bottomMenuPage() === BottomMenuPageEnum.contracts}>
             <BottomMenuDocs />
           </Match>
         </Switch>

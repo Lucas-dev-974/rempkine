@@ -1,4 +1,4 @@
-import { createSignal, onCleanup } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { AccordionFieldsProps } from "../DropdownContratInformations/ReplacedFields";
 import { SignatureCanvas } from "./SignatureCanvas";
@@ -6,6 +6,7 @@ import { SignatureEditor } from "./SignatureEditor";
 import { SignatureType } from "./types";
 import { currentPDFTool } from "../../ContractEditor/PDFEditor";
 import { signatureManager } from "./SignatureManager";
+import { loadContract } from "../../../const.data";
 
 export function Signatures(props: AccordionFieldsProps) {
     const [valid, setValid] = createSignal(false);
@@ -45,6 +46,19 @@ export function Signatures(props: AccordionFieldsProps) {
         }
     }
 
+    onMount(() => {
+        if (loadContract()) {
+            if (currentPDFTool()?.contractData.replacedSignatureDataUrl) {
+                signatureManager.updateSignature("replaced", currentPDFTool()?.contractData.replacedSignatureDataUrl!);
+                currentPDFTool()!.updateSignaturesInContract(signatureManager.signatures);
+            }
+            if (currentPDFTool()?.contractData.substituteSignatureDataUrl) {
+                signatureManager.updateSignature("substitute", currentPDFTool()?.contractData.substituteSignatureDataUrl!);
+                currentPDFTool()!.updateSignaturesInContract(signatureManager.signatures);
+            }
+        }
+        isValid()
+    })
     onCleanup(() => {
         signatureManager.setSignatures({
             replaced: "",

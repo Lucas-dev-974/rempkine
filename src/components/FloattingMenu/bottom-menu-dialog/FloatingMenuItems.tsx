@@ -6,8 +6,8 @@ import "./FloatingMenuItems.css";
 const menuItems = [
   {
     icon: <FilesOutlineIcon />,
-    label: BottomMenuPageEnum.docs,
-    action: () => setBottomMenuPageValue(BottomMenuPageEnum.docs),
+    label: BottomMenuPageEnum.contracts,
+    action: () => setBottomMenuPageValue(BottomMenuPageEnum.contracts),
   },
 ];
 

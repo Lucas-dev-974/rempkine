@@ -70,34 +70,9 @@ export function PDFEditor() {
   });
 
   onCleanup(() => {
-    if (currentPDFTool()) currentPDFTool()?.resetContractData
+    currentPDFTool()?.resetContractData
+    console.log("contract reset: ", currentPDFTool()?.contractData);
   })
-
-
-  // // Create SignaturePad instances and load signatures when the component is mounted & if loadContract is available
-  // createEffect(() => {
-  //   if (canvasSignatureReplaced() && canvasSignatureSubstitute()) {
-  //     const signaturePadConfig = {
-  //       minWidth: 2,
-  //       maxWidth: 4,
-  //       penColor: "rgb(66, 133, 244)",
-  //     };
-
-  //     setSignaturePad1(new SignaturePad(canvasSignatureReplaced()!, signaturePadConfig))
-  //     setSignaturePad2(new SignaturePad(canvasSignatureSubstitute()!, signaturePadConfig))
-
-  //     if (loadContract()) {
-  //       const replacedSignatureDataUrl = loadContract()!.replacedSignatureDataUrl;
-  //       const substituteSignatureDataUrl = loadContract()!.substituteSignatureDataUrl;
-
-  //       setTimeout(() => {
-  //         signaturePad1()?.fromDataURL(replacedSignatureDataUrl!);
-  //         signaturePad2()?.fromDataURL(substituteSignatureDataUrl!);
-  //       }, 100);
-  //     }
-  //   }
-  // });
-
 
   return <CTAPDFViewer />;
 }

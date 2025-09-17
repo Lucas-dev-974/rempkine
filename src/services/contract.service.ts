@@ -34,8 +34,12 @@ class ContractService {
     return response;
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string | number): Promise<void> {
     return await FetcherService.delete("/contract/" + id);
+  }
+
+  async registerLocaleContractToBDD(contracts: Partial<ContractEntity>[]) {
+    return await FetcherService.post("/contract/register-local-contrats", { contracts })
   }
 }
 export const contractService = new ContractService();

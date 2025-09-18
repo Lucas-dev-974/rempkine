@@ -1,4 +1,4 @@
-import { createSignal, Match, Switch } from "solid-js";
+import { createSignal, Match, onCleanup, Switch } from "solid-js";
 import { DocsViewContract } from "./bottom-menu-docs/DocsViewContract";
 
 enum DocsViewsEnum {
@@ -22,10 +22,7 @@ export function BottomMenuDocs() {
       <p class="text-3xl font-semibold py-2">Mes documents</p>
       <div class="flex gap-2">
         {docsViewsItems.map((view) => (
-          <p
-            class="text-md px-3 py-2 border shadow-lg rounded-full cursor-pointer"
-            onClick={view.action}
-          >
+          <p class="text-md px-3 py-2 border shadow-lg rounded-full cursor-pointer" onClick={view.action}>
             {view.title}
           </p>
         ))}

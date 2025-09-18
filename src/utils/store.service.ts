@@ -1,6 +1,10 @@
 // import { UserAttributes } from "../models/User";
 
+import { createSignal } from "solid-js";
+import { setContracts } from "../components/FloattingMenu/bottom-menu-dialog/bottom-menu-page/bottom-menu-docs/DocsViewContract";
 import { ContractEntity } from "../models/contract.entity";
+
+export const [localeUpdateEnvent, setLocalUpdateEvent] = createSignal<boolean>(false)
 
 type StoreDataType = {
   [key: string]: any;
@@ -10,7 +14,6 @@ type StoreDataType = {
 
 class StoreService {
   public data: StoreDataType = {
-    // user: undefined,
     isLogin: undefined,
     contracts: []
   };
@@ -21,6 +24,9 @@ class StoreService {
     },
     set(target, property, value, receiver) {
       const toReturn = Reflect.set(target, property, value, receiver);
+      if (property === "contracts") {
+        setLocalUpdateEvent(!localeUpdateEnvent())
+      }
       localStorage.setItem("store", JSON.stringify(target));
       return toReturn;
     },

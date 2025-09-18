@@ -65,14 +65,9 @@ export function PDFEditor() {
     setCurrentPDFTool(pdfTool)
     setCurrentPage(currentPDFTool()!.currentPage);
     setNumPages(currentPDFTool()!.numPages);
-
-    console.log(currentPDFTool()?.PDFInputsFieldsMetadata);
   });
 
-  onCleanup(() => {
-    currentPDFTool()?.resetContractData
-    console.log("contract reset: ", currentPDFTool()?.contractData);
-  })
+  onCleanup(() => currentPDFTool()?.resetContractData)
 
   return <CTAPDFViewer />;
 }

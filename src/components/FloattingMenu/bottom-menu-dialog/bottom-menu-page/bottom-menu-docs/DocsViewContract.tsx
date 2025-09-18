@@ -4,12 +4,17 @@ import { openDialogTool } from "../../../../dialog/DialogWrapper";
 import { TrashIcon } from "../../../../../icons/TrashIcon";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { OpenIcon } from "../../../../../icons/OpenIcon";
-import { createSignal, onMount } from "solid-js";
-import storeService from "../../../../../utils/store.service";
+import { createEffect, createSignal, on, onCleanup, onMount } from "solid-js";
+import storeService, { localeUpdateEnvent } from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
+import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
 
+export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 export function DocsViewContract() {
-  const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
+
+  createEffect(on(localeUpdateEnvent, () => {
+    setContracts(storeService.proxy.contracts as ContractEntity[])
+  }))
 
   async function SynchronizeContracts() {
     const contracts = storeService.proxy.contracts as Partial<ContractEntity>[]
@@ -27,9 +32,19 @@ export function DocsViewContract() {
         storeService.proxy.contracts = await contractService.list()
       }
     }
-
-    setContracts(storeService.proxy.contracts as ContractEntity[])
   });
+
+  // * next create Effect is an example of onMount and onCleanup for BottomMenu 
+  createEffect(on(isBottomMenuVisible, () => {
+    if (isBottomMenuVisible()) {
+
+      if (bottomMenuPage() === BottomMenuPageEnum.contracts) {
+        console.log("on mount");
+      }
+    } else {
+      console.log("cleanup");
+    }
+  }))
 
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);

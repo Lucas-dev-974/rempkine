@@ -4,8 +4,8 @@ import { Show } from "solid-js";
 
 import "./BottomMenuDialog.css";
 
-const [bottomMenuDialog, setBottomMenuDialog] = createSignal(false);
-export const toggleDialog = () => setBottomMenuDialog(!bottomMenuDialog());
+export const [isBottomMenuVisible, setIsBottomMenuVisible] = createSignal(false);
+export const toggleDialog = () => setIsBottomMenuVisible(!isBottomMenuVisible());
 
 export const [bottomMenuPage, setBottomMenuPage] = createSignal("");
 export enum BottomMenuPageEnum {
@@ -16,20 +16,20 @@ export enum BottomMenuPageEnum {
 
 export const setBottomMenuPageValue = (value: BottomMenuPageEnum) => {
   setBottomMenuPage(value);
-  setBottomMenuDialog(true);
+  setIsBottomMenuVisible(true);
 };
 
 export function BottomMenuDialog() {
   return (
     <>
-      <Show when={bottomMenuDialog()}>
-        <div class="overlay" onClick={() => setBottomMenuDialog(false)} />
+      <Show when={isBottomMenuVisible()}>
+        <div class="overlay" onClick={() => setIsBottomMenuVisible(false)} />
       </Show>
       <div
         class="bottom-menu-dialog"
         classList={{
-          "translate-y-full": !bottomMenuDialog(),
-          "translate-y-0": bottomMenuDialog(),
+          "translate-y-full": !isBottomMenuVisible(),
+          "translate-y-0": isBottomMenuVisible(),
         }}
       >
         <Switch>

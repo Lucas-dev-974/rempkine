@@ -78,13 +78,21 @@ export function handlerToUpdateFormInputsWithContratData() {
   setOrderDepartement(currentPDFTool()?.contractData.substituteOrderDepartement!);
   setOrderDepartmentNumber(currentPDFTool()?.contractData.substituteOrderDepartmentNumber?.toString()!);
   setProfessionnalAddress(currentPDFTool()?.contractData.substituteAdress!);
-  setGender(currentPDFTool()?.contractData.substituteGender ?? GenderEnum.male);
 }
 
 export function SubstituteFields(props: AccordionFieldsProps) {
   onMount(() => {
     if (loadContract()) {
       handlerToUpdateFormInputsWithContratData()
+    } else {
+      setGender(GenderEnum.male);
+      setEmail("");
+      setName("");
+      setBirthday("");
+      setBirthdayLocation("");
+      setOrderDepartement("");
+      setOrderDepartmentNumber("");
+      setProfessionnalAddress("");
     }
     isValid()
   })

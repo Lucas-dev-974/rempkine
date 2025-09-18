@@ -97,7 +97,6 @@ export class PDFTool {
         return "doneAtLocation";
       case "138R":
         return "doneAtDate";
-
       case "100R":
         return "replacedEmail";
       case "94R":
@@ -105,7 +104,13 @@ export class PDFTool {
       case "125R":
       case "119R":
       case "121R":
+      case "98R":
+      case "116R":
+      case "114R":
+      case "124R":
+      case "120R":
         return "replacedName";
+
       case "96R":
         return "replacedBirthday";
       case "95R":
@@ -409,6 +414,8 @@ export class PDFTool {
 
   updateContractDataAndPDFFields(fieldId: any, newValue: any, updateContractData: boolean = true) {
     const key = this.getContractFieldNameFromInputPDFID(fieldId);
+    console.log("update contract data fields:", key, newValue, updateContractData, fieldId);
+
     if (updateContractData && key) {
       this.contractData = { ...this.contractData, [key]: newValue, updatedAt: new Date(Date.now()) } as Partial<ContractEntity>;
     }

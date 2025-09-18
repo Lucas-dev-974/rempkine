@@ -38,6 +38,8 @@ export function updateCanvasInput(id: string, value: string) {
 
 export function HandlerToUpdateCanvasInputs(fieldID: string | string[], value: string, updateContractData: boolean = true) {
 
+  console.log("update field:", fieldID, value);
+
   if (Array.isArray(fieldID)) {
     fieldID.forEach((id) => {
       currentPDFTool()?.updateContractDataAndPDFFields(id, value, updateContractData)

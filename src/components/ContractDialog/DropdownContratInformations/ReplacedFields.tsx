@@ -10,6 +10,7 @@ import { UserEntity } from "../../../models/user.entity";
 import storeService from "../../../utils/store.service";
 import { createSignal, Show, onMount } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
+import { contractService } from "../../../services/contract.service";
 
 export interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -68,6 +69,8 @@ export function fillWithMyInformationsReplaced() {
 }
 
 export function handlerToUpdateFormInputsWithContratData() {
+  console.log("current data", currentPDFTool()?.contractData);
+
   setGender(currentPDFTool()?.contractData.replacedGender ?? GenderEnum.male);
   setEmail(currentPDFTool()?.contractData.replacedEmail!);
   setName(currentPDFTool()?.contractData.replacedName!);
@@ -82,6 +85,15 @@ export function ReplacedFields(props: AccordionFieldsProps) {
   onMount(() => {
     if (loadContract()) {
       handlerToUpdateFormInputsWithContratData()
+    } else {
+      setGender(GenderEnum.male);
+      setEmail("");
+      setName("");
+      setBirthday("")
+      setBirthdayLocation("");
+      setOrderDepartement("");
+      setOrderDepartmentNumber("");
+      setProfessionnalAddress("");
     }
     isValid()
   })

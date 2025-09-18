@@ -8,7 +8,7 @@ import { UserEntity } from "../../../models/user.entity";
 import storeService from "../../../utils/store.service";
 import { loadContract, loggedIn } from "../../../const.data";
 import { Button } from "../../buttons/Button";
-import { createSignal, onMount, Show } from "solid-js";
+import { createSignal, onCleanup, onMount, Show } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 
 interface ContractInformationsFieldsProps {
@@ -76,6 +76,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
     }
     isValid()
   })
+
 
   function isValid() {
     if (startDate() && endDate() && percentReturnToSubstitute() && percentReturnToSubstituteBeforeDate() && conciliationCDOMK() && doneAtLocation() && doneAt()) {

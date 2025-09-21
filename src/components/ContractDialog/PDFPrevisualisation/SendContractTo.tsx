@@ -88,6 +88,7 @@ export function SendContractTo(props: {
                 form.append("contractFile", toSendBlob() as Blob, "contrat.pdf")
                 form.append("from", mailFrom())
                 form.append("to", mailTo())
+                form.append("body", mailBody())
 
                 await mailService.sendContratTo(form)
                 NotificationService.push({

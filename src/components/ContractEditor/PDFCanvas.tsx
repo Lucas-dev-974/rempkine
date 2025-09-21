@@ -142,7 +142,7 @@ export function PDFCanvas() {
 
 
     return <div class="relative mx-auto flex flex-col gap-2 pb-2 ">
-        <canvas id="pdf-canvas" class="max-w-[600px] lg:w-[600px] w-full border border-gray-400 rounded-lg mx-auto" />
+        <canvas id="pdf-canvas" class="w-[85vw] max-w-[600px] lg:w-[600px] md:w-full border border-gray-400 rounded-lg mx-auto" />
         <PDFInputsOnCanvas />
         <PDFActions changePage={pagination} currentPage={currentPage()} numberOfPage={numPages() as number} />
     </div >

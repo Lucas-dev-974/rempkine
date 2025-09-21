@@ -10,7 +10,7 @@ interface PDFActionsProps {
 }
 
 export function PDFActions(props: PDFActionsProps) {
-    return <div class="flex items-center px-4 justify-between gap-4">
+    return <div class="flex items-center px-4 justify-end gap-4">
         <div class="flex items-center">
             <button class="h-2 w-2 rounded-full flex items-center" onClick={() => props.changePage(-1)} > <PreviousIcon /> </button>
             <p class="mx-4 text-sm"> {props.currentPage} sur {props.numberOfPage as number} </p>

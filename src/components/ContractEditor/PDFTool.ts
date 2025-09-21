@@ -5,9 +5,11 @@ import { formatDate } from "../ContractDialog/DropdownContratInformations/Contra
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../models/contract.entity";
 import { loadContract } from "../../const.data";
-import { Accessor } from "solid-js";
+import { Accessor, createSignal } from "solid-js";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
+
+export const [toSendBlob, setToSendBlob] = createSignal<Blob | undefined>()
 
 export enum GenderEnum {
   male = "male",
@@ -414,7 +416,6 @@ export class PDFTool {
 
   updateContractDataAndPDFFields(fieldId: any, newValue: any, updateContractData: boolean = true) {
     const key = this.getContractFieldNameFromInputPDFID(fieldId);
-    console.log("update contract data fields:", key, newValue, updateContractData, fieldId);
 
     if (updateContractData && key) {
       this.contractData = { ...this.contractData, [key]: newValue, updatedAt: new Date(Date.now()) } as Partial<ContractEntity>;
@@ -642,7 +643,7 @@ export class PDFTool {
   }
 
   // Méthode alternative qui utilise les signatures stockées dans contractData
-  async downloadModifiedPdfWithStoredSignatures(pdfFile: File) {
+  async downloadModifiedPdfWithStoredSignatures(pdfFile: File, download: boolean = true) {
     const reader = new FileReader();
 
     reader.onload = async () => {
@@ -653,8 +654,6 @@ export class PDFTool {
       const lastPageIndex = pdfDoc_.getPageCount() - 1;
       const page = pdfDoc_.getPage(lastPageIndex);
 
-      console.log("Page cible pour les signatures:", { lastPageIndex, totalPages: pdfDoc_.getPageCount() });
-
       // Déboguer l'état des signatures avant utilisation
       // this.debugSignatures();
 
@@ -662,12 +661,12 @@ export class PDFTool {
       const replacedSignatureUrl = this.contractData.replacedSignatureDataUrl;
       const substituteSignatureUrl = this.contractData.substituteSignatureDataUrl;
 
-      console.log("Signatures stockées dans contractData:", {
-        replaced: replacedSignatureUrl ? "disponible" : "non disponible",
-        substitute: substituteSignatureUrl ? "disponible" : "non disponible",
-        replacedLength: replacedSignatureUrl?.length || 0,
-        substituteLength: substituteSignatureUrl?.length || 0
-      });
+      // console.log("Signatures stockées dans contractData:", {
+      //   replaced: replacedSignatureUrl ? "disponible" : "non disponible",
+      //   substitute: substituteSignatureUrl ? "disponible" : "non disponible",
+      //   replacedLength: replacedSignatureUrl?.length || 0,
+      //   substituteLength: substituteSignatureUrl?.length || 0
+      // });
 
       // Vérifier si les signatures sont valides (commencent par "data:image")
       const isReplacedValid = replacedSignatureUrl && replacedSignatureUrl.startsWith("data:image");
@@ -742,17 +741,16 @@ export class PDFTool {
           return value
         }
       }
-      this.PDFInputsFieldsMetadata!.forEach((page) => {
-        page.fields.forEach((field) => {
-          const pdfField = form.getTextField(field.name);
-          console.log("set input: " + field.name + ", " + field.value);
 
+      for (const page of this.PDFInputsFieldsMetadata) {
+        for (const field of page.fields) {
+          const pdfField = form.getTextField(field.name)
           if (pdfField) {
 
             pdfField.setText(formatDate_(field.value));
           }
-        });
-      });
+        }
+      }
 
       // Générer et télécharger le PDF
       const modifiedPdfBytes = await pdfDoc_.save();
@@ -761,10 +759,17 @@ export class PDFTool {
       const a = document.createElement("a");
 
       a.href = url;
-      a.download = "contrat.pdf";
-      a.click();
+      if (download) {
 
-      URL.revokeObjectURL(url);
+        a.download = "contrat.pdf";
+        a.click();
+
+        URL.revokeObjectURL(url);
+      } else {
+        console.log("in doawnload at end:", blob);
+
+        setToSendBlob(blob)
+      }
     };
 
     reader.readAsArrayBuffer(pdfFile as File);

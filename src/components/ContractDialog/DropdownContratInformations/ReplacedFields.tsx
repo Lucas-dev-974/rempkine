@@ -69,8 +69,6 @@ export function fillWithMyInformationsReplaced() {
 }
 
 export function handlerToUpdateFormInputsWithContratData() {
-  console.log("current data", currentPDFTool()?.contractData);
-
   setGender(currentPDFTool()?.contractData.replacedGender ?? GenderEnum.male);
   setEmail(currentPDFTool()?.contractData.replacedEmail!);
   setName(currentPDFTool()?.contractData.replacedName!);

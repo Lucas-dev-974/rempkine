@@ -4,7 +4,7 @@ import "./LabeledInput.css";
 interface LabeledInputProps {
   id: string;
   label: string;
-  type: "text" | "mail" | "date" | "number" | "password";
+  type: "text" | "mail" | "date" | "number" | "password" | "textarea";
   placeholder?: string;
 
   style?: "form";

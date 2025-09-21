@@ -5,14 +5,16 @@ import { currentPDFTool } from "../../ContractEditor/PDFEditor"
 import { toSendBlob } from "../../ContractEditor/PDFTool"
 import { LabeledInput } from "../../inputs/LabeledInput"
 import { NotificationService } from "../../../utils/notification.service"
+import { LabeledTextarea } from "../../inputs/LabeledTextarea"
 
 export function SendContractTo(props: {
     setOpen: Setter<boolean>
 }) {
     const [mailFrom, setMailFrom] = createSignal("")
     const [mailTo, setMailTo] = createSignal("")
+    const [mailBody, setMailBody] = createSignal("")
+
     const [isLoading, setIsLoading] = createSignal(false)
-    const [errors, setErrors] = createSignal<{ mailFrom?: string, mailTo?: string }>({})
 
     // Validation des emails
     const validateEmail = (email: string): boolean => {
@@ -65,7 +67,6 @@ export function SendContractTo(props: {
         }
 
         setIsLoading(true)
-        setErrors({})
 
         try {
             // Générer le PDF avec les signatures
@@ -121,47 +122,31 @@ export function SendContractTo(props: {
             </div>
 
             {/* Formulaire */}
-            <div class="space-y-5">
-                <div class="space-y-2">
-                    <LabeledInput
-                        id="mailFrom"
-                        label="Votre email"
-                        type="mail"
-                        value={mailFrom()}
-                        onInput={(e) => {
-                            setMailFrom(e.target.value)
-                            // Effacer l'erreur quand l'utilisateur tape
-                            if (errors().mailFrom) {
-                                setErrors({ ...errors(), mailFrom: undefined })
-                            }
-                        }}
-                    />
-                    {errors().mailFrom && (
-                        <p class="text-red-500 text-sm mt-1">{errors().mailFrom}</p>
-                    )}
-                </div>
+            <div class="space-y-5 flex flex-col gap-2">
+                <LabeledInput
+                    id="mailFrom"
+                    label="Votre email"
+                    type="mail"
+                    value={mailFrom()}
+                    onInput={(e) => { setMailFrom(e.target.value) }}
+                />
 
-                <div class="space-y-2">
-                    <LabeledInput
-                        id="mailTo"
-                        label="Email destinataire"
-                        type="mail"
-                        value={mailTo()}
-                        onInput={(e) => {
-                            setMailTo(e.target.value)
-                            // Effacer l'erreur quand l'utilisateur tape
-                            if (errors().mailTo) {
-                                setErrors({ ...errors(), mailTo: undefined })
-                            }
-                        }}
-                    />
-                    {errors().mailTo && (
-                        <p class="text-red-500 text-sm mt-1">{errors().mailTo}</p>
-                    )}
-                </div>
+                <LabeledInput
+                    id="mailTo"
+                    label="Email destinataire"
+                    type="mail"
+                    value={mailTo()}
+                    onInput={(e) => { setMailTo(e.target.value) }}
+                />
+
+                <LabeledTextarea
+                    id="mailBody"
+                    label="Corp de l'email"
+                    value={mailBody()}
+                    onInput={(value) => { setMailBody(value) }}
+                />
             </div>
 
-            {/* Bouton d'envoi */}
             <div class="flex justify-center pt-4">
                 <Button
                     text={isLoading() ? "Envoi en cours..." : "Envoyer le contrat"}

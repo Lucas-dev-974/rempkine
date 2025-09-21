@@ -17,7 +17,7 @@ class Fetcher {
   async post(url: string, data: any) {
     const response = await this.fetcher(url, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
     });
     return await response;
   }
@@ -36,13 +36,20 @@ class Fetcher {
 
   async fetcher(url: string, init?: RequestInit) {
 
+    const headers: HeadersInit = {
+      Authorization: "Bearer " + this.token,
+    }
+
+    if (!(init?.body instanceof FormData)) {
+      headers["Content-Type"] = "application/json"
+    }
+
+    console.log("header:", headers);
+
 
     const response = await fetch(this.host + url, {
       ...init,
-      headers: {
-        Authorization: "Bearer " + this.token,
-        "Content-Type": "application/json",
-      },
+      headers
     });
 
     const responseJson = await response.json() ?? "ok";

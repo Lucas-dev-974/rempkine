@@ -1,5 +1,4 @@
-import { createSignal, onMount, Setter, onCleanup } from "solid-js"
-import { loadContract } from "../../const.data";
+import { createSignal, onCleanup } from "solid-js"
 import { currentPDFTool } from "./PDFEditor"
 import { PDFFields } from "./PDFTool";
 import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
@@ -18,7 +17,7 @@ export function PDFInputsOnCanvas() {
         return fields.value ?? ""
     }
 
-    return <div class="text-sm  md:text-sm lg:text-md ">
+    return <div class="text-xs md:text-sm lg:text-md ">
         {canvasInputs().map((field) => (
             <input
                 class={"pdf-input"}

@@ -1,4 +1,4 @@
-import { createSignal, Match, onCleanup, Switch } from "solid-js";
+import { createSignal, Match, Switch } from "solid-js";
 import { DocsViewContract } from "./bottom-menu-docs/DocsViewContract";
 
 enum DocsViewsEnum {

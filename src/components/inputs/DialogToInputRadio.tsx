@@ -1,4 +1,3 @@
-import { GenderEnum } from "../ContractEditor/PDFTool";
 
 interface RadioButtonsProps {
   name: string;
@@ -15,11 +14,11 @@ interface RadioButtonsProps {
 
 export function RadioButtons(props: RadioButtonsProps) {
   return (
-    <fieldset class="flex gap-2">
+    <fieldset class="flex gap-2 border-none m-0 p-0 my-2">
       <legend>{props.legend}</legend>
 
       {props.items.map((item) => (
-        <div>
+        <div class="mt-2">
           <input
             type="radio"
             id={item.id}

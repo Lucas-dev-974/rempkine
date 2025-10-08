@@ -46,5 +46,5 @@ export function DropdownWrapper(
     });
   }
 
-  return <div class="accordion">{props.children(toggleItem, items)}</div>;
+  return <div class="w-full  mx-auto border border-solid border-gray-300 rounded overflow-hidden">{props.children(toggleItem, items)}</div>;
 }

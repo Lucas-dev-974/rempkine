@@ -2,15 +2,13 @@ import { BottomMenuDocs } from "./bottom-menu-page/BottomMenuDocs";
 import { createSignal, Match, Switch } from "solid-js";
 import { Show } from "solid-js";
 
-import "./BottomMenuDialog.css";
-
 export const [isBottomMenuVisible, setIsBottomMenuVisible] = createSignal(false);
 export const toggleDialog = () => setIsBottomMenuVisible(!isBottomMenuVisible());
 
 export const [bottomMenuPage, setBottomMenuPage] = createSignal("");
 export enum BottomMenuPageEnum {
   account = "Compte",
-  contracts = "Contract",
+  contracts = "Contrats",
   none = "none",
 }
 
@@ -23,10 +21,10 @@ export function BottomMenuDialog() {
   return (
     <>
       <Show when={isBottomMenuVisible()}>
-        <div class="overlay" onClick={() => setIsBottomMenuVisible(false)} />
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setIsBottomMenuVisible(false)} />
       </Show>
       <div
-        class="bottom-menu-dialog"
+        class="fixed bottom-0 left-0 w-full bg-white rounded-t-lg shadow-lg z-50 p-4 transform transition-transform duration-1000"
         classList={{
           "translate-y-full": !isBottomMenuVisible(),
           "translate-y-0": isBottomMenuVisible(),

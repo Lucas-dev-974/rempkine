@@ -1,6 +1,5 @@
 import { JSX } from "solid-js";
 
-import "./ButtonIcon.css";
 
 interface ButtonIconProps {
   icons: JSX.Element;
@@ -9,8 +8,16 @@ interface ButtonIconProps {
 }
 
 export function ButtonIcon(props: ButtonIconProps) {
+  let classe = ""
+  if (props.size == "small") {
+    classe = "w-3 h-3"
+  } else if (props.size == "medium") {
+    classe = "w-5 h-5"
+  } else if (props.size == "large") {
+    classe = "w-7 h-7"
+  }
   return (
-    <button class={"button-icon " + props.size} onClick={props.onClick}>
+    <button class={"text-base px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none " + classe} onClick={props.onClick}>
       {props.icons}
     </button>
   );

@@ -1,13 +1,13 @@
 import { FiSave } from "solid-icons/fi";
 import { VsFilePdf } from "solid-icons/vs";
 import { Button } from "../buttons/Button";
-import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
 import { ContractEntity } from "../../models/contract.entity";
 import { contractService } from "../../services/contract.service";
 import { NotificationService } from "../../utils/notification.service";
 import storeService from "../../utils/store.service";
 import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
 import { currentPDFTool } from "./PDFEditor";
+import { loggedIn, loadContract, setLoadContrat } from "../../../public/const.data";
 
 function createContractID(): string {
     // Génère un ID unique basé sur timestamp et random

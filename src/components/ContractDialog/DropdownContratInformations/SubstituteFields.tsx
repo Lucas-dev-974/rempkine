@@ -8,8 +8,8 @@ import { UserEntity } from "../../../models/user.entity";
 import { LabeledInput } from "../../inputs/LabeledInput";
 import storeService from "../../../utils/store.service";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
-import { loadContract, loggedIn } from "../../../const.data";
 import { createSignal, onMount, Show } from "solid-js";
+import { loadContract, loggedIn } from "../../../../public/const.data";
 
 interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -113,7 +113,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
       </Show>
 
       <RadioButtons
-        legend="Genre:"
+        legend="Genre"
         name="substitute-gender"
         items={[
           {

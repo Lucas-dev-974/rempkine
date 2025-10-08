@@ -6,7 +6,7 @@ import { SignatureEditor } from "./SignatureEditor";
 import { SignatureType } from "./types";
 import { currentPDFTool } from "../../ContractEditor/PDFEditor";
 import { signatureManager } from "./SignatureManager";
-import { loadContract } from "../../../const.data";
+import { loadContract } from "../../../../public/const.data";
 
 export function Signatures(props: AccordionFieldsProps) {
     const [valid, setValid] = createSignal(false);

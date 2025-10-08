@@ -2,7 +2,6 @@ import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { RadioButtons } from "../../inputs/DialogToInputRadio";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
-import { loadContract, loggedIn } from "../../../const.data";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
 import { GenderEnum } from "../../ContractEditor/PDFTool";
 import { LabeledInput } from "../../inputs/LabeledInput";
@@ -11,6 +10,7 @@ import storeService from "../../../utils/store.service";
 import { createSignal, Show, onMount } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 import { contractService } from "../../../services/contract.service";
+import { loadContract, loggedIn } from "../../../../public/const.data";
 
 export interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -114,7 +114,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       </Show>
 
       <RadioButtons
-        legend="Genre:"
+        legend="Genre"
         name="replaced-gender"
         items={[
           {

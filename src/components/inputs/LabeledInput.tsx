@@ -1,13 +1,9 @@
-import { createSignal, onMount } from "solid-js";
-import "./LabeledInput.css";
-
 interface LabeledInputProps {
   id: string;
   label: string;
   type: "text" | "mail" | "date" | "number" | "password" | "textarea";
   placeholder?: string;
 
-  style?: "form";
   value?: string;
   required?: boolean;
 
@@ -15,15 +11,11 @@ interface LabeledInputProps {
 }
 
 export function LabeledInput(props: LabeledInputProps) {
-  const [classname, setClassname] = createSignal("labeled-input");
-
-  onMount(() =>
-    setClassname((prev) => (!!props.style ? `${prev}-${props.style}` : prev))
-  );
   return (
-    <div class={classname()}>
+    <div class={"grid grid-cols-1 form-input py-1"}>
       <label for={props.id}>{props.label}</label>
       <input
+        class="border-none bg-slate-300 border-b-2 py-2 px-3 rounded-md rounded-sm outline-none"
         type={props.type}
         id={props.id}
         name={props.id}

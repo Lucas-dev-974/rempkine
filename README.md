@@ -1,34 +1,35 @@
-## Usage
+# PWA Starter
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+[**Straight to Full Documentation**](https://docs.pwabuilder.com/#/starter/quick-start)
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+The PWABuilder pwa-starter is our opinionated, best practices, production tested starter that we use to build all of our PWAs, including [PWABuilder itself](https://blog.pwabuilder.com/posts/introducing-the-brand-new-pwa-builder/)! The pwa-starter is a starter codebase, just like create-react-app or the Angular CLI can generate, that uses the PWABuilder team&#39;s preferred front-end tech stack. We also have a CLI tool to allow you to create a PWA template from the command line.
 
-```bash
-$ npm install # or pnpm install or yarn install
-```
+## Jump Right In
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+Install the PWABuilder CLI:
 
-## Available Scripts
+`npm i -g @pwabuilder/cli`
 
-In the project directory, you can run:
+And create a new app with this command:
 
-### `npm run dev` or `npm start`
+`pwa create`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+And start your app locally with:
 
-The page will reload if you make edits.<br>
+`pwa start`
 
-### `npm run build`
+And that's it! Good luck on your Progressive Web App adventure!
 
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
+## More Info
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+[![Get started with the pwa-starter!](https://img.youtube.com/vi/u3pWKpmic_k/0.jpg)](https://www.youtube.com/watch?v=u3pWKpmic_k)
 
-## Deployment
+With it you get an app that:
+- Has no build system to set up and no boilerplate code to add. Everything is included out of the box.
+- Has a Service Worker system using [Workbox](https://developers.google.com/web/tools/workbox/)
+- Scores close to 100 on Lighthouse out of the box
+- Has everything needed to be installable in the browser
+- Is ready to be package for the app stores using [PWABuilder](https://www.pwabuilder.com)
+- Uses the [Azure Static Web Apps CLI](https://azure.github.io/static-web-apps-cli) which enables emulating your production environment locally, and gets you ready for deploying to Azure Static Web Apps!
 
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+and all with just a few button clicks 😊.

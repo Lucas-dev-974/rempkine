@@ -1,5 +1,5 @@
 import { createSignal, mergeProps } from "solid-js";
-import { CloseIcon } from "../../icons/CloseIcon";
+import { VsChromeClose } from 'solid-icons/vs'
 import { NotificationType } from "../../utils/notification.service";
 
 export function NotifcationItem(props: Partial<NotificationType>) {
@@ -21,7 +21,7 @@ export function NotifcationItem(props: Partial<NotificationType>) {
       <p> {props.content} </p>
       <div>
         <button class="w-3 h-3" onClick={closeNotif}>
-          <CloseIcon stroke="white" />
+          <VsChromeClose stroke="white" />
         </button>
       </div>
     </div>

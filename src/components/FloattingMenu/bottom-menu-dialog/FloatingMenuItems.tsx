@@ -1,11 +1,9 @@
 import { setBottomMenuPageValue, BottomMenuPageEnum } from "./BottomMenuDialog";
-import { FilesOutlineIcon } from "../../../icons/FilesOutlineIcon";
-
-import "./FloatingMenuItems.css";
+import { ContractIcon } from "../../../icons/ContractIcon";
 
 const menuItems = [
   {
-    icon: <FilesOutlineIcon />,
+    icon: <ContractIcon size={3} />,
     label: BottomMenuPageEnum.contracts,
     action: () => setBottomMenuPageValue(BottomMenuPageEnum.contracts),
   },
@@ -13,9 +11,9 @@ const menuItems = [
 
 export function FloatingMenuItems() {
   return menuItems.map((item) => (
-    <button class="floating-menu-item" onClick={item.action}>
+    <button class=" flex flex-col items-center  bg-transparent border-none pb-2 " onClick={item.action}>
       {item.icon}
-      <p class="floating-menu-item-text">{item.label}</p>
+      <p class="font-[Nunito] font-light text-sm font-bold text-white absolute -bottom-4">{item.label}</p>
     </button>
   ));
 }

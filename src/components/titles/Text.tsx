@@ -1,10 +1,7 @@
-import "./Text.css";
-
 interface TextProps {
   text: string;
-  class?: string;
 }
 
 export function Text(props: TextProps) {
-  return <p class={"text " + props.class}>{props.text}</p>;
+  return <p class="font-xs md:font-base text-gray-700 text-base font-[Nunito] m-0">{props.text}</p>;
 }

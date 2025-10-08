@@ -17,17 +17,34 @@ export function PDFInputsOnCanvas() {
         return fields.value ?? ""
     }
 
+    function getInputOfset() {
+        if (window.innerWidth < 768) {
+            return 10
+        } else {
+            return 18
+        }
+    }
+
+    function getFontSize() {
+        if (window.innerWidth < 768) {
+            return 10
+        } else {
+            return 14
+        }
+    }
+
     return <div class="text-xs md:text-sm lg:text-md ">
         {canvasInputs().map((field) => (
             <input
-                class={"pdf-input"}
+                class={" border-none inset-0 overflow-visible outline-none"}
                 type="text"
                 value={parseDisplayData(field)}
                 onInput={(e) => currentPDFTool()!.updateContractDataAndPDFFields(field.id, e.target.value)}
                 style={{
+                    "font-size": `${getFontSize()}px`,
                     position: "absolute",
-                    left: `${field.left}px`,
-                    top: `${field.top + 1}px`,
+                    left: `${field.left + getInputOfset()}px`,
+                    top: `${field.top}px`,
                     width: `${field.width}px`,
                     height: `${field.height}px`,
                 }}

@@ -1,13 +1,13 @@
 import { contractService } from "../../../../../services/contract.service";
 import { ContractEntity } from "../../../../../models/contract.entity";
 import { openDialogTool } from "../../../../dialog/DialogWrapper";
-import { TrashIcon } from "../../../../../icons/TrashIcon";
-import { loggedIn, setLoadContrat } from "../../../../../const.data";
-import { OpenIcon } from "../../../../../icons/OpenIcon";
-import { createEffect, createSignal, on, onCleanup, onMount } from "solid-js";
+import { createEffect, createSignal, on, onMount } from "solid-js";
 import storeService, { localeUpdateEnvent } from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
+import { loggedIn, setLoadContrat } from "../../../../../../public/const.data";
+import { IoOpen } from "solid-icons/io";
+import { RiSystemDeleteBin6Fill } from 'solid-icons/ri'
 
 export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 export function DocsViewContract() {
@@ -34,7 +34,7 @@ export function DocsViewContract() {
     }
   });
 
-  // * next create Effect is an example of onMount and onCleanup for BottomMenu 
+  // * next create Effect is an example of onMount and onCleanup for BottomMenu
   createEffect(on(isBottomMenuVisible, () => {
     if (isBottomMenuVisible()) {
 
@@ -110,12 +110,12 @@ export function DocsViewContract() {
                 <div class="flex gap-2 justify-end">
                   <ButtonIcon
                     size="medium"
-                    icons={<OpenIcon />}
+                    icons={<IoOpen />}
                     onClick={() => openDialogTool_(getLocalContract(contract) as ContractEntity)}
                   />
                   <ButtonIcon
                     size="medium"
-                    icons={<TrashIcon />}
+                    icons={<RiSystemDeleteBin6Fill />}
                     onClick={() => deleteContract(contract)}
                   />
                 </div>

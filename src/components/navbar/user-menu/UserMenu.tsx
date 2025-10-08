@@ -1,18 +1,20 @@
 import { createSignal, onCleanup, onMount, Show } from "solid-js";
-import { UserProfileIcon } from "../../../icons/UserProfileIcon";
 import storeService from "../../../utils/store.service";
 import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
-import { loggedIn } from "../../../const.data";
+import { CgProfile } from 'solid-icons/cg'
 
 import "./UserMenu.css";
+import { loggedIn } from "../../../../public/const.data";
+import { useNavigate } from "@solidjs/router";
 interface UserMenuProps {
   class?: string;
 }
 
 function FallbackLogInButton() {
+  const navigate = useNavigate();
   return (
-    <button onClick={() => (location.href = "/login")}>Se connecter</button>
+    <button class="font-[Nunito] text-xs md:text-sm px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none bg-transparent" onClick={() => (navigate("/login"))}>Se connecter</button>
   );
 }
 
@@ -42,9 +44,9 @@ export function UserMenu(props: UserMenuProps) {
 
   return (
     <Show when={loggedIn()} fallback={<FallbackLogInButton />}>
-      <div ref={setMenuRef} class={props.class + " user-menu relative"}>
+      <div ref={setMenuRef} class={props.class + " hidden relative"}>
         <ButtonIcon
-          icons={<UserProfileIcon fill="white" />}
+          icons={<CgProfile fill="white" />}
           onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
           size="large"
         />

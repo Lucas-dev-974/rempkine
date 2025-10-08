@@ -1,13 +1,14 @@
 import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
+import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../models/contract.entity";
-import { loadContract } from "../../const.data";
 import { Accessor, createSignal } from "solid-js";
+import { loadContract } from "../../../public/const.data";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = location.origin + "/assets/pdf.worker.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
 
 export const [toSendBlob, setToSendBlob] = createSignal<Blob | undefined>()
 
@@ -69,7 +70,7 @@ export class PDFTool {
     this.url = url;
   }
 
-  async initialize(render = true) {
+  async initialize() {
     await this.loadPdf();
 
     if (loadContract()) {
@@ -256,7 +257,7 @@ export class PDFTool {
       }
     };
 
-    // Upodate canvas inputs with contract datas  
+    // Upodate canvas inputs with contract datas
     Object.keys(contractPDFIdsAndTheyValues).forEach((key) => {
       const field = contractPDFIdsAndTheyValues[key as keyof typeof contractPDFIdsAndTheyValues].field;
       const value = contractPDFIdsAndTheyValues[key as keyof typeof contractPDFIdsAndTheyValues].value;

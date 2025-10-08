@@ -1,4 +1,4 @@
-import { setLoggedIn } from "../const.data";
+import { setLoggedIn } from "../../public/const.data";
 import { UserEntity } from "../models/user.entity";
 import storeService from "../utils/store.service";
 import { FetcherService } from "./fetch.service";

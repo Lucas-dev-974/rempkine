@@ -1,5 +1,4 @@
 import { JSXElement } from "solid-js";
-import "./button.css";
 
 interface ButtonProps {
   text: string;
@@ -11,11 +10,24 @@ interface ButtonProps {
 }
 
 export function Button(props: ButtonProps) {
+  let classe = ""
+
+  if (props.size == "xs") {
+    classe = "!text-xs  !px-4   !py-2"
+  } else if (props.size == "small") {
+    classe = "!text-sm  !px-3 !py-1"
+  } else if (props.size == "medium") {
+    classe = "!text-base  !px-4 !py-2"
+  } else if (props.size == "large") {
+    classe = "!text-lg  !px-5 !py-3"
+  }
+
   return (
     <button
-      class={(props.size ? props.size + "-button  " : "") + "default-button " + (props.class ?? " ")}
+      class={classe + " font-[Nunito] text-sm md:text-base px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none " + (props.class ?? " ")}
       onClick={props.onClick}
       disabled={props.disabled}
+      style="background: linear-gradient(90deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);"
     >
 
       {props.icon ? props.icon : props.text}

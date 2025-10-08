@@ -1,32 +1,50 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "kine-d-poche",
+  "version": "0.0.1",
+  "description": "A starter kit for building PWAs!",
+  "main": "index.js",
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
+    "dev-server": "vite --open",
+    "dev": "npm run dev-server",
+    "dev-task": "vite",
+    "deploy": "npx @azure/static-web-apps-cli login --no-use-keychain && npx @azure/static-web-apps-cli deploy",
     "build": "vite build",
-    "serve": "vite preview"
+    "start": "npm run dev",
+    "start-remote": "vite --host"
   },
-  "license": "MIT",
-  "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "solid-devtools": "^0.29.2",
-    "tailwindcss": "^3.4.14",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.11",
-    "vite-plugin-solid": "^2.8.2"
-  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@solidjs/router": "^0.14.10",
-    "dotenv": "^16.4.7",
-    "jspdf": "^2.5.2",
+    "@shoelace-style/shoelace": "^2.18.0",
+    "@solidjs/router": "^0.15.3",
+    "@thepassle/app-tools": "^0.9.12",
+    "lit": "^3.2.1",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^4.7.76",
-    "quill": "^2.0.2",
-    "signature_pad": "^5.0.7",
+    "signature_pad": "^5.1.1",
     "solid-icons": "^1.1.0",
-    "solid-js": "^1.8.11"
+    "solid-js": "^1.9.9",
+    "solid-meta": "^0.28.1",
+    "urlpattern-polyfill": "^10.0.0",
+    "workbox-build": "^7.3.0",
+    "workbox-core": "^7.3.0",
+    "workbox-precaching": "^7.3.0"
+  },
+  "devDependencies": {
+    "@types/pdfjs-dist": "^2.10.377",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vite-plugin-pwa": "^0.20.5",
+    "vite-plugin-solid": "^2.11.9"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "quoteProps": "consistent",
+    "trailingComma": "es5",
+    "endOfLine": "crlf",
+    "bracketSpacing": true
   }
 }

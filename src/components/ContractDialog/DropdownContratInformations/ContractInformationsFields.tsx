@@ -4,12 +4,10 @@ import { fillWithMyInformationsSubstitute } from "./SubstituteFields";
 import { fillWithMyInformationsReplaced } from "./ReplacedFields";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { LabeledInput } from "../../inputs/LabeledInput";
-import { UserEntity } from "../../../models/user.entity";
-import storeService from "../../../utils/store.service";
-import { loadContract, loggedIn } from "../../../const.data";
 import { Button } from "../../buttons/Button";
-import { createSignal, onCleanup, onMount, Show } from "solid-js";
+import { createSignal, onMount, Show } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
+import { loadContract, loggedIn } from "../../../../public/const.data";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -38,7 +36,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
 
   function fillWithMyInformations(as: "author,replaced" | "author,substitute") {
     // setFieldUpdatedEvent(!fieldUpdatedEvent());
-    const userDatas: UserEntity = storeService.data.user;
+    // const userDatas: UserEntity = storeService.data.user;
 
 
     setCurrentPDFTool((prev) => {

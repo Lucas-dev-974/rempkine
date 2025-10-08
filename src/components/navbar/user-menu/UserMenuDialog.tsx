@@ -1,5 +1,5 @@
+import { setLoggedIn } from "../../../../public/const.data";
 import storeService from "../../../utils/store.service";
-import { setLoggedIn } from "../../../const.data";
 import { UserMenuButton } from "./UserMenuButton";
 
 import "./UserMenuDialog.css";

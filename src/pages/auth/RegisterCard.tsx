@@ -4,6 +4,8 @@ import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
 import { LabeledSelect } from "../../components/inputs/LabeledSelect";
 import { TitleForm } from "../../components/titles/TitleForm";
+import { AuthWrapper } from "./AuthWrapper";
+import { Button } from "../../components/buttons/Button";
 
 export function RegisterCard() {
   // Créez un signal pour gérer l'état du formulaire
@@ -41,87 +43,86 @@ export function RegisterCard() {
   }
 
   return (
-    <form ref={setFormRef} onSubmit={handleSubmit} class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/4" >
-      <TitleForm title="Je rejoin la platform" />
-      <div class="flex flex-col gap-2  p-6">
-        <LabeledInput
-          label="Nom et Prénom"
-          id="fullname"
-          required
-          type="text"
-        />
-        <LabeledInput
-          label="Email"
-          id="email"
-          required
-          type="text"
-        />
-        <LabeledInput
-          label="Mot de passe"
-          id="password"
-          type="password"
-          required
-        />
-        <LabeledInput
-          label="Département d'ordre des kinésithérapeutes"
-          id="department"
-          type="text"
-          required
-        />
-        <LabeledInput
-          label="Numéro du département d'ordre"
-          id="orderNumber"
-          type="number"
-          required
-        />
-        <LabeledInput
-          label="Née le"
-          id="birthday"
-          type="date"
-          required
-        />
-        <LabeledInput
-          label="Née à"
-          id="bornLocation"
-          type="text"
-          required
-        />
-        <LabeledInput
-          label="Adresse personnelle"
-          id="personalAdress"
-          type="text"
-          required
-        />
-        <LabeledInput
-          label="Adresse professionnelle"
-          id="officeAdress"
-          type="text"
-          required
-        />
-        <LabeledInput
-          label="Numéro de téléphone"
-          id="phoneNumber"
-          type="text"
-          required
-        />
-        <LabeledSelect
-          id="gender"
-          label="Genre"
-          options={[
-            { label: "Homme", value: "male" },
-            { label: "Femme", value: "female" },
-          ]}
-        />
+    <AuthWrapper>
+      <form ref={setFormRef} onSubmit={handleSubmit} class="mx-auto shadow-xl shadow-slate-300 rounded-lg w-full md:w-2/3 lg:w-2/4" >
+        <TitleForm title="Je rejoin la platform" />
 
-        <div class="flex justify-end">
-          <button
-            type="submit"
-            class="px-6 py-3 bg-primary text-white rounded-lg shadow-sm hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            S'enregistrer
-          </button>
+        <div class="flex flex-col p-6 h-[450px] overflow-y-auto">
+          <LabeledInput
+            label="Nom et Prénom"
+            id="fullname"
+            required
+            type="text"
+
+          />
+          <LabeledInput
+            label="Email"
+            id="email"
+            required
+            type="text"
+          />
+          <LabeledInput
+            label="Mot de passe"
+            id="password"
+            type="password"
+            required
+          />
+          <LabeledInput
+            label="Département d'ordre des kinésithérapeutes"
+            id="department"
+            type="text"
+            required
+          />
+          <LabeledInput
+            label="Numéro du département d'ordre"
+            id="orderNumber"
+            type="number"
+            required
+          />
+          <LabeledInput
+            label="Née le"
+            id="birthday"
+            type="date"
+            required
+          />
+          <LabeledInput
+            label="Née à"
+            id="bornLocation"
+            type="text"
+            required
+          />
+          <LabeledInput
+            label="Adresse personnelle"
+            id="personalAdress"
+            type="text"
+            required
+          />
+          <LabeledInput
+            label="Adresse professionnelle"
+            id="officeAdress"
+            type="text"
+            required
+          />
+          <LabeledInput
+            label="Numéro de téléphone"
+            id="phoneNumber"
+            type="text"
+            required
+          />
+          <LabeledSelect
+            id="gender"
+            label="Genre"
+            options={[
+              { label: "Homme", value: "male" },
+              { label: "Femme", value: "female" },
+            ]}
+          />
         </div>
-      </div>
-    </form>
+
+        <div class="flex justify-end p-5">
+          <Button text="S'enregistrer" type="submit" onClick={() => { }} preventDefault={false} />
+        </div>
+      </form>
+    </AuthWrapper>
   );
 }

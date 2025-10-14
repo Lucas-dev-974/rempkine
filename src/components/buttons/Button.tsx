@@ -7,6 +7,8 @@ interface ButtonProps {
   class?: string;
   size?: "xs" | "small" | "medium" | "large" | "responsive" | "full-mobile";
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+  preventDefault?: boolean;
 }
 
 export function Button(props: ButtonProps) {
@@ -22,11 +24,19 @@ export function Button(props: ButtonProps) {
     classe = "!text-lg  !px-5 !py-3"
   }
 
+  let preventDefault = props.preventDefault ?? true;
   return (
     <button
       class={classe + " font-[Nunito] text-sm md:text-base px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none " + (props.class ?? " ")}
-      onClick={props.onClick}
+      onClick={(e) => {
+        if (preventDefault) {
+          console.log("preventDefault");
+          e.preventDefault();
+        }
+        props.onClick()
+      }}
       disabled={props.disabled}
+      type={props.type}
       style="background: linear-gradient(90deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);"
     >
 

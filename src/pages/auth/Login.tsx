@@ -3,6 +3,9 @@ import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
 import { TitleForm } from "../../components/titles/TitleForm";
+import { AuthWrapper } from "./AuthWrapper";
+import { Button } from "../../components/buttons/Button";
+import { NotificationService } from "../../utils/notification.service";
 
 export function LoginCard() {
   // Créez un signal pour gérer l'état du formulaire
@@ -35,26 +38,27 @@ export function LoginCard() {
       }
     }
 
-    setFormData(data); // Mettez à jour l'état si nécessaire          
+    setFormData(data); // Mettez à jour l'état si nécessaire
     await authService.login(
       formData() as Pick<UserEntity, "email" | "password">
     );
   };
 
   return (
-    <form ref={setFormRef} onSubmit={handleSubmit} class="mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-full md:w-2/3 lg:w-1/4 " >
-      <TitleForm title="Je me connecte" />
+    <AuthWrapper>
+      <form ref={setFormRef} onSubmit={handleSubmit} class="m-0 mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-[90%] md:w-2/3 lg:w-1/4 " >
+        <TitleForm title="Se connecter" />
 
-      <div class="flex flex-col gap-2 p-6">
-        <LabeledInput label="email" type="mail" onInput={() => { }} id="email" />
-        <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" />
-        <div class="flex justify-end">
-          <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" >
-            Se connecter
-          </button>
+        <div class="flex flex-col gap-2 p-6">
+          <LabeledInput label="email" type="mail" onInput={() => { }} id="email" required />
+          <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" required />
+          <p class="text-sm text-gray-500 cursor-pointer -translate-y-5">mot de passe oublié ? </p>
+          <div class="flex justify-end">
+            <Button text="Se connecter" type="submit" onClick={() => { }} preventDefault={false} />
+          </div>
         </div>
-      </div>
 
-    </form>
+      </form>
+    </AuthWrapper>
   );
 }

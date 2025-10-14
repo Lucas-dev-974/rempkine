@@ -13,9 +13,9 @@ interface LabeledInputProps {
 export function LabeledInput(props: LabeledInputProps) {
   return (
     <div class={"grid grid-cols-1 form-input py-1"}>
-      <label for={props.id}>{props.label}</label>
+      <label class="font-[Nunito]" for={props.id}>{props.label}</label>
       <input
-        class="border-none bg-slate-300 border-b-2 py-2 px-3 rounded-md rounded-sm outline-none"
+        class="border border-gray-300 rounded-lg py-2 px-3 bg-transparent shadow-sm focus:outline-none resize-none   outline-none font-[Nunito]"
         type={props.type}
         id={props.id}
         name={props.id}

@@ -1,6 +1,9 @@
-import { createSignal, onMount } from "solid-js";
-import { TextareaProps } from "./Textarea";
 import "./LabeledTextarea.css";
+
+export interface TextareaProps {
+    onInput: (value: string) => void
+    value?: string;
+}
 
 interface LabeledTextareaProps extends TextareaProps {
     id: string;
@@ -12,16 +15,11 @@ interface LabeledTextareaProps extends TextareaProps {
 }
 
 export function LabeledTextarea(props: LabeledTextareaProps) {
-    const [classname, setClassname] = createSignal("labeled-textarea");
-
-    onMount(() =>
-        setClassname((prev) => (!!props.style ? `${prev}-${props.style}` : prev))
-    );
-
     return (
-        <div class={classname()}>
-            <label for={props.id}>{props.label}</label>
+        <div class="grid grid-cols-1">
+            <label class="font-[Nunito]" for={props.id}>{props.label}</label>
             <textarea
+                class="font-[Nunito] mt-1 block w-full  py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none resize-none"
                 id={props.id}
                 name={props.id}
                 placeholder={props.placeholder ? props.placeholder : ""}

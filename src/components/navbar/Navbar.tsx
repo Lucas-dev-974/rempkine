@@ -1,10 +1,9 @@
-import { Show } from "solid-js";
 import { UserMenu } from "./user-menu/UserMenu";
-import { onPage, PagesEnum } from "../../router/RouterTypes";
 import { useNavigate } from "@solidjs/router";
 
 export function Navbar() {
   const navigate = useNavigate();
+
   return (
     <nav class="text-white w-full h-[70px] items-center flex" style={{ "background": "linear-gradient(173deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%)" }}>
       <div class="flex justify-between items-center px-5 md:px-20 w-full">
@@ -12,9 +11,7 @@ export function Navbar() {
           <p class="text-xl cursor-pointer font-[Nunito]" onClick={() => navigate("/")}>Kiné de poche</p>
         </div>
 
-        <Show when={onPage() != PagesEnum.login && onPage() != PagesEnum.register}>
-          <UserMenu />
-        </Show>
+        <UserMenu />
       </div>
     </nav>
   );

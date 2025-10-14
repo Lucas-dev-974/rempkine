@@ -118,12 +118,12 @@ export function SendContractTo(props: {
         <div class="space-y-6">
             {/* Titre de la section */}
             <div class="text-center">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Envoyer le contrat par email</h3>
+                <h3 class="text-lg font-medium text-gray-900">Envoyer le contrat par email</h3>
                 <p class="text-sm text-gray-600">Remplissez les informations ci-dessous pour envoyer le contrat signé</p>
             </div>
 
             {/* Formulaire */}
-            <div class="space-y-5 flex flex-col gap-2">
+            <div class=" flex flex-col gap-2">
                 <LabeledInput
                     id="mailFrom"
                     label="Votre email"

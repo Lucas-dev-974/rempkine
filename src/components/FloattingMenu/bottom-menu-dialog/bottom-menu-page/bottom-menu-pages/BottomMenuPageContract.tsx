@@ -6,11 +6,11 @@ import storeService, { localeUpdateEnvent } from "../../../../../utils/store.ser
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
 import { loggedIn, setLoadContrat } from "../../../../../../public/const.data";
-import { IoOpen } from "solid-icons/io";
-import { RiSystemDeleteBin6Fill } from 'solid-icons/ri'
+import { FiEdit } from "solid-icons/fi";
+import { TiDeleteOutline } from "solid-icons/ti";
 
 export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
-export function DocsViewContract() {
+export function BottomMenuPageContract() {
 
   createEffect(on(localeUpdateEnvent, () => {
     setContracts(storeService.proxy.contracts as ContractEntity[])
@@ -81,49 +81,52 @@ export function DocsViewContract() {
   }
 
   return (
-    <div class="mt-5 overflow-auto max-h-[60vh]">
-      <div class="w-full my-2">
+    <div class="m-0 ">
+      <div class="w-full mb-2">
         <input
           type="text"
-          class="rounded-full border px-4 py-1 shadow-lg"
+          class="rounded-full border px-4 py-1 shadow-lg w-1/2"
           placeholder="Recherche"
           onInput={InputSearchInputHandler}
         />
       </div>
-      <table class="min-w-full border border-gray-300 shadow-lg rounded-lg  ">
-        <thead>
-          <tr class="bg-blue-500 text-white">
-            <th class="px-4 py-2 text-left">Remplaçé</th>
-            <th class="px-4 py-2 text-center">Remplaçant</th>
-            <th class="px-4 py-2 text-right">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {contracts().map((contract, index) => (
-            <tr class={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors`} >
-              <td class="px-4 py-2 border-b">{contract.replacedName}</td>
-              <td class="px-4 py-2 border-b text-center">
-                {contract.substituteName}
-              </td>
-              <td class="px-4 py-2 border-b text-right">
-                <div class="flex gap-2 justify-end">
-                  <ButtonIcon
-                    size="medium"
-                    icons={<IoOpen />}
-                    onClick={() => openDialogTool_(getLocalContract(contract) as ContractEntity)}
-                  />
-                  <ButtonIcon
-                    size="medium"
-                    icons={<RiSystemDeleteBin6Fill />}
-                    onClick={() => deleteContract(contract)}
-                  />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div class="border border-gray-300 shadow-lg rounded-lg w-full  overflow-hidden">
+        <div class="overflow-y-auto h-full">
+          <table class="w-full font-[Nunito]">
+            <thead class="sticky top-0 z-10" style={{ "background": "linear-gradient(173deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%)" }}>
+              <tr class="text-white text-sm">
+                <th class="px-4 py-2 text-left w-1/3">Remplaçé</th>
+                <th class="px-4 py-2 text-center w-1/3">Remplaçant</th>
+                <th class="px-4 py-2 text-right w-1/3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contracts().map((contract, index) => (
+                <tr class={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors text-sm`}>
+                  <td class="px-4 py-2 border-b">{contract.replacedName}</td>
+                  <td class="px-4 py-2 border-b text-center">
+                    {contract.substituteName}
+                  </td>
+                  <td class="px-4 py-2 border-b text-right">
+                    <div class="flex gap-2 justify-end">
+                      <ButtonIcon
+                        size="large"
+                        icons={<FiEdit color="#099773" size={24} />}
+                        onClick={() => openDialogTool_(getLocalContract(contract) as ContractEntity)}
+                      />
+                      <ButtonIcon
+                        size="large"
+                        icons={<TiDeleteOutline color="red" size={24} />}
+                        onClick={() => deleteContract(contract)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,8 +10,7 @@ export function HeroSection() {
     return (
         <div class="flex flex-col  items-center flex-wrap">
             <Title1
-                prevTextIcon={<HiOutlineInformationCircle size={window.innerWidth > 768 ? 48 : 32}
-                    class="relative top-2" color="#099773" />}
+                prevTextIcon={<HiOutlineInformationCircle size={window.innerWidth > 768 ? 48 : 32} color="#099773" />}
                 text="Simplifie la gestion de tes contrats avec tes collaborateurs" />
 
             <Text text="Kiné de poche est un outil dédié aux kinésithérapeutes, conçu pour simplifier la création de contrats. Gagnez du temps en générant automatiquement des documents conformes et personnalisés en quelques clics." />
@@ -20,6 +19,7 @@ export function HeroSection() {
             <Show when={!storeService.proxy.isLogin}>
                 <div class="flex flex-wrap gap-3 w-full justify-center md:justify-start">
                     <Button
+                        bgGradientStyle="right"
                         text="Je souhaite rejoindre"
                         onClick={() => (location.href = "/register")}
                         size="full-mobile" class="w-full" />

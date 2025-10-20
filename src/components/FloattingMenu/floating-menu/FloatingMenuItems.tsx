@@ -1,4 +1,4 @@
-import { setBottomMenuPageValue, BottomMenuPageEnum } from "./BottomMenuDialog";
+import { setBottomMenuPageValue, BottomMenuPageEnum } from "../bottom-menu-dialog/BottomMenuDialog";
 import { ContractIcon } from "../../../icons/ContractIcon";
 
 const menuItems = [

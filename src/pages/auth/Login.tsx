@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, Setter } from "solid-js";
 import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
@@ -45,20 +45,18 @@ export function LoginCard() {
   };
 
   return (
-    <AuthWrapper>
-      <form ref={setFormRef} onSubmit={handleSubmit} class="m-0 mx-auto shadow-xl shadow-slate-300 rounded-lg space-y my-5  w-[90%] md:w-2/3 lg:w-1/4 " >
-        <TitleForm title="Se connecter" />
+    <AuthWrapper setFormRef={setFormRef as Setter<HTMLFormElement>} handleSubmit={handleSubmit}>
+      <TitleForm title="Se connecter" />
 
-        <div class="flex flex-col gap-2 p-6">
-          <LabeledInput label="email" type="mail" onInput={() => { }} id="email" required />
-          <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" required />
-          <p class="text-sm text-gray-500 cursor-pointer -translate-y-5">mot de passe oublié ? </p>
-          <div class="flex justify-end">
-            <Button text="Se connecter" type="submit" onClick={() => { }} preventDefault={false} />
-          </div>
+      <div class="flex flex-col gap-2 p-6">
+        <LabeledInput label="email" type="mail" onInput={() => { }} id="email" required />
+        <LabeledInput label="mot de passe" type="password" onInput={() => { }} id="password" required />
+        <p class="text-sm text-gray-500 cursor-pointer -translate-y-5">mot de passe oublié ? </p>
+        <div class="flex justify-end">
+          <Button text="Se connecter" type="submit" onClick={() => { }} preventDefault={false} />
         </div>
+      </div>
 
-      </form>
-    </AuthWrapper>
+    </AuthWrapper >
   );
 }

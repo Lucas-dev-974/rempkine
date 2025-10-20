@@ -8,7 +8,7 @@ interface RadioButtonsProps {
     value: string;
     text: string;
   }[];
-
+  required?: boolean
   onChange: (e: Event) => void;
 }
 
@@ -20,6 +20,7 @@ export function RadioButtons(props: RadioButtonsProps) {
       {props.items.map((item) => (
         <div class="mt-2">
           <input
+            required={props.required ?? false}
             type="radio"
             id={item.id}
             name={props.name}

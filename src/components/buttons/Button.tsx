@@ -8,6 +8,7 @@ interface ButtonProps {
   size?: "xs" | "small" | "medium" | "large" | "responsive" | "full-mobile";
   disabled?: boolean;
   type?: "button" | "submit" | "reset";
+  bgGradientStyle?: "right" | "left";
   preventDefault?: boolean;
 }
 
@@ -37,7 +38,7 @@ export function Button(props: ButtonProps) {
       }}
       disabled={props.disabled}
       type={props.type}
-      style="background: linear-gradient(90deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);"
+      style={props.bgGradientStyle == "right" ? "background: linear-gradient(90deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);" : "background: linear-gradient(270deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);"}
     >
 
       {props.icon ? props.icon : props.text}

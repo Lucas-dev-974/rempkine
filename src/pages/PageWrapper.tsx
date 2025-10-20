@@ -1,7 +1,7 @@
 import { children, JSXElement } from "solid-js";
 import { Navbar } from "../components/navbar/Navbar";
 import { Notification } from "../components/notification/Notification";
-import { FloatingMenu } from "../components/FloattingMenu/FloatingMenu";
+import { FloatingMenu } from "../components/FloattingMenu/floating-menu/FloatingMenu";
 
 interface PageWrapperProps {
     children: JSXElement;

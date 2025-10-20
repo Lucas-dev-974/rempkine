@@ -17,7 +17,7 @@ export function ButtonIcon(props: ButtonIconProps) {
     classe = "w-7 h-7"
   }
   return (
-    <button class={"text-base px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none " + classe} onClick={props.onClick}>
+    <button class={" cursor-pointer text-white duration-700 hover:shadow-lg border-none " + classe} onClick={props.onClick}>
       {props.icons}
     </button>
   );

@@ -6,5 +6,10 @@ interface Title1Props {
 }
 
 export function Title1(props: Title1Props) {
-  return <h1 class="text-2xl md:text-5xl font-bold text-gray-800 font-[Nunito]">{props.prevTextIcon}{props.text}</h1>;
+  return <h1 class="text-2xl md:text-5xl font-bold text-gray-800 font-[Nunito]">
+    <span class="relative top-2">
+      {props.prevTextIcon}
+    </span>
+    {props.text}
+  </h1>;
 }

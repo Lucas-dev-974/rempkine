@@ -1,7 +1,7 @@
 // import { UserAttributes } from "../models/User";
 
 import { createSignal } from "solid-js";
-import { setContracts } from "../components/FloattingMenu/bottom-menu-dialog/bottom-menu-page/bottom-menu-docs/DocsViewContract";
+import { setContracts } from "../components/FloattingMenu/bottom-menu-dialog/bottom-menu-page/bottom-menu-pages/BottomMenuPageContract";
 import { ContractEntity } from "../models/contract.entity";
 
 export const [localeUpdateEnvent, setLocalUpdateEvent] = createSignal<boolean>(false)

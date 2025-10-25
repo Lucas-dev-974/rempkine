@@ -10,6 +10,7 @@ import { FiEdit } from "solid-icons/fi";
 import { TiDeleteOutline } from "solid-icons/ti";
 
 export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
+
 export function BottomMenuPageContract() {
 
   createEffect(on(localeUpdateEnvent, () => {
@@ -34,17 +35,16 @@ export function BottomMenuPageContract() {
     }
   });
 
-  // * next create Effect is an example of onMount and onCleanup for BottomMenu
-  createEffect(on(isBottomMenuVisible, () => {
-    if (isBottomMenuVisible()) {
-
-      if (bottomMenuPage() === BottomMenuPageEnum.contracts) {
-        console.log("on mount");
-      }
-    } else {
-      console.log("cleanup");
-    }
-  }))
+  // **utility**  next create Effect is an example of onMount and onCleanup for BottomMenu
+  // createEffect(on(isBottomMenuVisible, () => {
+  //   if (isBottomMenuVisible()) {
+  //     if (bottomMenuPage() === BottomMenuPageEnum.contracts) {
+  //       console.log("on mount");
+  //     }
+  //   } else {
+  //     console.log("cleanup");
+  //   }
+  // }))
 
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);
@@ -52,17 +52,40 @@ export function BottomMenuPageContract() {
   }
 
   async function InputSearchInputHandler(e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }) {
+    console.log("input search");
+
     let contracts: ContractEntity[] = []
     if (loggedIn()) {
+      console.log("logged in: ", e.target.value);
+
       contracts = await contractService.search(e.target.value);
+      console.log("contracts: ", contracts);
+
     } else {
-      contracts = storeService.proxy.contracts?.filter(contract =>
-        contract.replacedName?.startsWith(e.target.value) ||
-        contract.substituteName?.startsWith(e.target.value) ||
-        contract.replacedEmail?.startsWith(e.target.value) ||
-        contract.substituteEmail?.startsWith(e.target.value)
+      console.log("not logged in");
+      contracts = storeService.proxy.contracts?.filter(contract => {
+
+        const derivedContract = { ...contract }
+
+        derivedContract.replacedName = contract.replacedName?.toLowerCase()
+        derivedContract.substituteName = contract.substituteName?.toLowerCase()
+        derivedContract.replacedEmail = contract.replacedEmail?.toLowerCase()
+        derivedContract.substituteEmail = contract.substituteEmail?.toLowerCase()
+
+        if (derivedContract.replacedName?.includes(e.target.value.toLowerCase()) ||
+          derivedContract.substituteName?.includes(e.target.value.toLowerCase()) ||
+          derivedContract.replacedEmail?.includes(e.target.value.toLowerCase()) ||
+          derivedContract.substituteEmail?.includes(e.target.value.toLowerCase())) {
+
+          return contract
+        } else {
+          return null
+        }
+      }
       ) as ContractEntity[]
     }
+    console.log(storeService.proxy.contracts);
+
     setContracts(contracts as ContractEntity[]);
   }
 

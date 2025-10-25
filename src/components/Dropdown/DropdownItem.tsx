@@ -14,7 +14,7 @@ type DropdownItemProps = {
 
 export function DropdownItem(props: DropdownItemProps & { children?: any }) {
   return (
-    <div class="border-none border-solid border-gray-300 last:border-b-0">
+    <div class="border-none border-solid border-gray-300 last:border-b-0 ">
       <div class="w-full bg-gray-100 text-lg font-semibold text-left cursor-pointer hover:bg-gray-200" onClick={() => props.toggle(props.id)}>
         <div class="px-3 flex items-center justify-between gap-2">
 

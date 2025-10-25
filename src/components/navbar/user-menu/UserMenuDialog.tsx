@@ -11,7 +11,8 @@ interface UserMenuDialogProps {
 export function UserMenuDialog(props: UserMenuDialogProps) {
   return (
     <div
-      class="user-menu-dialog "
+      class="absolute top-10  right-2 p-3  rounded-md shadow-lg"
+      style={{ "background": "linear-gradient(173deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%)" }}
       classList={{
         hidden: !props.openDialog,
         visible: props.openDialog,

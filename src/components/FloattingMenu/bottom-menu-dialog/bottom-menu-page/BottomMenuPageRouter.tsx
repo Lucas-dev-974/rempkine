@@ -21,9 +21,9 @@ export function BottomMenuPageRouter() {
   return (
     <div>
       <BottomMenuHeader />
-      <BottomMenuPageBtnGroups changeCurrentDocsView={changeCurrentDocsView} currentDocsView={currentDocsView()} />
 
       <div class="px-2 xl:mx-40 ">
+        <BottomMenuPageBtnGroups changeCurrentDocsView={changeCurrentDocsView} currentDocsView={currentDocsView()} />
         <Switch>
           <Match when={currentDocsView() == DocsViewsEnum.contract}>
             <BottomMenuPageContract />

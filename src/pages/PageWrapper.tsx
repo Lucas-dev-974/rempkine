@@ -11,7 +11,7 @@ export function PageWrapper(props: PageWrapperProps) {
     const childs = children(() => props.children)
 
     return (
-        <div>
+        <div class="font-[Nunito]">
             <Navbar />
             <FloatingMenu />
             <Notification />

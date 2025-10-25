@@ -16,8 +16,10 @@ export function ButtonIcon(props: ButtonIconProps) {
   } else if (props.size == "large") {
     classe = "w-7 h-7"
   }
+
+
   return (
-    <button class={" cursor-pointer text-white duration-700 hover:shadow-lg border-none " + classe} onClick={props.onClick}>
+    <button class={" cursor-pointer text-white duration-700 hover:shadow-lg border-none bg-transparent  " + classe} onClick={props.onClick}>
       {props.icons}
     </button>
   );

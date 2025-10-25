@@ -20,8 +20,8 @@ export function NotifcationItem(props: Partial<NotificationType>) {
     >
       <p> {props.content} </p>
       <div>
-        <button class="w-3 h-3" onClick={closeNotif}>
-          <VsChromeClose stroke="white" />
+        <button class="w-3 h-3 border-none bg-transparent cursor-pointer" onClick={closeNotif}>
+          <VsChromeClose stroke="white" color="white" />
         </button>
       </div>
     </div>

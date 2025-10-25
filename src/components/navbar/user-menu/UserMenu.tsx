@@ -3,19 +3,15 @@ import storeService from "../../../utils/store.service";
 import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
 import { CgProfile } from 'solid-icons/cg'
-
-import "./UserMenu.css";
 import { loggedIn } from "../../../../public/const.data";
 import { useLocation, useNavigate } from "@solidjs/router";
-interface UserMenuProps {
-  class?: string;
-}
 
 
 function FallbackLogInButton() {
   const navigate = useNavigate();
   const location = useLocation();
   const isLoginPage = location.pathname.includes("login");
+
   function NavigateTo() {
     if (!isLoginPage) {
       navigate("/login");
@@ -32,7 +28,7 @@ function FallbackLogInButton() {
   );
 }
 
-export function UserMenu(props: UserMenuProps) {
+export function UserMenu() {
   const [isMenuDialogOpen, setIsMenuDialogOpen] = createSignal<boolean>(false);
   const [menuRef, setMenuRef] = createSignal<HTMLDivElement>();
 
@@ -58,9 +54,9 @@ export function UserMenu(props: UserMenuProps) {
 
   return (
     <Show when={loggedIn()} fallback={<FallbackLogInButton />}>
-      <div ref={setMenuRef} class={props.class + " hidden relative"}>
+      <div ref={setMenuRef} class={" relative"}>
         <ButtonIcon
-          icons={<CgProfile fill="white" />}
+          icons={<CgProfile fill="white" size={24} />}
           onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
           size="large"
         />

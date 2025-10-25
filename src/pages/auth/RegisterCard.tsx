@@ -1,4 +1,4 @@
-import { createSignal, Setter } from "solid-js";
+import { createEffect, createSignal, Setter } from "solid-js";
 import { UserEntity } from "../../models/user.entity";
 import { authService } from "../../services/auth.service";
 import { LabeledInput } from "../../components/inputs/LabeledInput";
@@ -9,6 +9,7 @@ import { Button } from "../../components/buttons/Button";
 import { RadioButtons } from "../../components/inputs/DialogToInputRadio";
 
 export function RegisterCard() {
+  const [gender, setGender] = createSignal<string>("male");
   // Créez un signal pour gérer l'état du formulaire
   const [formData, setFormData] = createSignal<Partial<UserEntity>>();
 
@@ -31,15 +32,22 @@ export function RegisterCard() {
 
     const data: any = {};
 
-    // Itérer sur les éléments du formulaire pour récupérer les valeurs
+    // console.log("form element", formElements);
+    // Itérer sur les éléments dù u formulaire pour récupérer les valeurs
     for (let element of formElements) {
+      console.log("element", element, element instanceof RadioNodeList);
+
       if (element.name) {
-        // Vérifie si l'élément a un attribut name
-        data[element.name] = element.value;
+        if (element.name != "gender") {
+          data[element.name] = element.value;
+        }
       }
     }
-
+    data["gender"] = gender();
     setFormData(data); // Mettez à jour l'état si nécessaire
+
+    console.log(formData());
+
     await authService.register(formData() as Partial<UserEntity>);
   }
 
@@ -110,12 +118,16 @@ export function RegisterCard() {
           required
         />
         <RadioButtons
-          name="genre"
-          onChange={() => { }}
+          name="gender"
+          onChange={(e: Event) => {
+
+            setGender((e.target as HTMLInputElement).value);
+          }}
+          value={gender()}
           legend="Genre"
           items={[
-            { text: "Homme", value: "male", id: "" },
-            { text: "Femme", value: "female", id: "" },
+            { text: "Homme", value: "male", id: "genderM" },
+            { text: "Femme", value: "female", id: "genderF" },
           ]}
 
         />

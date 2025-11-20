@@ -82,7 +82,7 @@ export function RegisterCard() {
           required
         />
         <LabeledInput
-          label="Numéro du département d'ordre"
+          label="Numéro d'ordre"
           id="orderNumber"
           type="number"
           required

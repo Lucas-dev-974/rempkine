@@ -2,8 +2,6 @@ import { setLoggedIn } from "../../../../public/const.data";
 import storeService from "../../../utils/store.service";
 import { UserMenuButton } from "./UserMenuButton";
 
-import "./UserMenuDialog.css";
-
 interface UserMenuDialogProps {
   openDialog: boolean;
 }

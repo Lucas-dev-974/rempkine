@@ -4,29 +4,7 @@ import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
 import { CgProfile } from 'solid-icons/cg'
 import { loggedIn } from "../../../../public/const.data";
-import { useLocation, useNavigate } from "@solidjs/router";
-
-
-function FallbackLogInButton() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const isLoginPage = location.pathname.includes("login");
-
-  function NavigateTo() {
-    if (!isLoginPage) {
-      navigate("/login");
-    } else {
-      navigate("/register");
-    }
-  }
-
-  return (
-    <Show when={!loggedIn()}>
-      <button class="font-[Nunito] text-xs md:text-sm px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none bg-transparent"
-        onClick={NavigateTo}>{!isLoginPage ? "Se connecter" : "S'enregistrer"}</button>
-    </Show>
-  );
-}
+import { FallbackAuthBtn } from "./FallbackAuthBtn";
 
 export function UserMenu() {
   const [isMenuDialogOpen, setIsMenuDialogOpen] = createSignal<boolean>(false);
@@ -53,7 +31,7 @@ export function UserMenu() {
   });
 
   return (
-    <Show when={loggedIn()} fallback={<FallbackLogInButton />}>
+    <Show when={loggedIn()} fallback={<FallbackAuthBtn />}>
       <div ref={setMenuRef} class={" relative"}>
         <ButtonIcon
           icons={<CgProfile fill="white" size={24} />}

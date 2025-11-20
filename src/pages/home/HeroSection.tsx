@@ -11,7 +11,7 @@ export function HeroSection() {
         <div class="flex flex-col  items-center flex-wrap">
             <Title1
                 prevTextIcon={<HiOutlineInformationCircle size={window.innerWidth > 768 ? 48 : 32} color="#099773" />}
-                text="Simplifie la gestion de tes contrats avec tes collaborateurs" />
+                text="Simplifie la gestion de tes contrats avec tes confrères" />
 
             <Text text="Kiné de poche est un outil dédié aux kinésithérapeutes, conçu pour simplifier la création de contrats. Gagnez du temps en générant automatiquement des documents conformes et personnalisés en quelques clics." />
 

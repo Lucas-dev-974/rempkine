@@ -4,9 +4,9 @@
   "name": "kine'd'poche",
   "display": "standalone",
   "start_url": "/",
-  "short_name": "starter",
+  "short_name": "Kiné'd'Poche",
   "theme_color": "#E1477E",
-  "description": "This is a kine-d-poche app",
+  "description": "Application de gestion des contrats de remplacement entre kinésithérapeutes. Créez, signez et gérez vos contrats de remplacement facilement.",
   "orientation": "any",
   "background_color": "#E1477E",
   "related_applications": [],
@@ -46,33 +46,51 @@
   ],
   "features": [
     "Cross Platform",
-    "fast",
-    "simple"
+    "Offline Support",
+    "Digital Signatures",
+    "PDF Management",
+    "Contract Management"
   ],
   "categories": [
-    "social"
+    "medical",
+    "business",
+    "productivity"
   ],
   "shortcuts": [
     {
-      "name": "Open About",
-      "short_name": "About",
-      "description": "Open the about page",
-      "url": "/about",
+      "name": "Mes Contrats",
+      "short_name": "Contrats",
+      "description": "Accéder à mes contrats de remplacement",
+      "url": "/",
+      "icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Se Connecter",
+      "short_name": "Connexion",
+      "description": "Se connecter à l'application",
+      "url": "/login",
+      "icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "S'inscrire",
+      "short_name": "Inscription",
+      "description": "Créer un nouveau compte",
+      "url": "/register",
       "icons": [{ "src": "assets/icons/192x192.png", "sizes": "192x192" }]
     }
   ],
   "widgets": [
     {
-      "name": "Starter Widget",
-      "tag": "starterWidget",
+      "name": "Contrats de Remplacement",
+      "tag": "contractsWidget",
       "ms_ac_template": "widget/ac.json",
       "data": "widget/data.json",
-      "description": "A simple widget example from pwa-starter.",
+      "description": "Widget pour accéder rapidement aux contrats de remplacement.",
       "screenshots": [
         {
           "src": "assets/screenshots/widget-screen.png",
           "sizes": "500x500",
-          "label": "Widget screenshot"
+          "label": "Widget des contrats"
         }
       ],
       "icons": [

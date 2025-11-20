@@ -3,20 +3,35 @@
     "body": [
         {
             "type": "TextBlock",
-            "text": "Hello ${$root.name}!",
+            "text": "Contrats de Remplacement",
             "wrap": true,
             "horizontalAlignment": "Center",
-            "size": "ExtraLarge"
+            "size": "ExtraLarge",
+            "weight": "Bolder"
         },
         {
-            "type": "Input.Text",
-            "placeholder": "Name",
-            "id": "name",
-            "inlineAction": {
-                "type": "Action.Execute",
-                "verb": "updateName",
-                "title": "Submit"
-            }
+            "type": "TextBlock",
+            "text": "Gérez vos contrats de remplacement facilement",
+            "wrap": true,
+            "horizontalAlignment": "Center",
+            "size": "Medium"
+        },
+        {
+            "type": "ActionSet",
+            "actions": [
+                {
+                    "type": "Action.Execute",
+                    "verb": "openContracts",
+                    "title": "Voir mes contrats",
+                    "style": "positive"
+                },
+                {
+                    "type": "Action.Execute",
+                    "verb": "createContract",
+                    "title": "Nouveau contrat",
+                    "style": "default"
+                }
+            ]
         }
     ],
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",

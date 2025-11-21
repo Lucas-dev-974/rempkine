@@ -2,7 +2,7 @@ import { contractService } from "../../../../../services/contract.service";
 import { ContractEntity } from "../../../../../models/contract.entity";
 import { openDialogTool } from "../../../../dialog/DialogWrapper";
 import { createEffect, createSignal, on, onMount } from "solid-js";
-import storeService, { localeUpdateEnvent } from "../../../../../utils/store.service";
+import storeService, { localeUpdateEvent } from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
@@ -13,7 +13,7 @@ export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 
 export function BottomMenuPageContract() {
 
-  createEffect(on(localeUpdateEnvent, () => {
+  createEffect(on(localeUpdateEvent, () => {
     setContracts(storeService.proxy.contracts as ContractEntity[])
   }))
 

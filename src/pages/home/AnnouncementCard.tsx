@@ -7,7 +7,7 @@ import storeService from "../../utils/store.service";
 import { Button } from "../../components/buttons/Button";
 import { useNavigate } from "@solidjs/router";
 
-export interface AnnoucementCardProps {
+export interface AnnouncementCardProps {
   duration: {
     start: Date;
     end: Date;
@@ -17,7 +17,7 @@ export interface AnnoucementCardProps {
   remuneration: string;
 }
 
-export function AnnoucementCard(props: AnnoucementCardProps) {
+export function AnnouncementCard(props: AnnouncementCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -70,7 +70,7 @@ export function AnnoucementCard(props: AnnoucementCardProps) {
               if (!storeService.proxy.isLogin) {
                 NotificationService.push({
                   type: "error",
-                  content: "Vous devez être connecter pour proposer un contrat",
+                  content: "Vous devez être connecté pour proposer un contrat",
                 });
                 return;
               }

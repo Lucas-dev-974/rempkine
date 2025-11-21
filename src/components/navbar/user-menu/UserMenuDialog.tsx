@@ -1,7 +1,6 @@
-import { setLoggedIn } from "../../../const.data";
-import storeService from "../../../utils/store.service";
 import { UserMenuButton } from "./UserMenuButton";
 import { useNavigate } from "@solidjs/router";
+import { authService } from "../../../services/auth.service";
 
 interface UserMenuDialogProps {
   openDialog: boolean;
@@ -21,14 +20,10 @@ export function UserMenuDialog(props: UserMenuDialogProps) {
     >
       <UserMenuButton
         onClick={() => {
-          setLoggedIn(false);
-          storeService.proxy.isLogin = false;
-          storeService.proxy.token = "";
-          storeService.proxy.user = {};
-
+          authService.logout();
           navigate("/");
         }}
-        text="Me déconnecté"
+        text="Me déconnecter"
       />
     </div>
   );

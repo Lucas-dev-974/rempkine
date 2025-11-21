@@ -28,7 +28,7 @@ export function RegisterCard() {
         value: string;
       }[];
 
-    const data: any = {};
+    const data: Record<string, string> = {};
 
     // Itérer sur les éléments du formulaire pour récupérer les valeurs
     for (let element of formElements) {

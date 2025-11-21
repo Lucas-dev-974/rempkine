@@ -2,6 +2,13 @@ import { setLoggedIn } from "../const.data";
 import { UserEntity } from "../models/user.entity";
 import storeService from "../utils/store.service";
 import { FetcherService } from "./fetch.service";
+import { NotificationService } from "../utils/notification.service";
+
+// Type pour la réponse d'authentification
+interface AuthResponse {
+  token: string;
+  user: Partial<UserEntity>;
+}
 
 // Utilitaire pour la navigation (évite les dépendances circulaires)
 let navigateFn: ((path: string) => void) | null = null;
@@ -11,7 +18,7 @@ export function setNavigateFunction(navigate: (path: string) => void) {
 }
 
 class AuthService {
-  private setData(response: any) {
+  private setData(response: AuthResponse) {
     storeService.proxy.token = response.token;
     storeService.proxy.user = response.user;
     this.setGlobalIsLogin(true);
@@ -22,8 +29,20 @@ class AuthService {
     setLoggedIn(isLogin);
   }
 
+  public logout() {
+    // Vider toutes les données utilisateur du localStorage
+    storeService.clearUserData();
+    this.setGlobalIsLogin(false);
+    // Rediriger vers la page d'accueil
+    if (navigateFn) {
+      navigateFn("/");
+    } else {
+      location.href = "/";
+    }
+  }
+
   async register(user: Partial<UserEntity>) {
-    const response = await FetcherService.patch("/auth/", user);
+    const response = await FetcherService.patch("/auth/", user) as AuthResponse;
     this.setData(response);
     if (navigateFn) {
       navigateFn("/");
@@ -34,7 +53,9 @@ class AuthService {
   }
 
   async login(user: Pick<UserEntity, "email" | "password">) {
-    const response = await FetcherService.post("/auth/", user);
+    const response = await FetcherService.post("/auth/", user) as AuthResponse;
+    // Nettoyer les notifications d'erreur lors d'une connexion réussie
+    NotificationService.clearErrors();
     this.setData(response);
     if (navigateFn) {
       navigateFn("/");

@@ -1,13 +1,15 @@
 import { createSignal, mergeProps } from "solid-js";
 import { VsChromeClose } from 'solid-icons/vs'
-import { NotificationType } from "../../utils/notification.service";
+import { NotificationType, NotificationService } from "../../utils/notification.service";
 
 export function NotifcationItem(props: Partial<NotificationType>) {
   const [ref, setRef] = createSignal<HTMLDivElement>();
 
   const mergedProps = mergeProps({ type: "info" }, props);
   function closeNotif() {
-    ref()?.remove();
+    if (props.id !== undefined) {
+      NotificationService.remove(props.id);
+    }
   }
   return (
     <div

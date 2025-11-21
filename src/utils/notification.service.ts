@@ -34,4 +34,31 @@ export class NotificationService {
       return newnotif;
     });
   }
+
+  /**
+   * Retire une notification par son ID
+   */
+  static remove(id: number) {
+    setNotifications((prev) => {
+      if (!prev) return prev;
+      return prev.filter((notif) => notif.id !== id);
+    });
+  }
+
+  /**
+   * Retire toutes les notifications
+   */
+  static clear() {
+    setNotifications([]);
+  }
+
+  /**
+   * Retire toutes les notifications d'erreur
+   */
+  static clearErrors() {
+    setNotifications((prev) => {
+      if (!prev) return prev;
+      return prev.filter((notif) => notif.type !== "error");
+    });
+  }
 }

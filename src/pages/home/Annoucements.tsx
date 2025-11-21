@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { AnnoucementCard } from "./AnnouncementCard";
+import { AnnouncementCard } from "./AnnouncementCard";
 import { AnnouncementEntity } from "../../models/announcement.entity";
 
 export function Announcements(props: { announcements: AnnouncementEntity[] }) {
@@ -9,7 +9,7 @@ export function Announcements(props: { announcements: AnnouncementEntity[] }) {
 
       <div class="overflow-x-auto whitespace-nowrap scrollbar-hide p-4 flex gap-2 ">
         <For each={props.announcements}>
-          {(item) => <AnnoucementCard {...item} />}
+          {(item) => <AnnouncementCard {...item} />}
         </For>
       </div>
     </div>

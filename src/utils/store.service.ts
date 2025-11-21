@@ -3,7 +3,7 @@
 import { createSignal } from "solid-js";
 import { ContractEntity } from "../models/contract.entity";
 
-export const [localeUpdateEnvent, setLocalUpdateEvent] = createSignal<boolean>(false)
+export const [localeUpdateEvent, setLocalUpdateEvent] = createSignal<boolean>(false)
 
 type StoreDataType = {
   [key: string]: any;
@@ -24,7 +24,7 @@ class StoreService {
     set(target, property, value, receiver) {
       const toReturn = Reflect.set(target, property, value, receiver);
       if (property === "contracts") {
-        setLocalUpdateEvent(!localeUpdateEnvent())
+        setLocalUpdateEvent(!localeUpdateEvent())
       }
       localStorage.setItem("store", JSON.stringify(target));
       return toReturn;
@@ -56,6 +56,26 @@ class StoreService {
 
   setState() {
     localStorage.setItem("store", JSON.stringify(this.proxy));
+  }
+
+  /**
+   * Vide toutes les données utilisateur du localStorage et réinitialise le store
+   */
+  clearUserData() {
+    // Réinitialiser les données utilisateur dans le proxy
+    this.proxy.isLogin = false;
+    this.proxy.token = "";
+    this.proxy.user = {};
+    this.proxy.contracts = [];
+
+    // Vider complètement le localStorage
+    localStorage.removeItem("store");
+
+    // Réinitialiser l'état par défaut
+    this.data = {
+      isLogin: undefined,
+      contracts: []
+    };
   }
 }
 

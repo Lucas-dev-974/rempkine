@@ -7,7 +7,7 @@ class ContractService {
     return response;
   }
 
-  async upadte(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
+  async update(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
     const response = await FetcherService.patch("/contract", contract);
     return response;
   }

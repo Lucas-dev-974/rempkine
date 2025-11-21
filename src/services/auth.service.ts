@@ -16,23 +16,27 @@ class AuthService {
   }
 
   async register(user: Partial<UserEntity>) {
-    const response = await FetcherService.patch("/auth/", user);
-    if (response.error) {
-      return;
+    try {
+      const response = await FetcherService.patch("/auth/", user);
+      this.setData(response);
+      location.href = "/";
+      return response;
+    } catch (error) {
+      // L'erreur est déjà gérée par FetcherService via ErrorHandlerService
+      throw error;
     }
-    this.setData(response);
-    location.href = "/";
-    return response;
   }
 
   async login(user: Pick<UserEntity, "email" | "password">) {
-    const response = await FetcherService.post("/auth/", user);
-    if (response.error) {
-      return;
+    try {
+      const response = await FetcherService.post("/auth/", user);
+      this.setData(response);
+      location.href = "/";
+      return response;
+    } catch (error) {
+      // L'erreur est déjà gérée par FetcherService via ErrorHandlerService
+      throw error;
     }
-    this.setData(response);
-    location.href = "/";
-    return response;
   }
 }
 

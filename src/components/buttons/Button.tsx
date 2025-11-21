@@ -31,7 +31,6 @@ export function Button(props: ButtonProps) {
       class={classe + " font-[Nunito] text-sm md:text-base px-4 py-2 rounded-lg cursor-pointer text-white duration-700 hover:shadow-lg border-none " + (props.class ?? " ")}
       onClick={(e) => {
         if (preventDefault) {
-          console.log("preventDefault");
           e.preventDefault();
         }
         props.onClick()

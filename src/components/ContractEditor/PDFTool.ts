@@ -391,7 +391,6 @@ export class PDFTool {
     const page = await this.pdfDoc!.getPage(pageNum);
     const context = canvasElement!.getContext("2d");
     const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
-    console.log(dimensions);
 
 
     if (dimensions) {
@@ -449,11 +448,6 @@ export class PDFTool {
       const replacedSignatureDataUrl = signatureData?.replaced;
       const substituteSignatureDataUrl = signatureData?.substitute;
 
-      console.log("Signatures DataURL récupérées:", {
-        replaced: replacedSignatureDataUrl ? "disponible" : "non disponible",
-        substitute: substituteSignatureDataUrl ? "disponible" : "non disponible"
-      });
-
       if (replacedSignatureDataUrl && substituteSignatureDataUrl) {
         try {
           // Intégrer les images dans le PDF directement depuis les DataURL
@@ -470,8 +464,6 @@ export class PDFTool {
           // Obtenir les dimensions de la page
           const { width, height } = page.getSize();
 
-          console.log("Dimensions de la page:", { width, height });
-
           // Dessiner les images sur la page avec des dimensions ajustées
           page.drawImage(canvas1ImageEmbed, {
             x: width * 0.05, // 5% du côté gauche
@@ -487,12 +479,11 @@ export class PDFTool {
             height: height * 0.15, // 15% de la hauteur de la page
           });
 
-          console.log("Signatures ajoutées au PDF depuis les DataURL");
         } catch (error) {
-          console.error("Erreur lors de l'ajout des signatures:", error);
+          if (import.meta.env.DEV) {
+            console.error("Erreur lors de l'ajout des signatures:", error);
+          }
         }
-      } else {
-        console.warn("Signatures DataURL non disponibles:", { replacedSignatureDataUrl, substituteSignatureDataUrl });
       }
 
       // Récupère et met à jour les champs de formulaire
@@ -614,17 +605,12 @@ export class PDFTool {
       this.contractData.substituteSignatureDataUrl = signatureData.substitute;
     }
 
-    // Vérification après mise à jour
-    console.log("État du contrat après mise à jour:", {
-      replacedInContract: !!this.contractData.replacedSignatureDataUrl,
-      substituteInContract: !!this.contractData.substituteSignatureDataUrl,
-      replacedContractLength: this.contractData.replacedSignatureDataUrl?.length || 0,
-      substituteContractLength: this.contractData.substituteSignatureDataUrl?.length || 0
-    });
   }
 
-  // Méthode de débogage pour vérifier l'état des signatures
+  // Méthode de débogage pour vérifier l'état des signatures (uniquement en développement)
   debugSignatures() {
+    if (!import.meta.env.DEV) return;
+
     console.log("=== DÉBOGAGE DES SIGNATURES ===");
     console.log("Signatures dans contractData:", {
       replaced: this.contractData.replacedSignatureDataUrl ? "disponible" : "non disponible",
@@ -738,7 +724,9 @@ export class PDFTool {
           const formatedDate = formatDate(value)
           return formatedDate == "Invalid Date" ? value : formatedDate
         } catch (error) {
-          console.log("error:", error);
+          if (import.meta.env.DEV) {
+            console.error("Erreur de formatage de date:", error);
+          }
           return value
         }
       }
@@ -767,8 +755,6 @@ export class PDFTool {
 
         URL.revokeObjectURL(url);
       } else {
-        console.log("in doawnload at end:", blob);
-
         setToSendBlob(blob)
       }
     };

@@ -19,8 +19,6 @@ export function UserMenu() {
   }
 
   onMount(() => {
-    console.log(loggedIn());
-
     if (storeService.proxy.isLogin)
       document.addEventListener("click", handleClickOutside);
   });

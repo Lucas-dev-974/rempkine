@@ -32,12 +32,10 @@ export function CTAPDFViewer() {
                     type: "info",
                 });
             } else {
-                const contract = await contractService.upadte(contractFromPDF);
+                const contract = await contractService.update(contractFromPDF);
 
                 storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
                     if (_contract.id == contract.id) {
-                        console.log("update local:", contract);
-
                         return contract
                     }
                     return _contract
@@ -87,7 +85,6 @@ export function CTAPDFViewer() {
     }
 
     function downloadPDF() {
-        console.log("download PDF", currentPDFTool()!.pdfFile);
         currentPDFTool()!.downloadModifiedPdfWithStoredSignatures(currentPDFTool()!.pdfFile as File)
     }
 

@@ -72,7 +72,9 @@ export function SendContractTo(props: {
             // Générer le PDF avec les signatures
             await currentPDFTool()?.downloadModifiedPdfWithStoredSignatures(currentPDFTool()?.pdfFile as File, false)
         } catch (error) {
-            console.error("Erreur lors de la génération du PDF:", error)
+            if (import.meta.env.DEV) {
+                console.error("Erreur lors de la génération du PDF:", error);
+            }
             NotificationService.push({
                 content: "Erreur lors de la génération du PDF",
                 type: "error"
@@ -103,7 +105,9 @@ export function SendContractTo(props: {
                 }, 3000)
 
             } catch (error) {
-                console.error("Erreur lors de l'envoi:", error)
+                if (import.meta.env.DEV) {
+                    console.error("Erreur lors de l'envoi:", error);
+                }
                 NotificationService.push({
                     content: "Erreur lors de l'envoi du contrat",
                     type: "error"

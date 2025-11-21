@@ -52,17 +52,10 @@ export function BottomMenuPageContract() {
   }
 
   async function InputSearchInputHandler(e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }) {
-    console.log("input search");
-
     let contracts: ContractEntity[] = []
     if (loggedIn()) {
-      console.log("logged in: ", e.target.value);
-
       contracts = await contractService.search(e.target.value);
-      console.log("contracts: ", contracts);
-
     } else {
-      console.log("not logged in");
       contracts = storeService.proxy.contracts?.filter(contract => {
 
         const derivedContract = { ...contract }
@@ -84,8 +77,6 @@ export function BottomMenuPageContract() {
       }
       ) as ContractEntity[]
     }
-    console.log(storeService.proxy.contracts);
-
     setContracts(contracts as ContractEntity[]);
   }
 

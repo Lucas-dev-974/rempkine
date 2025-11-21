@@ -14,8 +14,6 @@ interface RadioButtonsProps {
 }
 
 export function RadioButtons(props: RadioButtonsProps) {
-
-  createEffect(() => console.log("value", props.value));
   return (
     <fieldset class="flex gap-2 border-none m-0 p-0 my-2">
       <legend>{props.legend}</legend>

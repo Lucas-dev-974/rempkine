@@ -123,8 +123,6 @@ export function PDFCanvas() {
 
         const sigs = signatureManager.signatures();
         if (sigs) {
-            console.log("draw sigs");
-
             drawSig(replacedCanvas, sigs.replaced);
             drawSig(substituteCanvas, sigs.substitute);
         }

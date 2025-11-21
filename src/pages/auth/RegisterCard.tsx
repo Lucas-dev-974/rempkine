@@ -32,11 +32,8 @@ export function RegisterCard() {
 
     const data: any = {};
 
-    // console.log("form element", formElements);
-    // Itérer sur les éléments dù u formulaire pour récupérer les valeurs
+    // Itérer sur les éléments du formulaire pour récupérer les valeurs
     for (let element of formElements) {
-      console.log("element", element, element instanceof RadioNodeList);
-
       if (element.name) {
         if (element.name != "gender") {
           data[element.name] = element.value;
@@ -45,8 +42,6 @@ export function RegisterCard() {
     }
     data["gender"] = gender();
     setFormData(data); // Mettez à jour l'état si nécessaire
-
-    console.log(formData());
 
     await authService.register(formData() as Partial<UserEntity>);
   }

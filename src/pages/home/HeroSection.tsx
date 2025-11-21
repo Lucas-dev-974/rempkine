@@ -4,9 +4,12 @@ import { Title1 } from "../../components/titles/Title1";
 import storeService from "../../utils/store.service";
 import { Text } from "../../components/titles/Text";
 import { Show } from "solid-js";
-import { HiOutlineInformationCircle } from 'solid-icons/hi'
+import { HiOutlineInformationCircle } from 'solid-icons/hi';
+import { useNavigate } from "@solidjs/router";
 
 export function HeroSection() {
+    const navigate = useNavigate();
+
     return (
         <div class="flex flex-col  items-center flex-wrap">
             <Title1
@@ -21,11 +24,11 @@ export function HeroSection() {
                     <Button
                         bgGradientStyle="right"
                         text="Je souhaite rejoindre"
-                        onClick={() => (location.href = "/register")}
+                        onClick={() => navigate("/register")}
                         size="full-mobile" class="w-full" />
                     <Button
                         text="Je souhaite me connecter"
-                        onClick={() => (location.href = "/login")}
+                        onClick={() => navigate("/login")}
                         size="full-mobile" class="w-full" />
                 </div>
             </Show>

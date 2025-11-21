@@ -10,7 +10,7 @@ import storeService from "../../../utils/store.service";
 import { createSignal, Show, onMount } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 import { contractService } from "../../../services/contract.service";
-import { loadContract, loggedIn } from "../../../../public/const.data";
+import { loadContract, loggedIn } from "../../../const.data";
 
 export interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);

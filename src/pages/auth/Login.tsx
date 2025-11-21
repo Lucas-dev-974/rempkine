@@ -5,12 +5,8 @@ import { LabeledInput } from "../../components/inputs/LabeledInput";
 import { TitleForm } from "../../components/titles/TitleForm";
 import { AuthWrapper } from "./AuthWrapper";
 import { Button } from "../../components/buttons/Button";
-import { NotificationService } from "../../utils/notification.service";
 
 export function LoginCard() {
-  // Créez un signal pour gérer l'état du formulaire
-  const [formData, setFormData] = createSignal<Partial<UserEntity>>();
-
   // Référence à votre formulaire
   const [formRef, setFormRef] = createSignal<HTMLFormElement>();
 
@@ -28,7 +24,7 @@ export function LoginCard() {
         value: string;
       }[];
 
-    const data: any = {};
+    const data: Record<string, string> = {};
 
     // Itérer sur les éléments du formulaire pour récupérer les valeurs
     for (let element of formElements) {
@@ -38,9 +34,8 @@ export function LoginCard() {
       }
     }
 
-    setFormData(data); // Mettez à jour l'état si nécessaire
     await authService.login(
-      formData() as Pick<UserEntity, "email" | "password">
+      data as Pick<UserEntity, "email" | "password">
     );
   };
 

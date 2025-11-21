@@ -1,14 +1,21 @@
-import { children, JSXElement } from "solid-js";
+import { children, JSXElement, onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { Navbar } from "../components/navbar/Navbar";
 import { Notification } from "../components/notification/Notification";
 import { FloatingMenu } from "../components/FloattingMenu/floating-menu/FloatingMenu";
+import { setNavigateFunction } from "../services/auth.service";
 
 interface PageWrapperProps {
     children: JSXElement;
 }
 
 export function PageWrapper(props: PageWrapperProps) {
-    const childs = children(() => props.children)
+    const childs = children(() => props.children);
+    const navigate = useNavigate();
+
+    onMount(() => {
+        setNavigateFunction(navigate);
+    });
 
     return (
         <div class="font-[Nunito]">

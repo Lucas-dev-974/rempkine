@@ -2,7 +2,7 @@ import { createSignal, JSX, Show } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
-import { setLoadContrat } from "../../../public/const.data";
+import { setLoadContrat } from "../../const.data";
 import { OutlinedButton } from "../buttons/OulinedButton";
 
 interface DialogWrapperProps {

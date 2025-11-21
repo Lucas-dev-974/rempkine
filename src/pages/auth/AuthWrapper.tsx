@@ -1,6 +1,8 @@
-import { children, JSXElement, Setter } from "solid-js";
+import { children, JSXElement, Setter, onMount } from "solid-js";
+import { useNavigate } from "@solidjs/router";
 import { Navbar } from "../../components/navbar/Navbar";
 import { Notification } from "../../components/notification/Notification";
+import { setNavigateFunction } from "../../services/auth.service";
 
 interface AuthWrapperProps {
     children: JSXElement;
@@ -10,6 +12,12 @@ interface AuthWrapperProps {
 
 export function AuthWrapper(props: AuthWrapperProps) {
     const childs = children(() => props.children);
+    const navigate = useNavigate();
+
+    onMount(() => {
+        setNavigateFunction(navigate);
+    });
+
     return (
         <div class="flex flex-col  justify-center items-center">
             <Navbar />

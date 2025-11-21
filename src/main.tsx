@@ -11,5 +11,4 @@ render(() => (
         <Route path="/login" component={LoginCard} />
         <Route path="/register" component={RegisterCard} />
     </Router>
-)
-    , document.getElementById('app')!);
+), document.getElementById('app')!);

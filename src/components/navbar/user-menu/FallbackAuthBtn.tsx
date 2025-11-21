@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "@solidjs/router";
-import { loggedIn } from "../../../../public/const.data";
+import { loggedIn } from "../../../const.data";
 import { Show } from "solid-js";
 
 export function FallbackAuthBtn() {

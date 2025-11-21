@@ -7,7 +7,7 @@ import { LabeledInput } from "../../inputs/LabeledInput";
 import { Button } from "../../buttons/Button";
 import { createSignal, onMount, Show } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
-import { loadContract, loggedIn } from "../../../../public/const.data";
+import { loadContract, loggedIn } from "../../../const.data";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);

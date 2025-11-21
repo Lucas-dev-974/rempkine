@@ -7,7 +7,7 @@ import { NotificationService } from "../../utils/notification.service";
 import storeService from "../../utils/store.service";
 import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
 import { currentPDFTool } from "./PDFEditor";
-import { loggedIn, loadContract, setLoadContrat } from "../../../public/const.data";
+import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
 
 function createContractID(): string {
     // Génère un ID unique basé sur timestamp et random

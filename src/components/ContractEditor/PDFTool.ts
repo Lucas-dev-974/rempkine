@@ -6,7 +6,7 @@ import { formatDate } from "../ContractDialog/DropdownContratInformations/Contra
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../../models/contract.entity";
 import { Accessor, createSignal } from "solid-js";
-import { loadContract } from "../../../public/const.data";
+import { loadContract } from "../../const.data";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
 

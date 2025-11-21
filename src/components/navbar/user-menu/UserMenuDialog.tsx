@@ -1,12 +1,15 @@
-import { setLoggedIn } from "../../../../public/const.data";
+import { setLoggedIn } from "../../../const.data";
 import storeService from "../../../utils/store.service";
 import { UserMenuButton } from "./UserMenuButton";
+import { useNavigate } from "@solidjs/router";
 
 interface UserMenuDialogProps {
   openDialog: boolean;
 }
 
 export function UserMenuDialog(props: UserMenuDialogProps) {
+  const navigate = useNavigate();
+
   return (
     <div
       class="absolute top-10  right-2 p-3  rounded-md shadow-lg"
@@ -23,7 +26,7 @@ export function UserMenuDialog(props: UserMenuDialogProps) {
           storeService.proxy.token = "";
           storeService.proxy.user = {};
 
-          location.href = "/";
+          navigate("/");
         }}
         text="Me déconnecté"
       />

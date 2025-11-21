@@ -1,7 +1,14 @@
-import { setLoggedIn } from "../../public/const.data";
+import { setLoggedIn } from "../const.data";
 import { UserEntity } from "../models/user.entity";
 import storeService from "../utils/store.service";
 import { FetcherService } from "./fetch.service";
+
+// Utilitaire pour la navigation (évite les dépendances circulaires)
+let navigateFn: ((path: string) => void) | null = null;
+
+export function setNavigateFunction(navigate: (path: string) => void) {
+  navigateFn = navigate;
+}
 
 class AuthService {
   private setData(response: any) {
@@ -16,27 +23,25 @@ class AuthService {
   }
 
   async register(user: Partial<UserEntity>) {
-    try {
-      const response = await FetcherService.patch("/auth/", user);
-      this.setData(response);
+    const response = await FetcherService.patch("/auth/", user);
+    this.setData(response);
+    if (navigateFn) {
+      navigateFn("/");
+    } else {
       location.href = "/";
-      return response;
-    } catch (error) {
-      // L'erreur est déjà gérée par FetcherService via ErrorHandlerService
-      throw error;
     }
+    return response;
   }
 
   async login(user: Pick<UserEntity, "email" | "password">) {
-    try {
-      const response = await FetcherService.post("/auth/", user);
-      this.setData(response);
+    const response = await FetcherService.post("/auth/", user);
+    this.setData(response);
+    if (navigateFn) {
+      navigateFn("/");
+    } else {
       location.href = "/";
-      return response;
-    } catch (error) {
-      // L'erreur est déjà gérée par FetcherService via ErrorHandlerService
-      throw error;
     }
+    return response;
   }
 }
 

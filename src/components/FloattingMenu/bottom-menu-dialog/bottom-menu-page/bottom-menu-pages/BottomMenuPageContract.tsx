@@ -5,7 +5,7 @@ import { createEffect, createSignal, on, onMount } from "solid-js";
 import storeService, { localeUpdateEnvent } from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
-import { loggedIn, setLoadContrat } from "../../../../../../public/const.data";
+import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { FiEdit } from "solid-icons/fi";
 import { TiDeleteOutline } from "solid-icons/ti";
 

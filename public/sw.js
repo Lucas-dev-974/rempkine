@@ -116,60 +116,84 @@ workbox.routing.registerRoute(
 
 // Stratégie agressive pour le développement - Toujours réseau en priorité
 self.addEventListener('fetch', (event) => {
-  const isLocalhost = event.request.url.includes('localhost') ||
-                      event.request.url.includes('127.0.0.1') ||
-                      event.request.url.includes('dev');
+  const request = event.request;
+  const method = request.method;
+  const url = request.url;
+
+  // Ne pas intercepter les requêtes non-GET (POST, PATCH, DELETE, PUT, etc.)
+  // L'API Cache ne supporte que les requêtes GET
+  if (method !== 'GET') {
+    return; // Laisser passer la requête sans interception
+  }
+
+  // Ne pas intercepter les requêtes API
+  const isApiRequest = url.includes('/api/') || url.includes('/auth/') || url.includes('/contract');
+  if (isApiRequest) {
+    return; // Laisser passer les requêtes API sans interception
+  }
+
+  const isLocalhost = url.includes('localhost') ||
+                      url.includes('127.0.0.1') ||
+                      url.includes('dev');
 
   // En développement, toujours privilégier le réseau
   if (isLocalhost) {
-    if (event.request.destination === 'document') {
+    if (request.destination === 'document') {
       event.respondWith(
-        fetch(event.request)
+        fetch(request)
           .then((response) => {
-            // Mettre à jour le cache avec la nouvelle version
-            if (response.status === 200) {
+            // Mettre à jour le cache avec la nouvelle version (uniquement GET)
+            if (response.status === 200 && response.type === 'basic') {
               const responseClone = response.clone();
               caches.open('pages-cache').then((cache) => {
-                cache.put(event.request, responseClone);
+                cache.put(request, responseClone).catch(() => {
+                  // Ignorer les erreurs de cache silencieusement
+                });
               });
             }
             return response;
           })
           .catch(() => {
             // Fallback vers le cache seulement si le réseau échoue
-            return caches.match(event.request).then((response) => {
+            return caches.match(request).then((response) => {
               return response || caches.match('/offline.html');
             });
           })
       );
-    } else {
+    } else if (request.destination === 'script' ||
+               request.destination === 'style' ||
+               request.destination === 'image') {
       // Pour les assets, même stratégie
       event.respondWith(
-        fetch(event.request)
+        fetch(request)
           .then((response) => {
-            if (response.status === 200) {
+            if (response.status === 200 && response.type === 'basic') {
               const responseClone = response.clone();
               caches.open('assets-cache').then((cache) => {
-                cache.put(event.request, responseClone);
+                cache.put(request, responseClone).catch(() => {
+                  // Ignorer les erreurs de cache silencieusement
+                });
               });
             }
             return response;
           })
           .catch(() => {
-            return caches.match(event.request);
+            return caches.match(request);
           })
       );
     }
   } else {
     // En production, utiliser la stratégie normale
-    if (event.request.destination === 'document') {
+    if (request.destination === 'document') {
       event.respondWith(
-        caches.match(event.request).then((response) => {
-          return response || fetch(event.request).then((fetchResponse) => {
-            if (fetchResponse.status === 200) {
+        caches.match(request).then((response) => {
+          return response || fetch(request).then((fetchResponse) => {
+            if (fetchResponse.status === 200 && fetchResponse.type === 'basic') {
               const responseClone = fetchResponse.clone();
               caches.open('pages-cache').then((cache) => {
-                cache.put(event.request, responseClone);
+                cache.put(request, responseClone).catch(() => {
+                  // Ignorer les erreurs de cache silencieusement
+                });
               });
             }
             return fetchResponse;

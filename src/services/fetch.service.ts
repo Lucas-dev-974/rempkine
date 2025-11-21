@@ -3,52 +3,38 @@ import storeService from "../utils/store.service";
 
 class Fetcher {
   host = import.meta.env.VITE_HOST ?? location.protocol + "//api." + location.host + "/api"
-  token = storeService.proxy.token;
+
+  get token(): string | undefined {
+    return storeService.proxy.token;
+  }
 
   async get(url: string) {
-    try {
-      const response = await this.fetcher(url, { method: "GET" });
-      return await response;
-    } catch (error) {
-      throw error;
-    }
+    return await this.fetcher(url, { method: "GET" });
   }
 
-  async post(url: string, data: any) {
-    try {
-      const response = await this.fetcher(url, {
-        method: "POST",
-        body: data instanceof FormData ? data : JSON.stringify(data),
-      });
-      return await response;
-    } catch (error) {
-      throw error;
-    }
+  async post(url: string, data: unknown) {
+    return await this.fetcher(url, {
+      method: "POST",
+      body: data instanceof FormData ? data : JSON.stringify(data),
+    });
   }
 
-  async patch(url: string, data: any) {
-    try {
-      const response = await this.fetcher(url, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
-      return await response;
-    } catch (error) {
-      throw error;
-    }
+  async patch(url: string, data: unknown) {
+    return await this.fetcher(url, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
   }
 
   async delete(url: string) {
-    try {
-      return await this.fetcher(url, { method: "DELETE" });
-    } catch (error) {
-      throw error;
-    }
+    return await this.fetcher(url, { method: "DELETE" });
   }
 
   async fetcher(url: string, init?: RequestInit) {
-    const headers: HeadersInit = {
-      Authorization: "Bearer " + this.token,
+    const headers: HeadersInit = {};
+
+    if (this.token) {
+      headers.Authorization = "Bearer " + this.token;
     }
 
     if (!(init?.body instanceof FormData)) {

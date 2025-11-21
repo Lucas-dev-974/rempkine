@@ -5,6 +5,7 @@ import { PercentIcon } from "../../icons/PercentIcon";
 import { NotificationService } from "../../utils/notification.service";
 import storeService from "../../utils/store.service";
 import { Button } from "../../components/buttons/Button";
+import { useNavigate } from "@solidjs/router";
 
 export interface AnnoucementCardProps {
   duration: {
@@ -17,6 +18,8 @@ export interface AnnoucementCardProps {
 }
 
 export function AnnoucementCard(props: AnnoucementCardProps) {
+  const navigate = useNavigate();
+
   return (
     <div class="announcement bg-gray-300  max-w-[350px] min-w-[280px] rounded-xl cursor-pointer ">
       <img
@@ -71,7 +74,7 @@ export function AnnoucementCard(props: AnnoucementCardProps) {
                 });
                 return;
               }
-              location.href = "/contract-edit";
+              navigate("/contract-edit");
             }}
           />
         </div>

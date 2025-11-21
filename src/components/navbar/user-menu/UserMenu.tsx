@@ -3,7 +3,7 @@ import storeService from "../../../utils/store.service";
 import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
 import { CgProfile } from 'solid-icons/cg'
-import { loggedIn } from "../../../../public/const.data";
+import { loggedIn } from "../../../const.data";
 import { FallbackAuthBtn } from "./FallbackAuthBtn";
 
 export function UserMenu() {

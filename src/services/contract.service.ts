@@ -17,19 +17,22 @@ class ContractService {
     return response;
   }
 
-  async listFromIDS(ids: []): Promise<ContractEntity[]> {
-    const response = await FetcherService.get("/contract/list-ids?ids=" + ids);
+  async listFromIDS(ids: (string | number)[]): Promise<ContractEntity[]> {
+    const idsParam = ids.map(id => encodeURIComponent(String(id))).join(',');
+    const response = await FetcherService.get("/contract/list-ids?ids=" + idsParam);
     return response;
   }
 
   async search(query: string): Promise<ContractEntity[]> {
-    const response = await FetcherService.get("/contract/search?q=" + query);
+    const encodedQuery = encodeURIComponent(query);
+    const response = await FetcherService.get("/contract/search?q=" + encodedQuery);
     return response;
   }
 
   async signature(imgName: string): Promise<ContractEntity[]> {
+    const encodedImgName = encodeURIComponent(imgName);
     const response = await FetcherService.get(
-      "/contract/signature?imageName=" + imgName
+      "/contract/signature?imageName=" + encodedImgName
     );
     return response;
   }

@@ -1,7 +1,6 @@
 // import { UserAttributes } from "../models/User";
 
 import { createSignal } from "solid-js";
-import { setContracts } from "../components/FloattingMenu/bottom-menu-dialog/bottom-menu-page/bottom-menu-pages/BottomMenuPageContract";
 import { ContractEntity } from "../models/contract.entity";
 
 export const [localeUpdateEnvent, setLocalUpdateEvent] = createSignal<boolean>(false)
@@ -33,8 +32,11 @@ class StoreService {
   });
 
   constructor() {
-    if (!this.getStore()) this.setState();
     const storeData = this.getStore();
+    if (!storeData) {
+      this.setState();
+      return;
+    }
 
     for (const key in storeData) {
       this.proxy[key] = storeData[key];
@@ -42,8 +44,14 @@ class StoreService {
     this.proxy.isLogin = storeData.isLogin;
   }
 
-  getStore(): StoreDataType {
-    return JSON.parse(localStorage.getItem("store") as string) as StoreDataType;
+  getStore(): StoreDataType | null {
+    const stored = localStorage.getItem("store");
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored) as StoreDataType;
+    } catch {
+      return null;
+    }
   }
 
   setState() {

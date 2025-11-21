@@ -10,8 +10,6 @@ import { RadioButtons } from "../../components/inputs/DialogToInputRadio";
 
 export function RegisterCard() {
   const [gender, setGender] = createSignal<string>("male");
-  // Créez un signal pour gérer l'état du formulaire
-  const [formData, setFormData] = createSignal<Partial<UserEntity>>();
 
   // Référence à votre formulaire
   const [formRef, setFormRef] = createSignal<HTMLFormElement>();
@@ -41,9 +39,8 @@ export function RegisterCard() {
       }
     }
     data["gender"] = gender();
-    setFormData(data); // Mettez à jour l'état si nécessaire
 
-    await authService.register(formData() as Partial<UserEntity>);
+    await authService.register(data as Partial<UserEntity>);
   }
 
   return (

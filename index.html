@@ -70,8 +70,6 @@
       window.onload = () => {
         navigator.serviceWorker.register('/sw.js')
           .then((registration) => {
-            console.log('SW registered: ', registration);
-
             // Vérifier les mises à jour
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;

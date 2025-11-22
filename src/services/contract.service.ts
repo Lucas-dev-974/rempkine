@@ -4,29 +4,29 @@ import { FetcherService } from "./fetch.service";
 class ContractService {
   async createContract(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
     const response = await FetcherService.post("/contract", contract);
-    return response;
+    return response as Partial<ContractEntity>;
   }
 
   async update(contract: Partial<ContractEntity>): Promise<Partial<ContractEntity>> {
     const response = await FetcherService.patch("/contract", contract);
-    return response;
+    return response as Partial<ContractEntity>;
   }
 
   async list(): Promise<ContractEntity[]> {
     const response = await FetcherService.get("/contract");
-    return response;
+    return response as ContractEntity[];
   }
 
   async listFromIDS(ids: (string | number)[]): Promise<ContractEntity[]> {
     const idsParam = ids.map(id => encodeURIComponent(String(id))).join(',');
     const response = await FetcherService.get("/contract/list-ids?ids=" + idsParam);
-    return response;
+    return response as ContractEntity[];
   }
 
   async search(query: string): Promise<ContractEntity[]> {
     const encodedQuery = encodeURIComponent(query);
     const response = await FetcherService.get("/contract/search?q=" + encodedQuery);
-    return response;
+    return response as ContractEntity[];
   }
 
   async signature(imgName: string): Promise<ContractEntity[]> {
@@ -34,15 +34,16 @@ class ContractService {
     const response = await FetcherService.get(
       "/contract/signature?imageName=" + encodedImgName
     );
-    return response;
+    return response as ContractEntity[];
   }
 
   async delete(id: string | number): Promise<void> {
-    return await FetcherService.delete("/contract/" + id);
+    await FetcherService.delete("/contract/" + id);
   }
 
-  async registerLocaleContractToBDD(contracts: Partial<ContractEntity>[]) {
-    return await FetcherService.post("/contract/register-local-contrats", { contracts })
+  async registerLocaleContractToBDD(contracts: Partial<ContractEntity>[]): Promise<Partial<ContractEntity>[]> {
+    const response = await FetcherService.post("/contract/register-local-contrats", { contracts });
+    return response as Partial<ContractEntity>[];
   }
 }
 export const contractService = new ContractService();

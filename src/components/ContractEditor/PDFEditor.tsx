@@ -49,7 +49,7 @@ const debouncedContractDataUpdate = debounce((fieldID: string | string[], value:
   }
 }, 500);
 
-export function HandlerToUpdateCanvasInputs(fieldID: string | string[], value: string, updateContractData: boolean = true) {
+export function HandlerToUpdateCanvasInputs(fieldID: string | string[], value: string, updateContractData: boolean = true, immediateContractUpdate: boolean = false) {
   // Mise à jour immédiate de l'affichage et des champs PDF
   if (Array.isArray(fieldID)) {
     fieldID.forEach((id) => {
@@ -63,9 +63,21 @@ export function HandlerToUpdateCanvasInputs(fieldID: string | string[], value: s
     updateCanvasInput(fieldID, value)
   }
 
-  // Mise à jour debounced des données du contrat si nécessaire (pour éviter trop de mises à jour)
+  // Mise à jour des données du contrat
   if (updateContractData) {
-    debouncedContractDataUpdate(fieldID, value);
+    if (immediateContractUpdate) {
+      // Mise à jour immédiate (pour les remplissages en lot comme fillWithMyInformationsReplaced)
+      if (Array.isArray(fieldID)) {
+        fieldID.forEach((id) => {
+          currentPDFTool()?.updateContractDataAndPDFFields(id, value, true)
+        });
+      } else {
+        currentPDFTool()?.updateContractDataAndPDFFields(fieldID, value, true);
+      }
+    } else {
+      // Mise à jour debounced (pour les saisies utilisateur normales)
+      debouncedContractDataUpdate(fieldID, value);
+    }
   }
 }
 
@@ -79,7 +91,7 @@ export function PDFEditor() {
   const PDFurl = import.meta.env.VITE_PDF_FILE_PATH || location.origin + "/assets/contrat.pdf";
 
   onMount(async () => {
-    const pdfTool = new PDFTool(PDFurl, "pdf-canvas")
+    const pdfTool = PDFTool.getInstance(PDFurl, "pdf-canvas")
     await pdfTool.initialize();
 
     setCurrentPDFTool(pdfTool)

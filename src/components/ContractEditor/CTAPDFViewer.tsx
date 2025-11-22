@@ -18,7 +18,20 @@ function createContractID(): string {
 
 export function CTAPDFViewer() {
     async function saveContractInDB() {
-        const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.contractData
+        // Utiliser getContractData() pour obtenir les données à jour depuis le store réactif
+        const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.getContractData()
+
+        // Debug: vérifier que replacedName est présent
+        if (import.meta.env.DEV) {
+            console.log("currentPDFTool()!.getContractData()", currentPDFTool());
+
+            console.log("Données du contrat avant envoi:", {
+                replacedName: contractFromPDF.replacedName,
+                substituteName: contractFromPDF.substituteName,
+                replacedEmail: contractFromPDF.replacedEmail,
+                contractData: contractFromPDF
+            });
+        }
 
         //  * If Logged in then create or update contract
         if (loggedIn()) {

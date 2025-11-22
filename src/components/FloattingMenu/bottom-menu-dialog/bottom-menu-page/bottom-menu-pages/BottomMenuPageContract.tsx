@@ -4,7 +4,6 @@ import { openDialogTool } from "../../../../dialog/DialogWrapper";
 import { createEffect, createSignal, on, onMount } from "solid-js";
 import storeService, { localeUpdateEvent } from "../../../../../utils/store.service";
 import { ButtonIcon } from "../../../../buttons/ButtonIcon";
-import { bottomMenuPage, BottomMenuPageEnum, isBottomMenuVisible } from "../../BottomMenuDialog";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { FiEdit } from "solid-icons/fi";
 import { TiDeleteOutline } from "solid-icons/ti";
@@ -19,18 +18,26 @@ export function BottomMenuPageContract() {
 
   async function SynchronizeContracts() {
     const contracts = storeService.proxy.contracts as Partial<ContractEntity>[]
-    const request: Partial<ContractEntity>[] = await contractService.registerLocaleContractToBDD(contracts)
+    const request = await contractService.registerLocaleContractToBDD(contracts)
     storeService.proxy.contracts = request
-
   }
 
   onMount(async () => {
     const localContracts = storeService.proxy.contracts
+    // Initialiser les contrats avec les données du store
+    if (localContracts && localContracts.length > 0) {
+      setContracts(localContracts as ContractEntity[]);
+    }
+
     if (loggedIn()) {
       if (localContracts!.length > 0) {
-        SynchronizeContracts()
+        await SynchronizeContracts()
+        // Mettre à jour après synchronisation
+        setContracts(storeService.proxy.contracts as ContractEntity[]);
       } else {
-        storeService.proxy.contracts = await contractService.list()
+        const contracts = await contractService.list()
+        storeService.proxy.contracts = contracts
+        setContracts(contracts);
       }
     }
   });
@@ -83,15 +90,15 @@ export function BottomMenuPageContract() {
   async function deleteContract(contract: ContractEntity) {
     if (loggedIn()) {
       await contractService.delete(contract.id);
-      storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id != contract.id)
+      storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id !== contract.id)
       setContracts(contracts().filter((c) => c.id !== contract.id));
     } else {
       storeService.proxy.contracts = storeService.proxy.contracts!.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
     }
   }
 
-  function getLocalContract(contract: ContractEntity) {
-    return storeService.proxy.contracts?.find(contract_ => contract_.id == contract.id)
+  function getLocalContract(contract: ContractEntity): ContractEntity | undefined {
+    return storeService.proxy.contracts?.find(contract_ => contract_.id === contract.id) as ContractEntity | undefined;
   }
 
   return (
@@ -117,16 +124,19 @@ export function BottomMenuPageContract() {
             <tbody>
               {contracts().map((contract, index) => (
                 <tr class={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors text-sm`}>
-                  <td class="px-4 py-2 border-b">{contract.replacedName}</td>
+                  <td class="px-4 py-2 border-b">{contract.replacedName || "-"}</td>
                   <td class="px-4 py-2 border-b text-center">
-                    {contract.substituteName}
+                    {contract.substituteName || "-"}
                   </td>
                   <td class="px-4 py-2 border-b text-right">
                     <div class="flex gap-2 justify-end">
                       <ButtonIcon
                         size="large"
                         icons={<FiEdit color="#099773" size={24} />}
-                        onClick={() => openDialogTool_(getLocalContract(contract) as ContractEntity)}
+                        onClick={() => {
+                          const localContract = getLocalContract(contract) || contract;
+                          openDialogTool_(localContract);
+                        }}
                       />
                       <ButtonIcon
                         size="large"

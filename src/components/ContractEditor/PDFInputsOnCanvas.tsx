@@ -1,6 +1,6 @@
 import { createSignal, onCleanup } from "solid-js"
 import { currentPDFTool } from "./PDFEditor"
-import { PDFFields } from "./PDFTool";
+import { PDFFields } from "../../utils/PDFTool";
 import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
 
 export const [canvasInputs, setCanvasInputs] = createSignal<PDFFields[]>([]);

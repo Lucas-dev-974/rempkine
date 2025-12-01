@@ -2,7 +2,7 @@ import { Show } from "solid-js";
 import { currentPDFTool, PDFEditor } from "../ContractEditor/PDFEditor";
 import { DialogWrapper } from "../dialog/DialogWrapper";
 import { ContratInformationsDropdowns } from "./DropdownContratInformations/ContratInformationsDropdowns";
-import { PDFTool } from "../ContractEditor/PDFTool";
+import { PDFTool } from "../../utils/PDFTool";
 import { loadContract } from "../../const.data";
 
 

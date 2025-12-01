@@ -33,3 +33,17 @@ With it you get an app that:
 - Uses the [Azure Static Web Apps CLI](https://azure.github.io/static-web-apps-cli) which enables emulating your production environment locally, and gets you ready for deploying to Azure Static Web Apps!
 
 and all with just a few button clicks 😊.
+
+## Configuration
+
+### Variables d'environnement
+
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+
+```env
+# URL complète de l'API backend (optionnel)
+# Si non défini, l'application utilisera automatiquement: http://api.{host}/api
+VITE_HOST=http://localhost:3000/api
+```
+
+**Note de sécurité :** Le token d'authentification est stocké dans le `localStorage`, ce qui le rend vulnérable aux attaques XSS. Pour une sécurité renforcée, il est recommandé d'utiliser des cookies httpOnly côté backend.

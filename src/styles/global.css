@@ -14,3 +14,41 @@ html, body {
 
   height: 100%;
 }
+
+/*
+ * Détection de l'autofill du navigateur via animations CSS
+ * Cette technique permet de détecter quand le navigateur remplit automatiquement un champ
+ * en utilisant les pseudo-classes :autofill et des animations
+ */
+@keyframes onAutoFillStart {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes onAutoFillCancel {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/*
+ * Appliquer l'animation aux inputs qui sont autofillés
+ * L'animation est déclenchée même si elle ne change rien visuellement,
+ * ce qui permet à JavaScript de la détecter via l'événement animationstart
+ */
+input:-webkit-autofill {
+  animation-name: onAutoFillStart;
+  animation-duration: 0.001s;
+}
+
+input:not(:-webkit-autofill) {
+  animation-name: onAutoFillCancel;
+  animation-duration: 0.001s;
+}

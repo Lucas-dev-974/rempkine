@@ -1,9 +1,9 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs } from "../../ContractEditor/PDFEditor";
+import { currentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { RadioButtons } from "../../inputs/DialogToInputRadio";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
-import { GenderEnum } from "../../ContractEditor/PDFTool";
+import { GenderEnum } from "../../../utils/PDFTool";
 import { LabeledInput } from "../../inputs/LabeledInput";
 import { UserEntity } from "../../../models/user.entity";
 import storeService from "../../../utils/store.service";
@@ -47,47 +47,18 @@ const FIELD_MAPPING: Record<string, keyof import("../../../models/contract.entit
 };
 
 function HandlerToUpdateFormInputsAndPDFInputs(
-  field: "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "professionnalAddress" | "email",
+  field: "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "professionnalAddress" | "email" | "gender",
   value: string,
-  immediateContractUpdate: boolean = false
 ) {
-  const tool = currentPDFTool();
-  if (!tool) return;
 
-  const contractField = FIELD_MAPPING[field];
-  if (!contractField) return;
-
-  const currentGender = gender() as GenderEnum;
-
-  // Si c'est le champ name, vider les champs du genre opposé
-  // IMPORTANT: Ne pas mettre à jour contractData (updateContractData=false) car on va mettre à jour
-  // le bon champ juste après, et cela éviterait d'écraser la valeur avec une chaîne vide
-  if (field === "name") {
-    const oppositeGender = currentGender === GenderEnum.male ? GenderEnum.female : GenderEnum.male;
-    const oppositeIds = tool.getReplacedFieldsIds(oppositeGender)[field] as unknown as string | string[];
-    const idsArray = Array.isArray(oppositeIds) ? oppositeIds : [oppositeIds];
-    idsArray.forEach(id => HandlerToUpdateCanvasInputs(id, "", false, false));
-  }
-
-  // Mettre à jour le champ avec la nouvelle valeur
-  const fieldsIdsByGender = tool.getReplacedFieldsIds(currentGender)[field] as unknown as string | string[];
-  const idsArray = Array.isArray(fieldsIdsByGender) ? fieldsIdsByGender : [fieldsIdsByGender];
-
-  // Pour l'auto-complétion (immediateContractUpdate=true), on met à jour uniquement l'affichage PDF
-  // et on laisse updateField gérer contractData une seule fois à la fin (évite les appels redondants)
-  // Pour la saisie normale, on laisse HandlerToUpdateCanvasInputs gérer avec le debounce
-  if (immediateContractUpdate) {
-    // Mise à jour uniquement de l'affichage PDF, pas de contractData (sera fait par updateField ci-dessous)
-    idsArray.forEach(id => {
-      HandlerToUpdateCanvasInputs(id, value, false, false);
-    });
-    // Mettre à jour contractData une seule fois pour tous les IDs PDF
-    tool.updateField(contractField, value, { immediate: true, gender: currentGender });
+  if (field === "gender") {
+    setGender(value as GenderEnum);
+    currentPDFTool()?.updateField("replacedGender", value as GenderEnum);
+    return;
   } else {
-    // Pour la saisie normale, laisser HandlerToUpdateCanvasInputs gérer avec le debounce
-    idsArray.forEach(id => {
-      HandlerToUpdateCanvasInputs(id, value, true, false);
-    });
+    const contractField = FIELD_MAPPING[field];
+    const currentGender = gender() as GenderEnum;
+    currentPDFTool()?.updateContractDataAndPDFFields(contractField, value, currentGender);
   }
 
   // Mettre à jour uniquement le signal du champ modifié au lieu de tous les champs
@@ -119,32 +90,29 @@ function HandlerToUpdateFormInputsAndPDFInputs(
   isValid();
 }
 
+// TODO: check if this works with the new implementation
 export function fillWithMyInformationsReplaced() {
   const userDatas: UserEntity = storeService.data.user;
   const tool = currentPDFTool();
   if (!tool) return;
 
-  // Récupérer le genre depuis le store réactif (pas depuis contractData qui peut être désynchronisé)
-  const contractDataFromStore = tool.getContractData();
-  const currentGender = contractDataFromStore.replacedGender ?? GenderEnum.male;
-  setGender(currentGender);
 
-  // S'assurer que replacedGender est défini dans le store
-  if (!contractDataFromStore.replacedGender) {
-    tool.updateField("replacedGender", currentGender, { immediate: true });
-  }
+  // TODO: review this conditional <userDatas.gender ?? GenderEnum.male>
+  setGender(userDatas.gender ?? GenderEnum.male);
+
+
 
   // Utiliser immediateContractUpdate=true pour éviter que le debounce n'annule les mises à jour précédentes
   // IMPORTANT: Mettre à jour replacedName en premier pour s'assurer qu'il est bien dans le store
-  HandlerToUpdateFormInputsAndPDFInputs("name", userDatas.fullname, true);
-  HandlerToUpdateFormInputsAndPDFInputs("email", userDatas.email, true);
+  HandlerToUpdateFormInputsAndPDFInputs("name", userDatas.fullname);
+  HandlerToUpdateFormInputsAndPDFInputs("email", userDatas.email);
   // Formater la date correctement pour l'input de type "date" (YYYY-MM-DD)
   const formattedBirthday = formatDateForInput(userDatas.birthday instanceof Date ? userDatas.birthday.toISOString() : userDatas.birthday);
-  HandlerToUpdateFormInputsAndPDFInputs("birthday", formattedBirthday, true);
-  HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", userDatas.bornLocation, true);
-  HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", userDatas.department, true);
-  HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "", true);
-  HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", userDatas.officeAdress as string, true);
+  HandlerToUpdateFormInputsAndPDFInputs("birthday", formattedBirthday);
+  HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", userDatas.bornLocation);
+  HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", userDatas.department);
+  HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "");
+  HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", userDatas.officeAdress as string);
 
   // Debug: vérifier que replacedName est bien dans le store après mise à jour
   if (import.meta.env.DEV) {
@@ -221,12 +189,9 @@ export function ReplacedFields(props: AccordionFieldsProps) {
         ]}
         onChange={(e) => {
           const target = e.target as HTMLInputElement;
-          const tool = currentPDFTool();
-          if (!tool) return;
           const newGender = target.value as GenderEnum;
+          HandlerToUpdateFormInputsAndPDFInputs("gender", newGender);
           setGender(newGender);
-          // Utiliser updateField pour mettre à jour le genre dans contractData
-          tool.updateField("replacedGender", newGender, { immediate: true });
         }}
         value={gender()}
       />

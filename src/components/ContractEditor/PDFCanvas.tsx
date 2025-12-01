@@ -1,8 +1,8 @@
-import { onMount, createEffect, createSignal } from "solid-js";
-import { currentPage, currentPDFTool, numPages, setCurrentPage, setNumPages, signaturePad1, signaturePad2, updateCanvasInput as updateCanvasInputField } from "./PDFEditor";
+import { createEffect } from "solid-js";
+import { currentPDFTool } from "./PDFEditor";
 import { PDFInputsOnCanvas, setCanvasInputs } from "./PDFInputsOnCanvas";
 import { PDFActions } from "./PDFActions";
-import { PDFFields } from "./PDFTool";
+import { PDFFields } from "../../utils/PDFTool";
 import { signatureManager } from "../ContractDialog/Signatures";
 
 export function PDFCanvas() {
@@ -11,9 +11,8 @@ export function PDFCanvas() {
         if (!tool) return;
         const canvas = document.getElementById("pdf-canvas") as HTMLCanvasElement | null;
         if (!canvas) return;
-        await tool.renderPage(1, canvas);
-        setCurrentPage(tool.currentPage);
-        setNumPages(tool.numPages);
+        await tool.renderPage(canvas);
+
         updateCanvasInputsFromTool();
         if (tool.currentPage === 6) {
             displaySigsPage6();
@@ -25,13 +24,17 @@ export function PDFCanvas() {
     async function pagination(page: number) {
         const canvas = document.getElementById("pdf-canvas") as HTMLCanvasElement
 
-        if (page === +1 && currentPDFTool()!.currentPage == 6) return 6;
-        if (page === -1 && currentPDFTool()!.currentPage == 1) return 1;
+        if (page === +1 && currentPDFTool()!.currentPage == 6) {
+            currentPDFTool()!.setCurrentPage(1);
+        } else if (page === -1 && currentPDFTool()!.currentPage == 1) {
+            currentPDFTool()!.setCurrentPage(6);
+        } else {
+            currentPDFTool()!.setCurrentPage(currentPDFTool()!.currentPage + page);
+        }
 
-        await currentPDFTool()!.renderPage(currentPDFTool()!.currentPage + page, canvas);
+        await currentPDFTool()!.renderPage(canvas);
 
-        setCurrentPage(currentPDFTool()!.currentPage);
-        setNumPages(currentPDFTool()!.numPages);
+        // setNumPages(currentPDFTool()!.numPages);
         updateCanvasInputsFromTool()
 
         // Manage signature canvases visibility per page
@@ -45,7 +48,7 @@ export function PDFCanvas() {
 
     function updateCanvasInputsFromTool() {
         currentPDFTool()?.setContractDataToPDFInputsFields(currentPDFTool()?.contractData!)
-        const fields = currentPDFTool()?.PDFInputsFieldsMetadata?.filter(page => page.page == currentPage())[0].fields
+        const fields = currentPDFTool()?.PDFInputsFieldsMetadata?.filter(page => page.page == currentPDFTool()?.currentPage)[0].fields
 
         // ! necessary to update canvas inputs fields with the data contract
         setCanvasInputs(prev => {
@@ -142,6 +145,6 @@ export function PDFCanvas() {
     return <div class="relative mx-auto flex flex-col gap-2 pb-2 ">
         <canvas id="pdf-canvas" class="w-[85vw] max-w-[600px] lg:w-[600px] md:w-full border border-gray-400 rounded-lg mx-auto" />
         <PDFInputsOnCanvas />
-        <PDFActions changePage={pagination} currentPage={currentPage()} numberOfPage={numPages() as number} />
+        <PDFActions changePage={pagination} />
     </div >
 }

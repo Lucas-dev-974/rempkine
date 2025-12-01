@@ -1,4 +1,4 @@
-import { currentPDFTool, HandlerToUpdateCanvasInputs, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
+import { currentPDFTool, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
 import { fillWithMyInformationsSubstitute } from "./SubstituteFields";
 import { fillWithMyInformationsReplaced } from "./ReplacedFields";
@@ -33,6 +33,43 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   const [endDate, setEndDate] = createSignal<string>();
   const [doneAt, setDoneAt] = createSignal<string>();
 
+  function HandlerToUpdateFormInputsAndPDFInputs(
+    field: "startDate" | "endDate" | "percentReturnToSubstitute" | "percentReturnToSubstituteBeforeDate" | "nonInstallationRadius" | "conciliationCDOMK" | "doneAtLocation" | "doneAt",
+    value: string,
+  ) {
+    currentPDFTool()?.updateContractDataAndPDFFields(field, value);
+
+    switch (field) {
+      case "startDate":
+        setStartDate(value);
+        break;
+      case "endDate":
+        setEndDate(value);
+        break;
+      case "percentReturnToSubstitute":
+        const percentReturnToSubstitute = Number(value);
+        setPercentReturnToSubstitute(percentReturnToSubstitute);
+        break;
+      case "percentReturnToSubstituteBeforeDate":
+        setPercentReturnToSubstituteBeforeDate(value);
+        break;
+      case "nonInstallationRadius":
+        const nonInstallationRadius = Number(value);
+        setNonInstallationRadius(nonInstallationRadius);
+        break;
+      case "conciliationCDOMK":
+        setConciliationCDOMK(value);
+        break;
+      case "doneAtLocation":
+        setDoneAtLocation(value);
+        break;
+      case "doneAt":
+        setDoneAt(value);
+        break;
+    }
+
+    isValid();
+  }
 
   function fillWithMyInformations(as: "author,replaced" | "author,substitute") {
     // setFieldUpdatedEvent(!fieldUpdatedEvent());
@@ -68,9 +105,8 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
 
       setPercentReturnToSubstituteBeforeDate(formatDateForInput(loadContract()!.percentReturnToSubstituteBeforeDate))
       setStartDate(formatDateForInput(loadContract()!.startDate))
-      const endDate = formatDateForInput(loadContract()?.endDate) == "NaN-NaN-NaN" ? loadContract()?.endDate : formatDateForInput(loadContract()?.endDate)
-      setEndDate(endDate)
-      setDoneAt(formatDateForInput(loadContract()!.doneAtDate))
+      setEndDate(formatDateForInput(loadContract()?.endDate))
+      setDoneAt(formatDateForInput(loadContract()!.doneAt))
     }
     isValid()
   })
@@ -113,12 +149,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Date de début"
         type="date"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds().startDate as string,
-            formatDateForInput(e.target.value)
-          );
-          setStartDate(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("startDate", e.target.value);
         }}
         value={startDate()}
       />
@@ -127,12 +158,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Date de fin"
         type="date"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds().endDate as string,
-            formatDateForInput(e.target.value)
-          );
-          setEndDate(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("endDate", e.target.value);
         }}
         value={endDate()}
       />
@@ -142,10 +168,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Pourcentage reversé au remplaçant"
         type="number"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(currentPDFTool()?.getContractInformationFieldsIds().percentReversedToSubstitute as string, e.target.value
-          );
-          setPercentReturnToSubstitute(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("percentReturnToSubstitute", e.target.value);
         }}
         value={percentReturnToSubstitute()?.toString()}
       />
@@ -155,12 +178,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Date limite de paiement au lieu de pourcentage reversé "
         type="date"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds().reversedBefore as string,
-            formatDateForInput(e.target.value)
-          );
-          setPercentReturnToSubstituteBeforeDate(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("percentReturnToSubstituteBeforeDate", e.target.value);
         }}
         value={percentReturnToSubstituteBeforeDate()?.toString()}
       />
@@ -170,13 +188,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Rayon de non installation (KM) si plus de 3 mois  "
         type="number"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds()
-              .NonInstallationRadius as string,
-            e.target.value
-          );
-          setNonInstallationRadius(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("nonInstallationRadius", e.target.value);
         }}
         value={nonInstallationRadius()?.toString()}
       />
@@ -185,13 +197,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Département de l'ordre concerné si conciliation"
         type="text"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds()
-              .conciliationCDOMK as string,
-            e.target.value
-          );
-          setConciliationCDOMK(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("conciliationCDOMK", e.target.value);
         }}
         value={conciliationCDOMK()}
       />
@@ -200,13 +206,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Fait à"
         type="text"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds()
-              .doneAtLocation as string,
-            e.target.value
-          );
-          setDoneAtLocation(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("doneAtLocation", e.target.value);
         }}
         value={doneAtLocation()}
       />
@@ -215,12 +215,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
         label="Fait le"
         type="date"
         onInput={(e) => {
-          HandlerToUpdateCanvasInputs(
-            currentPDFTool()?.getContractInformationFieldsIds().doneAt as string,
-            formatDateForInput(e.target.value)
-          );
-          setDoneAt(e.target.value);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("doneAt", e.target.value);
         }}
         value={doneAt()}
       />

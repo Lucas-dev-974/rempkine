@@ -26,9 +26,6 @@ export function CTAPDFViewer() {
             console.log("currentPDFTool()!.getContractData()", currentPDFTool());
 
             console.log("Données du contrat avant envoi:", {
-                replacedName: contractFromPDF.replacedName,
-                substituteName: contractFromPDF.substituteName,
-                replacedEmail: contractFromPDF.replacedEmail,
                 contractData: contractFromPDF
             });
         }

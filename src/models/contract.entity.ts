@@ -1,4 +1,4 @@
-import { AuthorsEnum, GenderEnum } from "../components/ContractEditor/PDFTool";
+import { AuthorsEnum, GenderEnum } from "../utils/PDFTool";
 
 export type ContractEntity = {
   id: string | number;
@@ -12,7 +12,7 @@ export type ContractEntity = {
   nonInstallationRadius: number;
   conciliationCDOMK: string;
   doneAtLocation: string;
-  doneAtDate: string;
+  doneAt: string;
 
   // -- ReplacedFields
   replacedGender: GenderEnum;

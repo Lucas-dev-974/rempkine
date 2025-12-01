@@ -1,4 +1,4 @@
-import { AuthorsEnum, GenderEnum } from "../components/ContractEditor/PDFTool";
+import { AuthorsEnum, GenderEnum } from "../utils/PDFTool";
 
 export type UserEntity = {
   id?: number;

@@ -2,13 +2,12 @@ import { PDFDocument } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-import { formatDate } from "../ContractDialog/DropdownContratInformations/ContractInformationsFields";
+import { formatDate } from "../components/ContractDialog/DropdownContratInformations/ContractInformationsFields";
 import { RenderParameters } from "pdfjs-dist/types/src/display/api";
-import { ContractEntity } from "../../models/contract.entity";
+import { ContractEntity } from "../models/contract.entity";
 import { Accessor, createSignal } from "solid-js";
-import { createStore } from "solid-js/store";
-import { loadContract } from "../../const.data";
-import { getContractFieldFromPDFId, getPDFIdsForContractField, getPDFIdsForField } from "./pdf-field-mapping.config";
+import { loadContract } from "../const.data";
+import { getPDFIdsForField } from "./pdf-field-mapping.config";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
 
@@ -66,15 +65,10 @@ export class PDFTool {
 
   public PDFInputsFieldsMetadata: PDFFieldsOfPages[];
   public contractData: Partial<ContractEntity>;
-  private contractDataStore: ReturnType<typeof createStore<Partial<ContractEntity>>>[0];
-  private setContractData: ReturnType<typeof createStore<Partial<ContractEntity>>>[1];
 
   private constructor(url: string, canvasID: string) {
     this.PDFInputsFieldsMetadata = []
-    const [contractDataStore, setContractDataStore] = createStore<Partial<ContractEntity>>({});
-    this.contractDataStore = contractDataStore;
-    this.setContractData = setContractDataStore;
-    this.contractData = contractDataStore; // Pour compatibilité avec le code existant
+    this.contractData = {}; // Pour compatibilité avec le code existant
     this.canvasID = canvasID;
     this.url = url;
   }
@@ -96,10 +90,7 @@ export class PDFTool {
       PDFTool.instance.url = url;
       PDFTool.instance.canvasID = canvasID;
       PDFTool.instance.PDFInputsFieldsMetadata = [];
-      const [contractDataStore, setContractDataStore] = createStore<Partial<ContractEntity>>({});
-      PDFTool.instance.contractDataStore = contractDataStore;
-      PDFTool.instance.setContractData = setContractDataStore;
-      PDFTool.instance.contractData = contractDataStore;
+      PDFTool.instance.contractData = {};
       PDFTool.instance.pdfDoc = undefined;
       PDFTool.instance.pdfBlob = undefined;
       PDFTool.instance.pdfFile = undefined;
@@ -130,15 +121,14 @@ export class PDFTool {
 
     if (loadContract()) {
       this.setContractDataToPDFInputsFields(loadContract() as ContractEntity);
-      // handlerToUpdateFormInputsWithContratData()
     } else {
-      this.updateField("replacedGender", GenderEnum.male, { immediate: true });
-      this.updateField("substituteGender", GenderEnum.male, { immediate: true });
+      this.updateField("replacedGender", GenderEnum.male);
+      this.updateField("substituteGender", GenderEnum.male);
     }
   }
 
-  getContractFieldNameFromInputPDFID(id: string): keyof ContractEntity | undefined {
-    return getContractFieldFromPDFId(id);
+  updateField(fieldName: keyof ContractEntity, value: any) {
+    this.contractData[fieldName] = value;
   }
 
   /**
@@ -147,125 +137,21 @@ export class PDFTool {
    */
   getContractData(): Partial<ContractEntity> {
     // Synchroniser contractData avec le store avant de retourner
-    this.contractData = { ...this.contractDataStore };
-    return { ...this.contractDataStore };
+    return this.contractData;
   }
 
   /**
-   * Méthode unifiée de mise à jour d'un champ
-   * @param fieldName Nom du champ dans ContractEntity
-   * @param value Nouvelle valeur
-   * @param options Options de mise à jour
+   * Met à jour les champs du PDF avec les données du contrat
+   * @param contract Les données du contrat à mettre à jour
    */
-  public updateField(
-    fieldName: keyof ContractEntity,
-    value: any,
-    options?: {
-      immediate?: boolean;
-      skipUI?: boolean;
-      gender?: GenderEnum;
-    }
-  ): void {
-    // Déterminer le genre en fonction du nom du champ si non spécifié dans les options
-    let gender: GenderEnum;
-    if (options?.gender) {
-      gender = options.gender;
-    } else {
-      // Si le champ commence par "replaced", utiliser replacedGender
-      if (String(fieldName).startsWith("replaced")) {
-        gender = (this.contractDataStore.replacedGender as GenderEnum) ?? GenderEnum.male;
-      }
-      // Si le champ commence par "substitute", utiliser substituteGender
-      else if (String(fieldName).startsWith("substitute")) {
-        gender = (this.contractDataStore.substituteGender as GenderEnum) ?? GenderEnum.male;
-      }
-      // Pour les autres champs, utiliser un fallback
-      else {
-        gender = (this.contractDataStore.replacedGender as GenderEnum) ?? (this.contractDataStore.substituteGender as GenderEnum) ?? GenderEnum.male;
-      }
-    }
-    const pdfIds = getPDFIdsForContractField(fieldName, gender);
-
-    if (pdfIds.length === 0) {
-      console.warn(`No PDF IDs found for field: ${fieldName} with gender: ${gender}`);
-      // IMPORTANT: Mettre à jour le store même si aucun ID PDF n'est trouvé
-      // car certains champs peuvent ne pas avoir de correspondance PDF mais doivent être dans contractData
-      this.setContractData(fieldName, value);
-      this.setContractData("updatedAt", new Date(Date.now()));
-      this.contractData = { ...this.contractDataStore };
-      return;
-    }
-
-    // Debug en mode développement
-    if (import.meta.env.DEV && (fieldName === "replacedName" || fieldName === "substituteName")) {
-      console.log(`updateField called for ${fieldName}:`, {
-        value,
-        gender,
-        pdfIds,
-        currentStoreValue: this.contractDataStore[fieldName]
-      });
-    }
-
-    // Mettre à jour contractData (store réactif)
-    this.setContractData(fieldName, value);
-    this.setContractData("updatedAt", new Date(Date.now()));
-    // Synchroniser avec contractData pour compatibilité
-    this.contractData = { ...this.contractDataStore };
-
-    // Mettre à jour PDFInputsFieldsMetadata
-    pdfIds.forEach((pdfId) => {
-      this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => ({
-        ...page,
-        fields: page.fields.map((field) =>
-          field.id === pdfId ? { ...field, value: String(value ?? "") } : field
-        ),
-      }));
-    });
-  }
-
   public setContractDataToPDFInputsFields(contract: Partial<ContractEntity>) {
-    // Mettre à jour contractData avec toutes les valeurs du contrat
     Object.keys(contract).forEach((key) => {
       const fieldName = key as keyof ContractEntity;
       const value = contract[fieldName];
       if (value !== undefined) {
-        const gender = fieldName.includes("replaced")
-          ? (contract.replacedGender as GenderEnum)
-          : (contract.substituteGender as GenderEnum);
-        this.updateField(fieldName, value, {
-          immediate: true,
-          gender
-        });
+        this.updateContractDataAndPDFFields(fieldName, value);
       }
     });
-    // Synchroniser contractData pour compatibilité
-    this.contractData = { ...this.contractDataStore };
-  }
-
-
-  isValidContract(contract: Partial<ContractEntity>) {
-    if (!contract.startDate) return false;
-    if (!contract.endDate) return false;
-    if (!contract.percentReturnToSubstitute) return false;
-    if (!contract.percentReturnToSubstituteBeforeDate) return false;
-    if (!contract.nonInstallationRadius) return false;
-    if (!contract.conciliationCDOMK) return false;
-    if (!contract.doneAtLocation) return false;
-    if (!contract.doneAtDate) return false;
-    if (!contract.replacedEmail) return false;
-    if (!contract.replacedName) return false;
-    if (!contract.replacedBirthday) return false;
-    if (!contract.replacedBirthdayLocation) return false;
-    if (!contract.replacedOrderDepartement) return false;
-    if (!contract.replacedOrderDepartmentNumber) return false;
-    if (!contract.replacedProfessionnalAddress) return false;
-    if (!contract.substituteEmail) return false;
-    if (!contract.substituteName) return false;
-    if (!contract.substituteBirthday) return false;
-    if (!contract.substituteBirthdayLocation) return false;
-    if (!contract.substituteOrderDepartement) return false;
-    if (!contract.substituteOrderDepartmentNumber) return false;
-    return true;
   }
 
   async loadPdf() {
@@ -323,6 +209,12 @@ export class PDFTool {
     this.PDFInputsFieldsMetadata = [...this.PDFInputsFieldsMetadata, ...formFields];
   }
 
+  /**
+   * Récupère les dimensions du PDF
+   * @param pdfDoc Le document PDF
+   * @param canvasId L'ID du canvas HTML
+   * @returns Les dimensions du PDF
+   */
   async getDimensions(pdfDoc: any, canvasId: any) {
     // Récupère la première page du PDF pour obtenir la taille d'origine
     const page = await pdfDoc.getPage(1);
@@ -353,12 +245,17 @@ export class PDFTool {
     }
   }
 
-  async renderPage(pageNum: number, canvasElement: HTMLCanvasElement) {
+  /**
+   * Rend la page numéro pageNum dans le canvasElement
+   * @param pageNum Le numéro de la page à rendre
+   * @param canvasElement Le canvas HTML dans lequel rendre la page
+   */
+  async renderPage(canvasElement: HTMLCanvasElement) {
     await this.getPagesFields();
     if (this.isRendering) return;
     this.isRendering = true;
 
-    const page = await this.pdfDoc!.getPage(pageNum);
+    const page = await this.pdfDoc!.getPage(this.currentPage);
     const context = canvasElement!.getContext("2d");
     const dimensions = await this.getDimensions(this.pdfDoc, "pdf-canvas");
 
@@ -379,155 +276,42 @@ export class PDFTool {
       };
 
       await page.render(renderContext as RenderParameters).promise;
-      this.currentPage = pageNum;
       this.isRendering = false;
     }
   }
 
-  updateContractDataAndPDFFields(fieldId: string, newValue: any, updateContractData: boolean = true) {
-    const key = this.getContractFieldNameFromInputPDFID(fieldId);
-
-    if (updateContractData && key) {
-      // Utiliser la méthode unifiée updateField
-      this.updateField(key, newValue, { immediate: true });
-    } else {
-      // Mettre à jour uniquement PDFInputsFieldsMetadata sans contractData
-      this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => ({
-        ...page,
-        fields: page.fields.map((field) =>
-          field.id === fieldId ? { ...field, value: String(newValue ?? "") } : field
-        ),
-      }));
-    }
-  }
-
-  async downloadModifiedPdf(pdfFile: File, signatures: Accessor<{ replaced?: string; substitute?: string } | undefined>) {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const pdfData = new Uint8Array(reader.result as ArrayBufferLike);
-
-      const pdfDoc_ = await PDFDocument.load(pdfData);
-
-      // Récupérer la dernière page du PDF (page 6)
-      const lastPageIndex = pdfDoc_.getPageCount() - 1;
-      const page = pdfDoc_.getPage(lastPageIndex);
-
-      const signatureData = signatures();
-      const replacedSignatureDataUrl = signatureData?.replaced;
-      const substituteSignatureDataUrl = signatureData?.substitute;
-
-      if (replacedSignatureDataUrl && substituteSignatureDataUrl) {
-        try {
-          // Intégrer les images dans le PDF directement depuis les DataURL
-          const canvas1ImageBytes = await fetch(replacedSignatureDataUrl).then((res) =>
-            res.arrayBuffer()
-          );
-          const canvas2ImageBytes = await fetch(substituteSignatureDataUrl).then((res) =>
-            res.arrayBuffer()
-          );
-
-          const canvas1ImageEmbed = await pdfDoc_.embedPng(canvas1ImageBytes);
-          const canvas2ImageEmbed = await pdfDoc_.embedPng(canvas2ImageBytes);
-
-          // Obtenir les dimensions de la page
-          const { width, height } = page.getSize();
-
-          // Dessiner les images sur la page avec des dimensions ajustées
-          page.drawImage(canvas1ImageEmbed, {
-            x: width * 0.05, // 5% du côté gauche
-            y: height * 0.15, // 15% du bas
-            width: width * 0.35, // 35% de la largeur de la page
-            height: height * 0.15, // 15% de la hauteur de la page
-          });
-
-          page.drawImage(canvas2ImageEmbed, {
-            x: width * 0.6, // 60% du côté gauche
-            y: height * 0.15, // 15% du bas
-            width: width * 0.35, // 35% de la largeur de la page
-            height: height * 0.15, // 15% de la hauteur de la page
-          });
-
-        } catch (error) {
-          if (import.meta.env.DEV) {
-            console.error("Erreur lors de l'ajout des signatures:", error);
-          }
-        }
-      }
-
-      // Récupère et met à jour les champs de formulaire
-      const form = pdfDoc_.getForm();
-
-      this.PDFInputsFieldsMetadata!.forEach((page) => {
-        page.fields.forEach((field) => {
-          const pdfField = form.getTextField(field.name);
-          if (pdfField) {
-            pdfField.setText(field.value);
-          }
-        });
-      });
-
-      // Génère les données du PDF modifié
-      const modifiedPdfBytes = await pdfDoc_.save();
-
-      // Crée un lien de téléchargement
-      const blob = new Blob([modifiedPdfBytes as BlobPart], { type: "application/pdf" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-
-      a.href = url;
-      a.download = "modified.pdf";
-      a.click();
-
-      URL.revokeObjectURL(url);
-    };
-
-    reader.readAsArrayBuffer(pdfFile as File);
-  }
+  /**
+   * Met à jour les valeurs des champs PDF correspondants dans le contractData
+   * @param contractField Le nom du champ contractField à mettre à jour
+   * @param newValue La nouvelle valeur à mettre à jour
+   * @param gender Le genre du contrat
+   */
+  updateContractDataAndPDFFields(contractField: string, newValue: any, gender: GenderEnum = GenderEnum.male) {
+    // Récupère les IDs des champs PDF correspondant au champ contractField et au genre gender
+    const pdfIds = getPDFIdsForField(contractField, gender);
 
 
-  getReplacedFieldsIds(gender?: GenderEnum) {
-    return {
-      name: getPDFIdsForField("replacedName", gender),
-      birthday: getPDFIdsForField("replacedBirthday", gender),
-      birthdayLocation: getPDFIdsForField("replacedBirthdayLocation", gender),
-      orderDepartement: getPDFIdsForField("replacedOrderDepartement", gender),
-      orderDepartmentNumber: getPDFIdsForField("replacedOrderDepartmentNumber", gender),
-      professionnalAddress: getPDFIdsForField("replacedProfessionnalAddress", gender),
-      email: getPDFIdsForField("replacedEmail", gender),
-    };
-  }
+    // Met à jour les valeurs des champs PDF correspondants
+    this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => ({
+      ...page,
+      fields: page.fields.map((field) =>
+        pdfIds.includes(field.id) ? { ...field, value: String(newValue ?? "") } : field
+      ),
+    }));
 
-  getSubstituteFieldsIds(gender?: GenderEnum) {
-    return {
-      name: getPDFIdsForField("substituteName", gender),
-      birthday: getPDFIdsForField("substituteBirthday", gender),
-      birthdayLocation: getPDFIdsForField("substituteBirthdayLocation", gender),
-      orderDepartement: getPDFIdsForField("substituteOrderDepartement", gender),
-      orderDepartmentNumber: getPDFIdsForField("substituteOrderDepartmentNumber", gender),
-      address: getPDFIdsForField("substituteAdress", gender),
-      email: getPDFIdsForField("substituteEmail", gender),
-    };
-  }
+    // Met à jour la valeur du champ contractField dans le contractData
+    this.updateField(contractField as keyof ContractEntity, newValue);
 
-  getContractInformationFieldsIds() {
-    return {
-      startDate: getPDFIdsForField("startDate") as string,
-      endDate: getPDFIdsForField("endDate") as string,
-      percentReversedToSubstitute: getPDFIdsForField("percentReturnToSubstitute") as string,
-      reversedBefore: getPDFIdsForField("percentReturnToSubstituteBeforeDate") as string,
-      NonInstallationRadius: getPDFIdsForField("nonInstallationRadius") as string,
-      conciliationCDOMK: getPDFIdsForField("conciliationCDOMK") as string,
-      doneAtLocation: getPDFIdsForField("doneAtLocation") as string,
-      doneAt: getPDFIdsForField("doneAtDate") as string,
-    };
+    console.log("PDFInputsFieldsMetadata", this.PDFInputsFieldsMetadata);
+    console.log("contractData", this.contractData);
   }
 
 
   resetContractData() {
-    this.setContractData({
+    this.contractData = {
       id: "",
       conciliationCDOMK: "",
-      doneAtDate: "",
+      doneAt: "",
       doneAtLocation: "",
       endDate: "",
       nonInstallationRadius: 0,
@@ -551,47 +335,30 @@ export class PDFTool {
       substituteName: "",
       substituteOrderDepartement: "",
       substituteOrderDepartmentNumber: 0
-    });
-    this.contractData = { ...this.contractDataStore };
+    };
   }
 
-  updateSignaturesInContract(
-    signatures: Accessor<{ replaced?: string; substitute?: string } | undefined>
-  ) {
+  /**
+   * Met à jour les signatures dans le contractData
+   * @param signatures Les signatures à mettre à jour
+   */
+  updateSignaturesInContract(signatures: Accessor<{ replaced?: string; substitute?: string } | undefined>) {
     const signatureData = signatures();
 
     if (signatureData?.replaced) {
-      this.updateField("replacedSignatureDataUrl", signatureData.replaced, { immediate: true });
+      this.updateField("replacedSignatureDataUrl", signatureData.replaced);
     }
 
     if (signatureData?.substitute) {
-      this.updateField("substituteSignatureDataUrl", signatureData.substitute, { immediate: true });
+      this.updateField("substituteSignatureDataUrl", signatureData.substitute);
     }
   }
 
-  // Méthode de débogage pour vérifier l'état des signatures (uniquement en développement)
-  debugSignatures() {
-    if (!import.meta.env.DEV) return;
-
-    console.log("=== DÉBOGAGE DES SIGNATURES ===");
-    console.log("Signatures dans contractData:", {
-      replaced: this.contractDataStore.replacedSignatureDataUrl ? "disponible" : "non disponible",
-      substitute: this.contractDataStore.substituteSignatureDataUrl ? "disponible" : "non disponible",
-      replacedLength: this.contractDataStore.replacedSignatureDataUrl?.length || 0,
-      substituteLength: this.contractDataStore.substituteSignatureDataUrl?.length || 0
-    });
-
-    if (this.contractDataStore.replacedSignatureDataUrl) {
-      console.log("Signature remplacé (début):", this.contractDataStore.replacedSignatureDataUrl.substring(0, 100) + "...");
-    }
-
-    if (this.contractDataStore.substituteSignatureDataUrl) {
-      console.log("Signature remplaçant (début):", this.contractDataStore.substituteSignatureDataUrl.substring(0, 100) + "...");
-    }
-    console.log("=== FIN DÉBOGAGE ===");
-  }
-
-  // Méthode alternative qui utilise les signatures stockées dans contractData
+  /**
+   * Télécharge le PDF modifié avec les signatures stockées dans contractData
+   * @param pdfFile Le fichier PDF à télécharger
+   * @param download True si le PDF doit être téléchargé, false sinon
+   */
   async downloadModifiedPdfWithStoredSignatures(pdfFile: File, download: boolean = true) {
     const reader = new FileReader();
 
@@ -607,8 +374,8 @@ export class PDFTool {
       // this.debugSignatures();
 
       // Utiliser les signatures stockées dans contractData
-      const replacedSignatureUrl = this.contractDataStore.replacedSignatureDataUrl;
-      const substituteSignatureUrl = this.contractDataStore.substituteSignatureDataUrl;
+      const replacedSignatureUrl = this.contractData.replacedSignatureDataUrl;
+      const substituteSignatureUrl = this.contractData.substituteSignatureDataUrl;
 
       // console.log("Signatures stockées dans contractData:", {
       //   replaced: replacedSignatureUrl ? "disponible" : "non disponible",
@@ -722,5 +489,9 @@ export class PDFTool {
     };
 
     reader.readAsArrayBuffer(pdfFile as File);
+  }
+
+  setCurrentPage(page: number) {
+    this.currentPage = page;
   }
 }

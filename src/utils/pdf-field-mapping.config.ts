@@ -1,5 +1,5 @@
 import { GenderEnum } from "./PDFTool";
-import { ContractEntity } from "../../models/contract.entity";
+import { ContractEntity } from "../models/contract.entity";
 
 /**
  * Configuration centralisée des mappings entre les IDs des champs PDF
@@ -45,8 +45,8 @@ export const PDF_FIELD_MAPPING: Record<string, FieldMapping> = {
         contractField: "doneAtLocation",
         pdfIds: { default: "139R" }
     },
-    doneAtDate: {
-        contractField: "doneAtDate",
+    doneAt: {
+        contractField: "doneAt",
         pdfIds: { default: "138R" }
     },
 
@@ -119,6 +119,9 @@ export const PDF_FIELD_MAPPING: Record<string, FieldMapping> = {
 
 /**
  * Obtient les IDs PDF pour un champ donné selon le genre
+ * @param fieldName Le nom du champ ContractEntity
+ * @param gender Le genre du contrat
+ * @returns Les IDs PDF pour le champ donné
  */
 export function getPDFIdsForField(fieldName: string, gender?: GenderEnum): string | string[] {
     const mapping = PDF_FIELD_MAPPING[fieldName];
@@ -137,40 +140,5 @@ export function getPDFIdsForField(fieldName: string, gender?: GenderEnum): strin
     if (mapping.pdfIds.male) allIds.push(...mapping.pdfIds.male);
     if (mapping.pdfIds.female) allIds.push(...mapping.pdfIds.female);
     return allIds;
-}
-
-/**
- * Obtient le nom du champ ContractEntity à partir d'un ID PDF
- */
-export function getContractFieldFromPDFId(pdfId: string): keyof ContractEntity | undefined {
-    for (const [fieldName, mapping] of Object.entries(PDF_FIELD_MAPPING)) {
-        const ids = mapping.pdfIds;
-
-        if (ids.default === pdfId) {
-            return mapping.contractField;
-        }
-
-        if (ids.male?.includes(pdfId) || ids.female?.includes(pdfId)) {
-            return mapping.contractField;
-        }
-    }
-    return undefined;
-}
-
-/**
- * Obtient tous les IDs PDF pour un champ ContractEntity donné
- */
-export function getPDFIdsForContractField(
-    contractField: keyof ContractEntity,
-    gender?: GenderEnum
-): string[] {
-    // Trouver le fieldName correspondant au contractField
-    for (const [fieldName, mapping] of Object.entries(PDF_FIELD_MAPPING)) {
-        if (mapping.contractField === contractField) {
-            const ids = getPDFIdsForField(fieldName, gender);
-            return Array.isArray(ids) ? ids : [ids];
-        }
-    }
-    return [];
 }
 

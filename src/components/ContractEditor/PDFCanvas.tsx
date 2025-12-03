@@ -1,4 +1,4 @@
-import { createEffect } from "solid-js";
+import { onMount } from "solid-js";
 import { currentPDFTool } from "./PDFEditor";
 import { PDFInputsOnCanvas, setCanvasInputs } from "./PDFInputsOnCanvas";
 import { PDFActions } from "./PDFActions";
@@ -6,19 +6,11 @@ import { PDFFields } from "../../utils/PDFTool";
 import { signatureManager } from "../ContractDialog/Signatures";
 
 export function PDFCanvas() {
-    createEffect(async () => {
-        const tool = currentPDFTool();
-        if (!tool) return;
+    onMount(async () => {
         const canvas = document.getElementById("pdf-canvas") as HTMLCanvasElement | null;
         if (!canvas) return;
-        await tool.renderPage(canvas);
-
-        updateCanvasInputsFromTool();
-        if (tool.currentPage === 6) {
-            displaySigsPage6();
-        } else {
-            removeSigsCanvases();
-        }
+        await currentPDFTool()!.renderPage(canvas);
+        updateCanvasInputsFromTool()
     })
 
     async function pagination(page: number) {
@@ -47,9 +39,7 @@ export function PDFCanvas() {
 
 
     function updateCanvasInputsFromTool() {
-        currentPDFTool()?.setContractDataToPDFInputsFields(currentPDFTool()?.contractData!)
         const fields = currentPDFTool()?.PDFInputsFieldsMetadata?.filter(page => page.page == currentPDFTool()?.currentPage)[0].fields
-
         // ! necessary to update canvas inputs fields with the data contract
         setCanvasInputs(prev => {
             if (!prev) return prev

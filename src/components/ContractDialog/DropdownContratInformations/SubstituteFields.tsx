@@ -52,15 +52,6 @@ function HandlerToUpdateFormInputsAndPDFInputs(
   field: | "name" | "birthday" | "birthdayLocation" | "orderDepartement" | "orderDepartmentNumber" | "address" | "email" | "gender",
   value: string,
 ) {
-  if (field === "gender") {
-    setGender(value as GenderEnum);
-    currentPDFTool()?.updateField("substituteGender", value as GenderEnum);
-    return;
-  } else {
-    const contractField = FIELD_MAPPING[field];
-    const currentGender = gender() as GenderEnum;
-    currentPDFTool()?.updateContractDataAndPDFFields(contractField, value, currentGender);
-  }
 
   // Mettre à jour uniquement le signal du champ modifié au lieu de tous les champs
   // Cela évite de réinitialiser le champ en cours de modification avec une valeur obsolète
@@ -86,7 +77,13 @@ function HandlerToUpdateFormInputsAndPDFInputs(
     case "address":
       setProfessionnalAddress(value);
       break;
+    case "gender":
+      setGender(value as GenderEnum);
+      break;
   }
+
+  const contractField = FIELD_MAPPING[field];
+  currentPDFTool()?.updateContractDataAndPDFFields(contractField, value, gender());
 
   isValid();
 }
@@ -192,13 +189,8 @@ export function SubstituteFields(props: AccordionFieldsProps) {
         ]}
         onChange={(e) => {
           const target = e.target as HTMLInputElement;
-          const tool = currentPDFTool();
-          if (!tool) return;
           const newGender = target.value as GenderEnum;
-          setGender(newGender);
-          // Utiliser updateField pour mettre à jour le genre dans contractData
-          tool.updateField("substituteGender", newGender);
-          isValid()
+          HandlerToUpdateFormInputsAndPDFInputs("gender", newGender);
         }}
         value={gender() as GenderEnum}
       />

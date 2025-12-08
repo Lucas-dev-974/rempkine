@@ -10,6 +10,7 @@ import storeService from "../../../utils/store.service";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 import { createSignal, onMount, Show } from "solid-js";
 import { loadContract, loggedIn } from "../../../const.data";
+import { triggerFill, useFillMode } from "./formFillMode";
 
 interface AccordionFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -26,6 +27,7 @@ const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
 const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
 const [valid, setValid] = createSignal<boolean>(false);
+const [isFilledWithUser, setIsFilledWithUser] = createSignal<boolean>(false);
 
 
 function isValid() {
@@ -89,6 +91,9 @@ function HandlerToUpdateFormInputsAndPDFInputs(
 }
 
 export function fillWithMyInformationsSubstitute() {
+  // Signale au remplacé de se vider
+  triggerFill("substitute");
+
   const userDatas: UserEntity = storeService.data.user;
   const tool = currentPDFTool();
   if (!tool) return;
@@ -115,17 +120,12 @@ export function fillWithMyInformationsSubstitute() {
   HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "");
   HandlerToUpdateFormInputsAndPDFInputs("address", userDatas.personalAdress);
 
-  // Debug: vérifier que substituteName est bien dans le store après mise à jour
-  if (import.meta.env.DEV) {
-    setTimeout(() => {
-      const updatedData = tool.getContractData();
-      console.log("Après fillWithMyInformationsSubstitute:", {
-        substituteName: updatedData.substituteName,
-        substituteEmail: updatedData.substituteEmail,
-        substituteGender: updatedData.substituteGender
-      });
-    }, 100);
-  }
+  setIsFilledWithUser(true);
+}
+
+function removeMyInformationsSubstitute() {
+  clearSubstituteFields();
+  setIsFilledWithUser(false);
 }
 
 export function handlerToUpdateFormInputsWithContratData() {
@@ -156,6 +156,12 @@ export function SubstituteFields(props: AccordionFieldsProps) {
     isValid()
   })
 
+  // Écoute le mode de remplissage : si le remplacé est rempli, on vide le substitut
+  useFillMode("replaced", () => {
+    clearSubstituteFields();
+    setIsFilledWithUser(false);
+  });
+
   return (
     <DropdownItem
       id={2}
@@ -167,7 +173,9 @@ export function SubstituteFields(props: AccordionFieldsProps) {
 
       <Show when={loggedIn()}>
         <FitFieldsWithUserData
-          fillWithMyInformations={fillWithMyInformationsSubstitute}
+          onFill={fillWithMyInformationsSubstitute}
+          onClear={removeMyInformationsSubstitute}
+          isFilled={isFilledWithUser()}
         />
       </Show>
 
@@ -244,4 +252,16 @@ export function SubstituteFields(props: AccordionFieldsProps) {
       />
     </DropdownItem>
   );
+}
+
+function clearSubstituteFields() {
+  setGender(GenderEnum.male);
+  HandlerToUpdateFormInputsAndPDFInputs("gender", GenderEnum.male);
+  HandlerToUpdateFormInputsAndPDFInputs("name", "");
+  HandlerToUpdateFormInputsAndPDFInputs("email", "");
+  HandlerToUpdateFormInputsAndPDFInputs("birthday", "");
+  HandlerToUpdateFormInputsAndPDFInputs("birthdayLocation", "");
+  HandlerToUpdateFormInputsAndPDFInputs("orderDepartement", "");
+  HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", "");
+  HandlerToUpdateFormInputsAndPDFInputs("address", "");
 }

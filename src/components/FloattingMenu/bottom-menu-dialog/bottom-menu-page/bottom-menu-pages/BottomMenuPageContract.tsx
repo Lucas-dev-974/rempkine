@@ -7,10 +7,13 @@ import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
 import { FiEdit } from "solid-icons/fi";
 import { TiDeleteOutline } from "solid-icons/ti";
+import { ConfirmationDialog } from "../../../../dialog/ConfirmationDialog";
 
 export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 
 export function BottomMenuPageContract() {
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = createSignal(false);
+  const [contractToDelete, setContractToDelete] = createSignal<ContractEntity | null>(null);
 
   createEffect(on(localeUpdateEvent, () => {
     setContracts(storeService.proxy.contracts as ContractEntity[])
@@ -76,14 +79,32 @@ export function BottomMenuPageContract() {
     setContracts(contracts as ContractEntity[]);
   }
 
-  async function deleteContract(contract: ContractEntity) {
+  function requestDeleteContract(contract: ContractEntity) {
+    setContractToDelete(contract);
+    setShowDeleteConfirmation(true);
+  }
+
+  async function confirmDeleteContract() {
+    const contract = contractToDelete();
+    if (!contract) return;
+
+    setShowDeleteConfirmation(false);
+
     if (loggedIn()) {
       await contractService.delete(contract.id);
       storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id !== contract.id)
       setContracts(contracts().filter((c) => c.id !== contract.id));
     } else {
       storeService.proxy.contracts = storeService.proxy.contracts!.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
+      setContracts(contracts().filter((c) => c.id !== contract.id));
     }
+
+    setContractToDelete(null);
+  }
+
+  function cancelDeleteContract() {
+    setShowDeleteConfirmation(false);
+    setContractToDelete(null);
   }
 
   function getLocalContract(contract: ContractEntity): ContractEntity | undefined {
@@ -130,7 +151,7 @@ export function BottomMenuPageContract() {
                       <ButtonIcon
                         size="large"
                         icons={<TiDeleteOutline color="red" size={24} />}
-                        onClick={() => deleteContract(contract)}
+                        onClick={() => requestDeleteContract(contract)}
                       />
                     </div>
                   </td>
@@ -140,6 +161,16 @@ export function BottomMenuPageContract() {
           </table>
         </div>
       </div>
+
+      <ConfirmationDialog
+        isOpen={showDeleteConfirmation()}
+        title="Supprimer le contrat"
+        message={`Êtes-vous sûr de vouloir supprimer le contrat entre ${contractToDelete()?.replacedName || "le remplaçant"} et ${contractToDelete()?.substituteName || "le substitut"} ? Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        onConfirm={confirmDeleteContract}
+        onCancel={cancelDeleteContract}
+      />
     </div>
   );
 }

@@ -3,11 +3,13 @@ import { ContractEntity } from "../../../../../models/contract.entity";
 import { openDialogTool } from "../../../../dialog/DialogWrapper";
 import { createEffect, createSignal, on, onMount } from "solid-js";
 import storeService, { localeUpdateEvent } from "../../../../../utils/store.service";
-import { ButtonIcon } from "../../../../buttons/ButtonIcon";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
-import { FiEdit } from "solid-icons/fi";
-import { TiDeleteOutline } from "solid-icons/ti";
 import { ConfirmationDialog } from "../../../../dialog/ConfirmationDialog";
+import { SearchInput } from "../../../../inputs/SearchInput";
+import { DataTable } from "../../../../table/DataTable";
+import { TableColumn } from "../../../../table/TableTypes";
+import { ContractTableRowActions } from "./ContractTableRow";
+import { useContractSearch } from "../../../../../utils/hooks/useContractSearch";
 
 export const [contracts, setContracts] = createSignal<ContractEntity[]>([]);
 
@@ -15,8 +17,12 @@ export function BottomMenuPageContract() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = createSignal(false);
   const [contractToDelete, setContractToDelete] = createSignal<ContractEntity | null>(null);
 
+  const { filteredContracts, performSearch, setFilteredContracts } = useContractSearch(contracts);
+
   createEffect(on(localeUpdateEvent, () => {
-    setContracts(storeService.proxy.contracts as ContractEntity[])
+    const updatedContracts = storeService.proxy.contracts as ContractEntity[];
+    setContracts(updatedContracts);
+    setFilteredContracts(updatedContracts);
   }))
 
   async function SynchronizeContracts() {
@@ -26,21 +32,26 @@ export function BottomMenuPageContract() {
   }
 
   onMount(async () => {
-    const localContracts = storeService.proxy.contracts
+    const localContracts = storeService.proxy.contracts;
     // Initialiser les contrats avec les données du store
     if (localContracts && localContracts.length > 0) {
-      setContracts(localContracts as ContractEntity[]);
+      const contractsList = localContracts as ContractEntity[];
+      setContracts(contractsList);
+      setFilteredContracts(contractsList);
     }
 
     if (loggedIn()) {
       if (localContracts!.length > 0) {
-        await SynchronizeContracts()
+        await SynchronizeContracts();
         // Mettre à jour après synchronisation
-        setContracts(storeService.proxy.contracts as ContractEntity[]);
+        const updatedContracts = storeService.proxy.contracts as ContractEntity[];
+        setContracts(updatedContracts);
+        setFilteredContracts(updatedContracts);
       } else {
-        const contracts = await contractService.list()
-        storeService.proxy.contracts = contracts
-        setContracts(contracts);
+        const contractsList = await contractService.list();
+        storeService.proxy.contracts = contractsList;
+        setContracts(contractsList);
+        setFilteredContracts(contractsList);
       }
     }
   });
@@ -48,35 +59,6 @@ export function BottomMenuPageContract() {
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);
     openDialogTool();
-  }
-
-  async function InputSearchInputHandler(e: Event & { currentTarget: HTMLInputElement; target: HTMLInputElement }) {
-    let contracts: ContractEntity[] = []
-    if (loggedIn()) {
-      contracts = await contractService.search(e.target.value);
-    } else {
-      contracts = storeService.proxy.contracts?.filter(contract => {
-
-        const derivedContract = { ...contract }
-
-        derivedContract.replacedName = contract.replacedName?.toLowerCase()
-        derivedContract.substituteName = contract.substituteName?.toLowerCase()
-        derivedContract.replacedEmail = contract.replacedEmail?.toLowerCase()
-        derivedContract.substituteEmail = contract.substituteEmail?.toLowerCase()
-
-        if (derivedContract.replacedName?.includes(e.target.value.toLowerCase()) ||
-          derivedContract.substituteName?.includes(e.target.value.toLowerCase()) ||
-          derivedContract.replacedEmail?.includes(e.target.value.toLowerCase()) ||
-          derivedContract.substituteEmail?.includes(e.target.value.toLowerCase())) {
-
-          return contract
-        } else {
-          return null
-        }
-      }
-      ) as ContractEntity[]
-    }
-    setContracts(contracts as ContractEntity[]);
   }
 
   function requestDeleteContract(contract: ContractEntity) {
@@ -92,12 +74,14 @@ export function BottomMenuPageContract() {
 
     if (loggedIn()) {
       await contractService.delete(contract.id);
-      storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id !== contract.id)
-      setContracts(contracts().filter((c) => c.id !== contract.id));
+      storeService.proxy.contracts = storeService.proxy.contracts?.filter(contract_ => contract_.id !== contract.id);
     } else {
-      storeService.proxy.contracts = storeService.proxy.contracts!.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id)
-      setContracts(contracts().filter((c) => c.id !== contract.id));
+      storeService.proxy.contracts = storeService.proxy.contracts!.filter((contract_: Partial<ContractEntity>) => contract_.id !== contract.id);
     }
+
+    const updatedContracts = storeService.proxy.contracts as ContractEntity[];
+    setContracts(updatedContracts);
+    setFilteredContracts(updatedContracts.filter((c) => c.id !== contract.id));
 
     setContractToDelete(null);
   }
@@ -111,56 +95,46 @@ export function BottomMenuPageContract() {
     return storeService.proxy.contracts?.find(contract_ => contract_.id === contract.id) as ContractEntity | undefined;
   }
 
-  return (
-    <div class="m-0 ">
-      <div class="w-full mb-2">
-        <input
-          type="text"
-          class="rounded-full border px-4 py-1 shadow-lg w-1/2"
-          placeholder="Recherche"
-          onInput={InputSearchInputHandler}
+  const tableColumns: TableColumn<ContractEntity>[] = [
+    {
+      key: "replacedName",
+      label: "Remplaçé",
+      align: "left",
+      width: "33%",
+    },
+    {
+      key: "substituteName",
+      label: "Remplaçant",
+      align: "center",
+      width: "33%",
+    },
+    {
+      key: "actions",
+      label: "Actions",
+      align: "right",
+      width: "33%",
+      render: (contract) => (
+        <ContractTableRowActions
+          contract={contract}
+          onEdit={openDialogTool_}
+          onDelete={requestDeleteContract}
+          getLocalContract={getLocalContract}
         />
-      </div>
-      <div class="border border-gray-300 shadow-lg rounded-lg w-full  overflow-hidden">
-        <div class="overflow-y-auto h-full">
-          <table class="w-full font-[Nunito]">
-            <thead class="sticky top-0 z-10" style={{ "background": "linear-gradient(173deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%)" }}>
-              <tr class="text-white text-sm">
-                <th class="px-4 py-2 text-left w-1/3">Remplaçé</th>
-                <th class="px-4 py-2 text-center w-1/3">Remplaçant</th>
-                <th class="px-4 py-2 text-right w-1/3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contracts().map((contract, index) => (
-                <tr class={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors text-sm`}>
-                  <td class="px-4 py-2 border-b">{contract.replacedName || "-"}</td>
-                  <td class="px-4 py-2 border-b text-center">
-                    {contract.substituteName || "-"}
-                  </td>
-                  <td class="px-4 py-2 border-b text-right">
-                    <div class="flex gap-2 justify-end">
-                      <ButtonIcon
-                        size="large"
-                        icons={<FiEdit color="#099773" size={24} />}
-                        onClick={() => {
-                          const localContract = getLocalContract(contract) || contract;
-                          openDialogTool_(localContract);
-                        }}
-                      />
-                      <ButtonIcon
-                        size="large"
-                        icons={<TiDeleteOutline color="red" size={24} />}
-                        onClick={() => requestDeleteContract(contract)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      ),
+    },
+  ];
+
+  return (
+    <div class="m-0">
+      <SearchInput
+        placeholder="Recherche"
+        onInput={performSearch}
+      />
+      <DataTable
+        columns={tableColumns}
+        data={filteredContracts()}
+        emptyMessage="Aucun contrat trouvé"
+      />
 
       <ConfirmationDialog
         isOpen={showDeleteConfirmation()}

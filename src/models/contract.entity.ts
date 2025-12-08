@@ -1,9 +1,7 @@
-import { AuthorsEnum, GenderEnum } from "../utils/PDFTool";
+import { GenderEnum } from "../utils/PDFTool";
 
 export type ContractEntity = {
   id: string | number;
-  // authorEmail: string;
-  // authorName: string;
 
   startDate: string;
   endDate: string;

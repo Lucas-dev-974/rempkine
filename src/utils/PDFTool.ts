@@ -409,19 +409,9 @@ export class PDFTool {
       const lastPageIndex = pdfDoc_.getPageCount() - 1;
       const page = pdfDoc_.getPage(lastPageIndex);
 
-      // Déboguer l'état des signatures avant utilisation
-      // this.debugSignatures();
-
       // Utiliser les signatures stockées dans contractData
       const replacedSignatureUrl = this.contractData.replacedSignatureDataUrl;
       const substituteSignatureUrl = this.contractData.substituteSignatureDataUrl;
-
-      // console.log("Signatures stockées dans contractData:", {
-      //   replaced: replacedSignatureUrl ? "disponible" : "non disponible",
-      //   substitute: substituteSignatureUrl ? "disponible" : "non disponible",
-      //   replacedLength: replacedSignatureUrl?.length || 0,
-      //   substituteLength: substituteSignatureUrl?.length || 0
-      // });
 
       // Vérifier si les signatures sont valides (commencent par "data:image")
       const isReplacedValid = replacedSignatureUrl && replacedSignatureUrl.startsWith("data:image");

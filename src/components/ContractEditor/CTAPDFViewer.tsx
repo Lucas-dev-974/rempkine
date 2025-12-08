@@ -10,7 +10,6 @@ import { currentPDFTool } from "./PDFEditor";
 import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
 
 function createContractID(): string {
-    // Génère un ID unique basé sur timestamp et random
     const timestamp = Date.now().toString(36);
     const randomPart = Math.random().toString(36).substring(2, 15);
     return `contract_${timestamp}_${randomPart}`;
@@ -18,19 +17,14 @@ function createContractID(): string {
 
 export function CTAPDFViewer() {
     async function saveContractInDB() {
-        // Utiliser getContractData() pour obtenir les données à jour depuis le store réactif
         const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.getContractData()
 
-        // Debug: vérifier que replacedName est présent
         if (import.meta.env.DEV) {
             console.log("currentPDFTool()!.getContractData()", currentPDFTool());
-
             console.log("Données du contrat avant envoi:", {
                 contractData: contractFromPDF
             });
         }
-
-        //  * If Logged in then create or update contract
         if (loggedIn()) {
             if (!loadContract()) {
 

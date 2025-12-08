@@ -72,10 +72,6 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
   }
 
   function fillWithMyInformations(as: "author,replaced" | "author,substitute") {
-    // setFieldUpdatedEvent(!fieldUpdatedEvent());
-    // const userDatas: UserEntity = storeService.data.user;
-
-
     setCurrentPDFTool((prev) => {
       if (!prev) return prev
       prev.contractData = {

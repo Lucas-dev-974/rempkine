@@ -25,8 +25,6 @@ export function PDFCanvas() {
         }
 
         await currentPDFTool()!.renderPage(canvas);
-
-        // setNumPages(currentPDFTool()!.numPages);
         updateCanvasInputsFromTool()
 
         // Manage signature canvases visibility per page
@@ -40,7 +38,6 @@ export function PDFCanvas() {
 
     function updateCanvasInputsFromTool() {
         const fields = currentPDFTool()?.PDFInputsFieldsMetadata?.filter(page => page.page == currentPDFTool()?.currentPage)[0].fields
-        // ! necessary to update canvas inputs fields with the data contract
         setCanvasInputs(prev => {
             if (!prev) return prev
             prev = [...fields as PDFFields[]]
@@ -49,13 +46,12 @@ export function PDFCanvas() {
     }
 
     function displaySigsPage6() {
-        // Only display on page 6
         if (currentPDFTool()?.currentPage !== 6) return;
 
         const pdfCanvas = document.getElementById("pdf-canvas") as HTMLCanvasElement | null;
         if (!pdfCanvas || !pdfCanvas.parentElement) return;
 
-        const container = pdfCanvas.parentElement as HTMLElement; // Parent is relative positioned
+        const container = pdfCanvas.parentElement as HTMLElement;
 
         // Reuse if already present, otherwise create
         let replacedCanvas = container.querySelector('canvas[data-sig="replaced"]') as HTMLCanvasElement | null;
@@ -79,11 +75,8 @@ export function PDFCanvas() {
         substituteCanvas = ensureCanvas(substituteCanvas, "substitute");
 
         // Positioning relative to the PDF canvas size
-        // Adjust these values as needed to match the signature boxes on page 6
         const baseWidth = 600; // matches max PDF canvas width in UI
         const scale = pdfCanvas.clientWidth / baseWidth;
-
-        // Example target positions (in px for a 600px wide PDF canvas)
         const replacedPos = { left: 80, top: 620 };
         const substitutePos = { left: 340, top: 620 };
 
@@ -97,11 +90,8 @@ export function PDFCanvas() {
         substituteCanvas.style.width = `${Math.round(substituteCanvas.width * scale)}px`;
         substituteCanvas.style.height = `${Math.round(substituteCanvas.height * scale)}px`;
 
-        // Register canvases so the signature manager can draw when signatures change
         signatureManager.setCanvasSignatureReplaced(replacedCanvas);
         signatureManager.setCanvasSignatureSubstitute(substituteCanvas);
-
-        // If signatures already exist, draw them immediately
         const drawSig = (canvas: HTMLCanvasElement | undefined, data?: string) => {
             if (!canvas || !data) return;
             const ctx = canvas.getContext("2d");

@@ -88,7 +88,6 @@ function HandlerToUpdateFormInputsAndPDFInputs(
   isValid();
 }
 
-// TODO: check if this works with the new implementation
 export function fillWithMyInformationsSubstitute() {
   const userDatas: UserEntity = storeService.data.user;
   const tool = currentPDFTool();

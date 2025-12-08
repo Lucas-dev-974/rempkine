@@ -42,17 +42,6 @@ export function BottomMenuPageContract() {
     }
   });
 
-  // **utility**  next create Effect is an example of onMount and onCleanup for BottomMenu
-  // createEffect(on(isBottomMenuVisible, () => {
-  //   if (isBottomMenuVisible()) {
-  //     if (bottomMenuPage() === BottomMenuPageEnum.contracts) {
-  //       console.log("on mount");
-  //     }
-  //   } else {
-  //     console.log("cleanup");
-  //   }
-  // }))
-
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);
     openDialogTool();

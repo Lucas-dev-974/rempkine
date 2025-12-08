@@ -1,5 +1,3 @@
-// import { UserAttributes } from "../models/User";
-
 import { createSignal } from "solid-js";
 import { ContractEntity } from "../models/contract.entity";
 

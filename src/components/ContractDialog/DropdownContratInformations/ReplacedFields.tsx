@@ -86,14 +86,11 @@ function HandlerToUpdateFormInputsAndPDFInputs(
   isValid();
 }
 
-// TODO: check if this works with the new implementation
 export function fillWithMyInformationsReplaced() {
   const userDatas: UserEntity = storeService.data.user;
   const tool = currentPDFTool();
   if (!tool) return;
 
-
-  // TODO: review this conditional <userDatas.gender ?? GenderEnum.male>
   setGender(userDatas.gender ?? GenderEnum.male);
 
 
@@ -113,12 +110,7 @@ export function fillWithMyInformationsReplaced() {
   // Debug: vérifier que replacedName est bien dans le store après mise à jour
   if (import.meta.env.DEV) {
     setTimeout(() => {
-      const updatedData = tool.getContractData();
-      console.log("Après fillWithMyInformationsReplaced:", {
-        replacedName: updatedData.replacedName,
-        replacedEmail: updatedData.replacedEmail,
-        replacedGender: updatedData.replacedGender
-      });
+      console.log("Après fillWithMyInformationsReplaced:", currentPDFTool()?.contractData);
     }, 100);
   }
 }

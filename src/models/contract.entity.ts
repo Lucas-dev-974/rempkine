@@ -39,4 +39,6 @@ export type ContractEntity = {
   deleted?: boolean
 
   updatedAt?: Date
+
+  token?: string
 };

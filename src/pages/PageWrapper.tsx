@@ -4,6 +4,12 @@ import { Navbar } from "../components/navbar/Navbar";
 import { Notification } from "../components/notification/Notification";
 import { FloatingMenu } from "../components/FloattingMenu/floating-menu/FloatingMenu";
 import { setNavigateFunction } from "../services/auth.service";
+import { contractService } from "../services/contract.service";
+
+import { setLoadContrat } from "../const.data";
+import { ContractEntity } from "../models/contract.entity";
+import { openDialogTool } from "../components/dialog/DialogWrapper";
+import storeService from "../utils/store.service";
 
 interface PageWrapperProps {
     children: JSXElement;
@@ -16,8 +22,22 @@ export function PageWrapper(props: PageWrapperProps) {
     const childs = children(() => props.children);
     const navigate = useNavigate();
 
-    onMount(() => {
+    onMount(async () => {
         setNavigateFunction(navigate);
+
+        const queryParams = new URLSearchParams(window.location.search);
+        const token = queryParams.get("signe-back");
+
+        if (token) {
+            const contract = await contractService.getContractByToken(token);
+            if (contract) {
+                setLoadContrat(contract as Partial<ContractEntity>);
+                setSigneBack(true)
+                openDialogTool()
+
+                storeService.proxy.signeBackContracts = [contract];
+            }
+        }
     });
 
     return (

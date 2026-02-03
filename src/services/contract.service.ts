@@ -17,9 +17,9 @@ class ContractService {
     return response as ContractEntity[];
   }
 
-  async listFromIDS(ids: (string | number)[]): Promise<ContractEntity[]> {
-    const idsParam = ids.map(id => encodeURIComponent(String(id))).join(',');
-    const response = await FetcherService.get("/contract/list-ids?ids=" + idsParam);
+  // * TODO update aray for [[id, token], [id, token], ...]
+  async listFromIDS(ids: [number, string][]): Promise<ContractEntity[]> {
+    const response = await FetcherService.post("/contract/list-ids", { ids: JSON.stringify(ids) });
     return response as ContractEntity[];
   }
 
@@ -41,9 +41,10 @@ class ContractService {
     await FetcherService.delete("/contract/" + id);
   }
 
-  async registerLocaleContractToBDD(contracts: Partial<ContractEntity>[]): Promise<Partial<ContractEntity>[]> {
-    const response = await FetcherService.post("/contract/register-local-contrats", { contracts });
-    return response as Partial<ContractEntity>[];
+  async getContractByToken(token: string): Promise<ContractEntity> {
+    const response = await FetcherService.get("/contract/get-by-token?token=" + token);
+    return response as ContractEntity;
   }
+
 }
 export const contractService = new ContractService();

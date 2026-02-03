@@ -5,9 +5,10 @@ export function Home() {
   return (
     <PageWrapper>
 
-      <div class="">        <HeroSection />
-
+      <div class="">
+        <HeroSection />
         {/* <Announcements announcements={announcements} /> */}
-      </div>    </PageWrapper>
+      </div>
+    </PageWrapper>
   );
 }

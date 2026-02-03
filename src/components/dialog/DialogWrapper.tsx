@@ -9,7 +9,8 @@ interface DialogWrapperProps {
   children: JSX.Element;
   btnText: string;
   title: string;
-  onClose?: () => void
+  onClose?: () => void;
+  onOpen?: () => void;
   dialogClass?: string
 }
 
@@ -19,10 +20,16 @@ export const openDialogTool = () => setIsOpen(true);
 
 export function DialogWrapper(props: DialogWrapperProps) {
 
+  function removeSigneBackQuery() {
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.delete("signe-back");
+    window.history.replaceState({}, "", window.location.pathname + "?" + queryParams.toString());
+  }
   async function closeDialogTool() {
     setLoadContrat(undefined);
     setCurrentPDFTool(undefined);
     setIsOpen(false);
+    removeSigneBackQuery();
   };
 
   return (

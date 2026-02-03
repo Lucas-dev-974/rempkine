@@ -6,7 +6,8 @@ export const [localeUpdateEvent, setLocalUpdateEvent] = createSignal<boolean>(fa
 type StoreDataType = {
   [key: string]: any;
   isLogin: boolean | undefined;
-  contracts?: Partial<ContractEntity>[]
+  contracts?: Partial<ContractEntity>[];
+  signeBackContracts?: Partial<ContractEntity>[];
 };
 
 class StoreService {

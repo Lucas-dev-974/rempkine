@@ -1,11 +1,11 @@
 import { EditContractDialog } from "../../components/ContractDialog/EditContractDialog";
 import { Button } from "../../components/buttons/Button";
 import { Title1 } from "../../components/titles/Title1";
-import storeService from "../../utils/store.service";
 import { Text } from "../../components/titles/Text";
 import { Show } from "solid-js";
 import { HiOutlineInformationCircle } from 'solid-icons/hi';
 import { useNavigate } from "@solidjs/router";
+import { loggedIn } from "../../const.data";
 
 export function HeroSection() {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ export function HeroSection() {
             <Text text="Kiné de poche est un outil dédié aux kinésithérapeutes, conçu pour simplifier la création de contrats. Gagnez du temps en générant automatiquement des documents conformes et personnalisés en quelques clics." />
 
             <span class="my-2" />
-            <Show when={!storeService.proxy.isLogin}>
+            <Show when={!loggedIn()}>
                 <div class="flex flex-wrap gap-3 w-full justify-center md:justify-start">
                     <Button
                         bgGradientStyle="right"

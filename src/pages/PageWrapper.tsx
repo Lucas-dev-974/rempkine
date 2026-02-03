@@ -1,4 +1,4 @@
-import { children, JSXElement, onMount } from "solid-js";
+import { children, createSignal, JSXElement, onMount } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { Navbar } from "../components/navbar/Navbar";
 import { Notification } from "../components/notification/Notification";
@@ -9,7 +9,10 @@ interface PageWrapperProps {
     children: JSXElement;
 }
 
+export const [signeBack, setSigneBack] = createSignal<boolean>(false);
+
 export function PageWrapper(props: PageWrapperProps) {
+
     const childs = children(() => props.children);
     const navigate = useNavigate();
 

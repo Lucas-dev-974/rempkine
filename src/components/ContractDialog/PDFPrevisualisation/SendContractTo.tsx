@@ -92,6 +92,14 @@ export function SendContractTo(props: {
                 form.append("to", mailTo())
                 form.append("body", mailBody())
 
+                const contractData = currentPDFTool()?.contractData
+                if (contractData !== undefined) {
+                    form.append("contractAuth", JSON.stringify({
+                        id: contractData.id,
+                        token: contractData.token
+                    }))
+                }
+
                 await mailService.sendContratTo(form)
                 NotificationService.push({
                     content: "Contrat envoyé.",

@@ -25,35 +25,50 @@ export function BottomMenuPageContract() {
     setFilteredContracts(updatedContracts);
   }))
 
-  async function SynchronizeContracts() {
-    const contracts = storeService.proxy.contracts as Partial<ContractEntity>[]
-    const request = await contractService.registerLocaleContractToBDD(contracts)
-    storeService.proxy.contracts = request
-  }
+  // async function SynchronizeContracts() {
+  //   const contracts = storeService.proxy.contracts as Partial<ContractEntity>[]
+  //   const request = await contractService.registerLocaleContractToBDD(contracts)
+  //   storeService.proxy.contracts = request
+  // }
 
   onMount(async () => {
-    const localContracts = storeService.proxy.contracts;
-    // Initialiser les contrats avec les données du store
-    if (localContracts && localContracts.length > 0) {
-      const contractsList = localContracts as ContractEntity[];
-      setContracts(contractsList);
-      setFilteredContracts(contractsList);
+    if (loggedIn()) {
+      const contracts = await contractService.list();
+      setContracts(contracts);
+    } else {
+      // const ids = storeService.proxy.contracts?.map(contract => [contract.id, contract.token]) as [[string | number, string]];
+      let ids = []
+      for (const contract of storeService.proxy.contracts!) {
+        ids.push([contract.id, contract.token]);
+      }
+
+
+      const contracts = await contractService.listFromIDS(ids as [number, string][]);
+      setContracts(contracts);
     }
 
-    if (loggedIn()) {
-      if (localContracts!.length > 0) {
-        await SynchronizeContracts();
-        // Mettre à jour après synchronisation
-        const updatedContracts = storeService.proxy.contracts as ContractEntity[];
-        setContracts(updatedContracts);
-        setFilteredContracts(updatedContracts);
-      } else {
-        const contractsList = await contractService.list();
-        storeService.proxy.contracts = contractsList;
-        setContracts(contractsList);
-        setFilteredContracts(contractsList);
-      }
-    }
+    // const localContracts = storeService.proxy.contracts;
+    // // Initialiser les contrats avec les données du store
+    // if (localContracts && localContracts.length > 0) {
+    //   const contractsList = localContracts as ContractEntity[];
+    //   setContracts(contractsList);
+    //   setFilteredContracts(contractsList);
+    // }
+
+    // if (loggedIn()) {
+    //   if (localContracts!.length > 0) {
+    //     // await SynchronizeContracts();
+    //     // Mettre à jour après synchronisation
+    //     const updatedContracts = storeService.proxy.contracts as ContractEntity[];
+    //     setContracts(updatedContracts);
+    //     setFilteredContracts(updatedContracts);
+    //   } else {
+    //     const contractsList = await contractService.list();
+    //     storeService.proxy.contracts = contractsList;
+    //     setContracts(contractsList);
+    //     setFilteredContracts(contractsList);
+    //   }
+    // }
   });
 
   function openDialogTool_(contract: ContractEntity) {

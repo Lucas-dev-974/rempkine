@@ -7,85 +7,100 @@ import { NotificationService } from "../../utils/notification.service";
 import storeService from "../../utils/store.service";
 import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisualisation/PDFViewerPrevisualisationDialog";
 import { currentPDFTool } from "./PDFEditor";
-import { loggedIn, loadContract, setLoadContrat } from "../../const.data";
+import { loadContract } from "../../const.data";
 
-function createContractID(): string {
-    const timestamp = Date.now().toString(36);
-    const randomPart = Math.random().toString(36).substring(2, 15);
-    return `contract_${timestamp}_${randomPart}`;
-}
+// function createContractID(): string {
+//     const timestamp = Date.now().toString(36);
+//     const randomPart = Math.random().toString(36).substring(2, 15);
+//     return `contract_${timestamp}_${randomPart}`;
+// }
 
 export function CTAPDFViewer() {
     async function saveContractInDB() {
         const contractFromPDF: Partial<ContractEntity> = currentPDFTool()!.getContractData()
 
-        if (import.meta.env.DEV) {
-            console.log("currentPDFTool()!.getContractData()", currentPDFTool());
-            console.log("Données du contrat avant envoi:", {
-                contractData: contractFromPDF
+        if (!loadContract() || loadContract() == undefined) {
+            const contract = await contractService.createContract(contractFromPDF);
+            contract.updatedAt = new Date(Date.now())
+            storeService.proxy.contracts = [...storeService.proxy.contracts!, contract]
+            NotificationService.push({
+                content: "Contrat sauvegarder",
+                type: "info",
+            });
+        } else {
+            const contract = await contractService.update(contractFromPDF);
+
+            storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
+                if (_contract.id == contract.id) return contract
+                return _contract
+            })
+
+            NotificationService.push({
+                content: "Contrat mis à jour",
+                type: "info",
             });
         }
-        if (loggedIn()) {
-            if (!loadContract()) {
 
-                const contract = await contractService.createContract(contractFromPDF);
-                contract.updatedAt = new Date(Date.now())
-                storeService.proxy.contracts = [...storeService.proxy.contracts!, contract]
-                NotificationService.push({
-                    content: "Contrat sauvegarder comme brouillon",
-                    type: "info",
-                });
-            } else {
-                const contract = await contractService.update(contractFromPDF);
+        // if (loggedIn()) {
+        //     if (!loadContract()) {
+        //         const contract = await contractService.createContract(contractFromPDF);
+        //         contract.updatedAt = new Date(Date.now())
+        //         storeService.proxy.contracts = [...storeService.proxy.contracts!, contract]
+        //         NotificationService.push({
+        //             content: "Contrat sauvegarder comme brouillon",
+        //             type: "info",
+        //         });
+        //     } else {
+        //         const contract = await contractService.update(contractFromPDF);
 
-                storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
-                    if (_contract.id == contract.id) {
-                        return contract
-                    }
-                    return _contract
-                })
+        //         storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
+        //             if (_contract.id == contract.id) {
+        //                 return contract
+        //             }
+        //             return _contract
+        //         })
 
-                NotificationService.push({
-                    content: "Contrat mis à jour",
-                    type: "info",
-                });
-            }
+        //         NotificationService.push({
+        //             content: "Contrat mis à jour",
+        //             type: "info",
+        //         });
+        //     }
 
-        } else {
-            if (!storeService.proxy.contracts) storeService.proxy.contracts = []
+        // } else {
+        //     if (!storeService.proxy.contracts) storeService.proxy.contracts = []
 
-            if (!loadContract()) {
-                storeService.proxy.contracts = [
-                    ...storeService.proxy.contracts,
-                    {
-                        id: createContractID(),
-                        logoutCreate: true,
-                        ...contractFromPDF,
-                    },
-                ];
+        //     if (!loadContract()) {
+        //         storeService.proxy.contracts = [
+        //             ...storeService.proxy.contracts,
+        //             {
+        //                 id: createContractID(),
+        //                 logoutCreate: true,
+        //                 ...contractFromPDF,
+        //             },
+        //         ];
 
-                setLoadContrat(contractFromPDF)
+        //         setLoadContrat(contractFromPDF)
 
-                NotificationService.push({
-                    content: "Contrat sauvegarder comme brouillon",
-                    type: "info",
-                });
+        //         NotificationService.push({
+        //             content: "Contrat sauvegarder comme brouillon",
+        //             type: "info",
+        //         });
 
-            } else {
-                let contracts: Partial<ContractEntity>[] = storeService.proxy.contracts
-                storeService.proxy.contracts = contracts.map(contract => {
-                    if (contract.id == contractFromPDF.id) {
-                        contract = contractFromPDF
-                    }
-                    return contract
-                })
+        //     } else {
+        //         let contracts: Partial<ContractEntity>[] = storeService.proxy.contracts
+        //         storeService.proxy.contracts = contracts.map(contract => {
+        //             if (contract.id == contractFromPDF.id) {
+        //                 contract = contractFromPDF
+        //             }
+        //             return contract
+        //         })
 
-                NotificationService.push({
-                    content: "Contrat mis à jour",
-                    type: "info",
-                });
-            }
-        }
+        //         NotificationService.push({
+        //             content: "Contrat mis à jour",
+        //             type: "info",
+        //         });
+        //     }
+        // }
     }
 
     function downloadPDF() {

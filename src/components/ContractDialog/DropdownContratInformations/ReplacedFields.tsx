@@ -167,7 +167,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       }
       valid={valid()}
     >
-      <Show when={loggedIn()}>
+      <Show when={storeService.data.user.email !== ""}>
         <FitFieldsWithUserData
           onFill={fillWithMyInformationsReplaced}
           onClear={removeMyInformationsReplaced}

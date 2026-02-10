@@ -8,6 +8,7 @@ import { Button } from "../../buttons/Button";
 import { createSignal, onMount, Show } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 import { loadContract, loggedIn } from "../../../const.data";
+import storeService from "../../../utils/store.service";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -124,7 +125,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       isOpen={(typeof props.items === "function" ? props.items() : props.items).find((i) => i.id === 3)?.isOpen}
       valid={valid()}
     >
-      <Show when={loggedIn()}>
+      <Show when={storeService.data.user.email !== ""}>
         <div class="flex flex-wrap w-full justify-end gap-2">
           <Button
             text="Je suis remplacé"

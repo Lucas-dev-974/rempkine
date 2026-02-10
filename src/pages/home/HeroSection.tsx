@@ -6,6 +6,8 @@ import { Show } from "solid-js";
 import { HiOutlineInformationCircle } from 'solid-icons/hi';
 import { useNavigate } from "@solidjs/router";
 import { loggedIn } from "../../const.data";
+import { RegisterInformationsInLocal } from "../../components/RegisterInformationsInLocal/RegisterInformationsInLocal";
+import storeService from "../../utils/store.service";
 
 export function HeroSection() {
     const navigate = useNavigate();
@@ -21,7 +23,7 @@ export function HeroSection() {
             <span class="my-2" />
             <Show when={!loggedIn()}>
                 <div class="flex flex-wrap gap-3 w-full justify-center md:justify-start">
-                    <Button
+                    {/* <Button
                         bgGradientStyle="right"
                         text="Je souhaite rejoindre"
                         onClick={() => navigate("/register")}
@@ -30,6 +32,13 @@ export function HeroSection() {
                         text="Je souhaite me connecter"
                         onClick={() => navigate("/login")}
                         size="full-mobile" class="w-full" />
+                                      <Button
+                        text="Je souhaite me connecter"
+                        onClick={() => navigate("/login")}
+                        size="full-mobile" class="w-full" /> */}
+                    <Show when={storeService.data.user.email === ""}>
+                        <RegisterInformationsInLocal />
+                    </Show>
                 </div>
             </Show>
 

@@ -37,13 +37,13 @@ export function BottomMenuPageContract() {
       setContracts(contracts);
     } else {
       // const ids = storeService.proxy.contracts?.map(contract => [contract.id, contract.token]) as [[string | number, string]];
-      let ids = []
+      let idsTokens = []
       for (const contract of storeService.proxy.contracts!) {
-        ids.push([contract.id, contract.token]);
+        idsTokens.push([contract.id, contract.token]);
       }
 
 
-      const contracts = await contractService.listFromIDS(ids as [number, string][]);
+      const contracts = await contractService.listFromIDSToken(idsTokens as [number, string][]);
       setContracts(contracts);
     }
 

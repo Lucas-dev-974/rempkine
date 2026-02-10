@@ -1,4 +1,3 @@
-import { UserMenu } from "./user-menu/UserMenu";
 import { useNavigate } from "@solidjs/router";
 
 export function Navbar() {
@@ -12,7 +11,7 @@ export function Navbar() {
           <p class="text-xl cursor-pointer font-[Nunito]" onClick={() => navigate("/")}>Kiné de poche</p>
         </div>
 
-        <UserMenu />
+        {/* <UserMenu /> */}
       </div>
     </nav>
   );

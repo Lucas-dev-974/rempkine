@@ -1,4 +1,4 @@
-import { createSignal, JSX, Show } from "solid-js";
+import { createSignal, JSX, onMount, Show } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
@@ -15,10 +15,11 @@ interface DialogWrapperProps {
 }
 
 // ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
-const [isOpen, setIsOpen] = createSignal(false);
-export const openDialogTool = () => setIsOpen(true);
+// const [isOpen, setIsOpen] = createSignal(false);
+export const openDialogTool = () => { };
 
 export function DialogWrapper(props: DialogWrapperProps) {
+  const [isOpen, setIsOpen] = createSignal(false);
 
   function removeSigneBackQuery() {
     const queryParams = new URLSearchParams(window.location.search);
@@ -34,7 +35,7 @@ export function DialogWrapper(props: DialogWrapperProps) {
 
   return (
     <>
-      <OutlinedButton text={props.btnText} onClick={openDialogTool} class="w-full" subText="Essayer gratuitement en 2 minutes" />
+      <OutlinedButton text={props.btnText} onClick={() => setIsOpen(true)} class="w-full" subText="Essayer gratuitement en 2 minutes" />
       <Show when={isOpen()} fallback={null}>
         <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" onClick={closeDialogTool}>
           <div onClick={(e) => e.stopPropagation()} class={(props.dialogClass ?? "") + " dialog"}>

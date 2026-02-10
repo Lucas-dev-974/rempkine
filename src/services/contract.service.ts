@@ -18,8 +18,8 @@ class ContractService {
   }
 
   // * TODO update aray for [[id, token], [id, token], ...]
-  async listFromIDS(ids: [number, string][]): Promise<ContractEntity[]> {
-    const response = await FetcherService.post("/contract/list-ids", { ids: JSON.stringify(ids) });
+  async listFromIDSToken(idsTokens: [number, string][]): Promise<ContractEntity[]> {
+    const response = await FetcherService.post("/contract/list-ids", { ids: JSON.stringify(idsTokens) });
     return response as ContractEntity[];
   }
 

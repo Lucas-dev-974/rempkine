@@ -21,8 +21,6 @@ export function EditContractDialog() {
     <DialogWrapper
       btnText="Créer un contrat"
       title={title()}
-      dialogClass="w-[90vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] bg-slate-200 rounded-lg"
-
     >
       <div class="p-3 max-h-[70vh]">
         <Show when={currentPDFTool() instanceof PDFTool}>

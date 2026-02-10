@@ -1,4 +1,4 @@
-import { createSignal, JSX, onMount, Show } from "solid-js";
+import { createSignal, JSX, Match, onMount, Show, Switch } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
@@ -11,7 +11,7 @@ interface DialogWrapperProps {
   title: string;
   onClose?: () => void;
   onOpen?: () => void;
-  dialogClass?: string
+  isInNavbar?: boolean;
 }
 
 // ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
@@ -35,13 +35,27 @@ export function DialogWrapper(props: DialogWrapperProps) {
 
   return (
     <>
-      <OutlinedButton text={props.btnText} onClick={() => setIsOpen(true)} class="w-full" subText="Essayer gratuitement en 2 minutes" />
+      <Switch>
+        <Match when={!props.isInNavbar}>
+          <OutlinedButton text={props.btnText} onClick={() => setIsOpen(true)} class="w-full" />
+        </Match>
+
+        <Match when={props.isInNavbar}>
+          <button onClick={() => setIsOpen(true)} class={"flex flex-col items-center justify-center" +
+            " font-[Nunito] text-sm  px-4 py-2 rounded-lg cursor-pointer duration-200 " +
+            " bg-transparent border-none text-white shadow-none hover:shadow-none "}>
+            {props.btnText}
+          </button>
+        </Match>
+      </Switch>
       <Show when={isOpen()} fallback={null}>
         <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" onClick={closeDialogTool}>
-          <div onClick={(e) => e.stopPropagation()} class={(props.dialogClass ?? "") + " dialog"}>
+
+          <div onClick={(e) => e.stopPropagation()} class="w-[90vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] bg-slate-200 rounded-lg">
             <div class="text-white text-lg p-3  font-bold lg:text-2xl items-center flex justify-between bg-primary rounded-t-lg"
               style="background: linear-gradient(190deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);">
               <h3 class="text-xl font-bold m-0 font-[Nunito]">{props.title}</h3>
+
               <button class="bg-none border-none text-3xl cursor-pointer text-red-500 bg-transparent" onClick={closeDialogTool}>
                 <VsChromeClose size={24} />
               </button>

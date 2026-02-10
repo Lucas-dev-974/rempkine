@@ -1,4 +1,4 @@
-import { createSignal } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { DialogWrapper } from "../dialog/DialogWrapper";
 import { LabeledInput } from "../inputs/LabeledInput";
 import { AuthorsEnum, GenderEnum } from "../../utils/PDFTool";
@@ -7,7 +7,9 @@ import { Button } from "../buttons/Button";
 import { UserEntity } from "../../models/user.entity";
 import storeService from "../../utils/store.service";
 
-export function RegisterInformationsInLocal() {
+export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
+
+    const [title, setTitle] = createSignal<string>("Enregistrer vos Informations");
     const [name, setName] = createSignal<string>("");
     const [email, setEmail] = createSignal<string>("");
     const [orderNumber, setOrderNumber] = createSignal<number>(0);
@@ -34,12 +36,36 @@ export function RegisterInformationsInLocal() {
 
         storeService.proxy.user = informations;
     }
+
+    function ignitTitle() {
+        if (props.isInNavbar) {
+            setTitle("Modifier vos Informations");
+        } else {
+            setTitle("Enregistrer vos Informations");
+        }
+    }
+
+    function ignitUserInformations() {
+        if (storeService.proxy.user) {
+            setName(storeService.proxy.user.fullname);
+            setEmail(storeService.proxy.user.email);
+            setOrderNumber(storeService.proxy.user.orderNumber ?? 0);
+            setDepartment(storeService.proxy.user.department);
+            setBirthday(storeService.proxy.user.birthday);
+            setBornLocation(storeService.proxy.user.bornLocation);
+        }
+    }
+
+    onMount(() => {
+        ignitTitle();
+        ignitUserInformations();
+    })
+
     return (
         <DialogWrapper
-            btnText="Enregistrer vos Informations"
-            title="Enregistrer vos Informations"
-            dialogClass="w-[90vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] bg-slate-200 rounded-lg"
-
+            btnText={title()}
+            title={title()}
+            isInNavbar={props.isInNavbar}
         >
             <div class="p-3 max-h-[70vh]">
                 <LabeledInput
@@ -74,12 +100,12 @@ export function RegisterInformationsInLocal() {
                     id="birthday"
                     label="Date de naissance"
                     type="date"
-                    value={birthday().toISOString()}
+                    value={birthday().toString()}
                     onInput={(e) => setBirthday(new Date(e.target.value))}
                 />
                 <LabeledInput
                     id="bornLocation"
-                    label="Lieu de naissance"
+                    label="Lieu de naissanc "
                     type="text"
                     value={bornLocation()}
                     onInput={(e) => setBornLocation(e.target.value)}

@@ -4,7 +4,7 @@ interface LabeledInputProps {
   type: "text" | "mail" | "date" | "number" | "password" | "textarea";
   placeholder?: string;
 
-  value?: string;
+  value?: string | Date;
   required?: boolean;
 
   onInput?: (e: Event & { target: any & { value: string } }) => void;
@@ -15,9 +15,10 @@ export function LabeledInput(props: LabeledInputProps) {
 
   function getValue() {
     if (props.type === "date") {
-      return props.value?.toString();
+      const date = props.value as Date;
+      return date.toISOString().split('T')[0];
     }
-    return props.value;
+    return props.value as string;
   }
 
   return (

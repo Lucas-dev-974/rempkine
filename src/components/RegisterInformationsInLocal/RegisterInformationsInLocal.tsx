@@ -100,7 +100,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
                     id="birthday"
                     label="Date de naissance"
                     type="date"
-                    value={birthday().toDateString() ?? "z"}
+                    value={birthday()}
                     onInput={(e) => setBirthday(new Date(e.target.value))}
                 />
                 <LabeledInput

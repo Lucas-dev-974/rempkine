@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import { ContractEntity } from "../models/contract.entity";
+import { UserEntity } from "../models/user.entity";
 
 export const [localeUpdateEvent, setLocalUpdateEvent] = createSignal<boolean>(false)
 
@@ -8,6 +9,7 @@ type StoreDataType = {
   isLogin: boolean | undefined;
   contracts?: Partial<ContractEntity>[];
   signeBackContracts?: Partial<ContractEntity>[];
+  user?: UserEntity | null | undefined;
 };
 
 class StoreService {
@@ -64,7 +66,7 @@ class StoreService {
     // Réinitialiser les données utilisateur dans le proxy
     this.proxy.isLogin = false;
     this.proxy.token = "";
-    this.proxy.user = {};
+    this.proxy.user = undefined;
     this.proxy.contracts = [];
 
     // Vider complètement le localStorage

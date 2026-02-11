@@ -14,11 +14,12 @@ export function LabeledInput(props: LabeledInputProps) {
   let inputRef: HTMLInputElement | undefined;
 
   function getValue() {
-    if (props.type === "date") {
-      const date = props.value as Date;
-      return date.toISOString().split('T')[0];
+    console.log(props.value, typeof props.value);
+
+    if (typeof props.value === "string") {
+      return props.value;
     }
-    return props.value as string;
+    return props.value?.toISOString().split('T')[0];
   }
 
   return (

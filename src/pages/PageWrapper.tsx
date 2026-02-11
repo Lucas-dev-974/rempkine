@@ -10,6 +10,7 @@ import { setLoadContrat } from "../const.data";
 import { ContractEntity } from "../models/contract.entity";
 import { openDialogTool } from "../components/dialog/DialogWrapper";
 import storeService from "../utils/store.service";
+import { UserEntity } from "../models/user.entity";
 
 interface PageWrapperProps {
     children: JSXElement;
@@ -28,6 +29,9 @@ export function PageWrapper(props: PageWrapperProps) {
         const queryParams = new URLSearchParams(window.location.search);
         const token = queryParams.get("signe-back");
 
+        if (storeService.proxy.user == {} as UserEntity) {
+            storeService.proxy.user = undefined;
+        }
         if (token) {
             const contract = await contractService.getContractByToken(token);
             if (contract) {

@@ -105,7 +105,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
                 />
                 <LabeledInput
                     id="bornLocation"
-                    label="Lieu de naissanc "
+                    label="Lieu de naissance"
                     type="text"
                     value={bornLocation()}
                     onInput={(e) => setBornLocation(e.target.value)}

@@ -14,12 +14,13 @@ export function LabeledInput(props: LabeledInputProps) {
   let inputRef: HTMLInputElement | undefined;
 
   function getValue() {
-    console.log(props.value, typeof props.value);
-
     if (typeof props.value === "string") {
       return props.value;
+    } else if (props.value == undefined || props.value == null) {
+      return "";
+    } else {
+      return props.value
     }
-    return props.value?.toISOString().split('T')[0];
   }
 
   return (
@@ -33,7 +34,7 @@ export function LabeledInput(props: LabeledInputProps) {
         name={props.id}
         placeholder={props.placeholder ? props.placeholder : ""}
         onInput={(e) => props.onInput && props.onInput(e)}
-        value={getValue()}
+        value={getValue() as string}
         required={props.required}
       />
     </div>

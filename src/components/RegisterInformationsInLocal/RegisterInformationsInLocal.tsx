@@ -11,13 +11,20 @@ import { formatDateForInput } from "../ContractDialog/DropdownContratInformation
 
 export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
     const birthdayDate = new Date(storeService.proxy.user?.birthday as Date);
+    let formattedBirthday = "";
+    if (birthdayDate) {
+        formattedBirthday = formatDateForInput(birthdayDate.toISOString());
+    } else {
+        formattedBirthday = "";
+    }
+
     const title = props.isInNavbar ? "Modifier vos Informations" : "Enregistrer vos Informations";
 
     const [name, setName] = createSignal<string>(storeService.proxy.user?.fullname ?? "");
     const [email, setEmail] = createSignal<string>(storeService.proxy.user?.email ?? "");
     const [orderNumber, setOrderNumber] = createSignal<number>(storeService.proxy.user?.orderNumber ?? 0);
     const [department, setDepartment] = createSignal<string>(storeService.proxy.user?.department ?? "");
-    const [birthday, setBirthday] = createSignal<string>(birthdayDate ? formatDateForInput(birthdayDate.toISOString()) : "");
+    const [birthday, setBirthday] = createSignal<string>(formattedBirthday);
     const [bornLocation, setBornLocation] = createSignal<string>(storeService.proxy.user?.bornLocation ?? "");
     const [personalAdress, setPersonalAdress] = createSignal<string>(storeService.proxy.user?.personalAdress ?? "");
     const [officeAdress, setOfficeAdress] = createSignal<string>(storeService.proxy.user?.officeAdress ?? "");

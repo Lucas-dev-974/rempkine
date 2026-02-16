@@ -10,7 +10,13 @@ import { NotificationService } from "../../utils/notification.service";
 import { formatDateForInput } from "../ContractDialog/DropdownContratInformations/ContratInformationsDropdowns";
 
 export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
-    const birthdayDate = new Date(storeService.proxy.user?.birthday as Date);
+    let birthdayDate: Date | undefined = undefined;
+    if (storeService.proxy.user) {
+        if (storeService.proxy.user.birthday) {
+            birthdayDate = new Date(storeService.proxy.user.birthday);
+        }
+    }
+
     let formattedBirthday = "";
     if (birthdayDate) {
         formattedBirthday = formatDateForInput(birthdayDate.toISOString());

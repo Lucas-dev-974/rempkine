@@ -92,7 +92,7 @@ export function fillWithMyInformationsReplaced() {
   // Signale au substitut de se vider
   triggerFill("replaced");
 
-  const userDatas: UserEntity = storeService.data.user;
+  const userDatas: UserEntity = storeService.data.user as UserEntity;
   const tool = currentPDFTool();
   if (!tool) return;
 
@@ -167,7 +167,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       }
       valid={valid()}
     >
-      <Show when={storeService.data.user.email !== ""}>
+      <Show when={storeService.data.user?.email !== ""}>
         <FitFieldsWithUserData
           onFill={fillWithMyInformationsReplaced}
           onClear={removeMyInformationsReplaced}

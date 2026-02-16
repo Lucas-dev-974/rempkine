@@ -1,71 +1,63 @@
-import { createSignal, onMount } from "solid-js";
-import { DialogWrapper } from "../dialog/DialogWrapper";
+import { createSignal } from "solid-js";
+import { closeDialogTool, DIALOG_NAMES, DialogWrapper } from "../dialog/DialogWrapper";
 import { LabeledInput } from "../inputs/LabeledInput";
 import { AuthorsEnum, GenderEnum } from "../../utils/PDFTool";
 import { RadioButtons } from "../inputs/DialogToInputRadio";
 import { Button } from "../buttons/Button";
 import { UserEntity } from "../../models/user.entity";
 import storeService from "../../utils/store.service";
+import { NotificationService } from "../../utils/notification.service";
+import { formatDateForInput } from "../ContractDialog/DropdownContratInformations/ContratInformationsDropdowns";
 
 export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
+    const birthdayDate = new Date(storeService.proxy.user?.birthday as Date);
+    const title = props.isInNavbar ? "Modifier vos Informations" : "Enregistrer vos Informations";
 
-    const [title, setTitle] = createSignal<string>("Enregistrer vos Informations");
-    const [name, setName] = createSignal<string>("");
-    const [email, setEmail] = createSignal<string>("");
-    const [orderNumber, setOrderNumber] = createSignal<number>(0);
-    const [department, setDepartment] = createSignal<string>("");
-    const [birthday, setBirthday] = createSignal<Date>(new Date());
-    const [bornLocation, setBornLocation] = createSignal<string>("");
-    const [personalAdress, setPersonalAdress] = createSignal<string>("");
-    const [officeAdress, setOfficeAdress] = createSignal<string>("");
-    const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
+    const [name, setName] = createSignal<string>(storeService.proxy.user?.fullname ?? "");
+    const [email, setEmail] = createSignal<string>(storeService.proxy.user?.email ?? "");
+    const [orderNumber, setOrderNumber] = createSignal<number>(storeService.proxy.user?.orderNumber ?? 0);
+    const [department, setDepartment] = createSignal<string>(storeService.proxy.user?.department ?? "");
+    const [birthday, setBirthday] = createSignal<string>(birthdayDate ? formatDateForInput(birthdayDate.toISOString()) : "");
+    const [bornLocation, setBornLocation] = createSignal<string>(storeService.proxy.user?.bornLocation ?? "");
+    const [personalAdress, setPersonalAdress] = createSignal<string>(storeService.proxy.user?.personalAdress ?? "");
+    const [officeAdress, setOfficeAdress] = createSignal<string>(storeService.proxy.user?.officeAdress ?? "");
+    const [gender, setGender] = createSignal<GenderEnum>(storeService.proxy.user?.gender ?? GenderEnum.male);
+
+    console.log(birthday());
+
 
     function saveInformations() {
+        console.log(birthday());
+
         const informations: UserEntity = {
             fullname: name(),
             email: email(),
             orderNumber: orderNumber(),
             department: department(),
-            birthday: birthday(),
+            birthday: new Date(birthday()),
             bornLocation: bornLocation(),
             personalAdress: personalAdress(),
             officeAdress: officeAdress(),
             gender: gender(),
             status: AuthorsEnum.professional,
-        }
-
+        };
+        console.log(informations);
+        console.log(storeService.proxy.user);
         storeService.proxy.user = informations;
-    }
+        console.log(storeService.proxy.user);
 
-    function ignitTitle() {
-        if (props.isInNavbar) {
-            setTitle("Modifier vos Informations");
-        } else {
-            setTitle("Enregistrer vos Informations");
-        }
+        NotificationService.push({
+            content: "Informations enregistrées.",
+            type: "info",
+        });
+        closeDialogTool(DIALOG_NAMES.registerInformations);
     }
-
-    function ignitUserInformations() {
-        if (storeService.proxy.user) {
-            setName(storeService.proxy.user.fullname);
-            setEmail(storeService.proxy.user.email);
-            setOrderNumber(storeService.proxy.user.orderNumber ?? 0);
-            setDepartment(storeService.proxy.user.department);
-            setBirthday(storeService.proxy.user.birthday);
-            setBornLocation(storeService.proxy.user.bornLocation);
-        }
-    }
-
-    onMount(() => {
-        ignitTitle();
-        ignitUserInformations();
-    })
 
     return (
         <DialogWrapper
             name="registerInformations"
-            btnText={title()}
-            title={title()}
+            btnText={title}
+            title={title}
             isInNavbar={props.isInNavbar}
         >
             <div class="p-3 max-h-[70vh]">
@@ -102,7 +94,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
                     label="Date de naissance"
                     type="date"
                     value={birthday()}
-                    onInput={(e) => setBirthday(new Date(e.target.value))}
+                    onInput={(e) => setBirthday(e.target.value)}
                 />
                 <LabeledInput
                     id="bornLocation"

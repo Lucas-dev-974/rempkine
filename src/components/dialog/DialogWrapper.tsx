@@ -23,8 +23,14 @@ export const DIALOG_NAMES = {
 // const [isOpen, setIsOpen] = createSignal(false);
 
 const [openDialogs, setOpenDialogs] = createSignal<string>(DIALOG_NAMES.none);
+const [closeDialog, setCloseDialog] = createSignal<string>(DIALOG_NAMES.none);
+
 export const openDialogTool = (dialog: string) => {
   setOpenDialogs(dialog);
+};
+
+export const closeDialogTool = (dialog: string) => {
+  setCloseDialog(dialog);
 };
 
 export function DialogWrapper(props: DialogWrapperProps) {
@@ -45,7 +51,8 @@ export function DialogWrapper(props: DialogWrapperProps) {
   };
 
   createEffect(() => {
-    openDialogs() === props.name ? setIsOpen(true) : setIsOpen(false);
+    openDialogs() === props.name ? setIsOpen(true) : null;
+    closeDialog() === props.name ? closeDialogTool() : null;
   });
 
   return (

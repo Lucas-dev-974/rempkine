@@ -1,5 +1,5 @@
 import SignaturePad from "signature_pad";
-import { Component, createEffect, createSignal, on, onCleanup } from "solid-js";
+import { Component, createEffect, createSignal, on } from "solid-js";
 import { Button } from "../../buttons/Button";
 import { BottomSlideDialog } from "../../dialog/BottomSlideDialog";
 import { SignatureEditorProps } from "./types";
@@ -73,8 +73,6 @@ export const SignatureEditor: Component<SignatureEditorProps> = (props) => {
             ? SIGNATURE_TITLES.ADD_REPLACED
             : SIGNATURE_TITLES.ADD_SUBSTITUTE;
     };
-
-
 
     return (
         <BottomSlideDialog

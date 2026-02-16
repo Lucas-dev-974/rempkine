@@ -5,7 +5,7 @@ export const SIGNATURE_CONFIG = {
         EDITOR: "border border-slate-300 rounded-md w-[80vw] h-[40vh] mx-auto",
     },
     CONTAINER_CLASSES: {
-        CANVAS: "relative group w-[80vw] sm:w-[48%]",
+        CANVAS: "relative group w-full ",
         BUTTON: "absolute inset-0 hidden group-hover:flex items-center justify-center bg-black/40 text-white font-medium",
     },
 } as const;

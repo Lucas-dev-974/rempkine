@@ -8,7 +8,7 @@ import { contractService } from "../services/contract.service";
 
 import { setLoadContrat } from "../const.data";
 import { ContractEntity } from "../models/contract.entity";
-import { openDialogTool } from "../components/dialog/DialogWrapper";
+import { DIALOG_NAMES, openDialogTool } from "../components/dialog/DialogWrapper";
 import storeService from "../utils/store.service";
 import { UserEntity } from "../models/user.entity";
 
@@ -37,7 +37,7 @@ export function PageWrapper(props: PageWrapperProps) {
             if (contract) {
                 setLoadContrat(contract as Partial<ContractEntity>);
                 setSigneBack(true)
-                openDialogTool()
+                openDialogTool(DIALOG_NAMES.editContract);
 
                 storeService.proxy.signeBackContracts = [contract];
             }

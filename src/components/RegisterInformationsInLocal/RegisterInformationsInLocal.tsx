@@ -63,6 +63,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
 
     return (
         <DialogWrapper
+            name="registerInformations"
             btnText={title()}
             title={title()}
             isInNavbar={props.isInNavbar}

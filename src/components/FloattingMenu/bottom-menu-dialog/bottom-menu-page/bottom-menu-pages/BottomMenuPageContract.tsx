@@ -1,6 +1,6 @@
 import { contractService } from "../../../../../services/contract.service";
 import { ContractEntity } from "../../../../../models/contract.entity";
-import { openDialogTool } from "../../../../dialog/DialogWrapper";
+import { DIALOG_NAMES, openDialogTool } from "../../../../dialog/DialogWrapper";
 import { createEffect, createSignal, on, onMount } from "solid-js";
 import storeService, { localeUpdateEvent } from "../../../../../utils/store.service";
 import { loggedIn, setLoadContrat } from "../../../../../const.data";
@@ -73,7 +73,7 @@ export function BottomMenuPageContract() {
 
   function openDialogTool_(contract: ContractEntity) {
     setLoadContrat(contract);
-    openDialogTool();
+    openDialogTool(DIALOG_NAMES.editContract);
   }
 
   function requestDeleteContract(contract: ContractEntity) {

@@ -19,6 +19,7 @@ export function EditContractDialog() {
   }
   return (
     <DialogWrapper
+      name="editContract"
       btnText="Créer un contrat"
       title={title()}
     >

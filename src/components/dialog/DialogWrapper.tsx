@@ -1,4 +1,4 @@
-import { createSignal, JSX, Match, onMount, Show, Switch } from "solid-js";
+import { createEffect, createSignal, JSX, Match, onMount, Show, Switch } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
@@ -7,16 +7,25 @@ import { OutlinedButton } from "../buttons/OulinedButton";
 
 interface DialogWrapperProps {
   children: JSX.Element;
+  name: string;
   btnText: string;
   title: string;
-  onClose?: () => void;
-  onOpen?: () => void;
   isInNavbar?: boolean;
 }
 
+export const DIALOG_NAMES = {
+  none: "none",
+  registerInformations: "registerInformations",
+  editContract: "editContract",
+} as const;
+
 // ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
 // const [isOpen, setIsOpen] = createSignal(false);
-export const openDialogTool = () => { };
+
+const [openDialogs, setOpenDialogs] = createSignal<string>(DIALOG_NAMES.none);
+export const openDialogTool = (dialog: string) => {
+  setOpenDialogs(dialog);
+};
 
 export function DialogWrapper(props: DialogWrapperProps) {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -26,12 +35,18 @@ export function DialogWrapper(props: DialogWrapperProps) {
     queryParams.delete("signe-back");
     window.history.replaceState({}, "", window.location.pathname + "?" + queryParams.toString());
   }
+
   async function closeDialogTool() {
+    setOpenDialogs(DIALOG_NAMES.none);
     setLoadContrat(undefined);
     setCurrentPDFTool(undefined);
     setIsOpen(false);
     removeSigneBackQuery();
   };
+
+  createEffect(() => {
+    openDialogs() === props.name ? setIsOpen(true) : setIsOpen(false);
+  });
 
   return (
     <>

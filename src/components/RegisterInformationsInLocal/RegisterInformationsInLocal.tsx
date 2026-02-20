@@ -36,8 +36,6 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
     const [officeAdress, setOfficeAdress] = createSignal<string>(storeService.proxy.user?.officeAdress ?? "");
     const [gender, setGender] = createSignal<GenderEnum>(storeService.proxy.user?.gender ?? GenderEnum.male);
 
-    console.log(birthday());
-
 
     function saveInformations() {
         console.log(birthday());
@@ -76,7 +74,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
             <div class="p-3 max-h-[70vh]">
                 <LabeledInput
                     id="name"
-                    label="Nom"
+                    label="Nom, prénom"
                     type="text"
                     value={name()}
                     onInput={(e) => setName(e.target.value)}

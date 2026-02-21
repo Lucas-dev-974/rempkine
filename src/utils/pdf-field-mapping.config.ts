@@ -117,6 +117,33 @@ export const PDF_FIELD_MAPPING: Record<string, FieldMapping> = {
     }
 };
 
+function getAllPDFIdsForMapping(mapping: FieldMapping): string[] {
+  if (mapping.pdfIds.default) return [mapping.pdfIds.default];
+  const ids: string[] = [];
+  if (mapping.pdfIds.male) ids.push(...mapping.pdfIds.male);
+  if (mapping.pdfIds.female) ids.push(...mapping.pdfIds.female);
+  return ids;
+}
+
+/**
+ * Mapping inverse : ID PDF → nom du champ ContractEntity
+ * Permet de savoir quel champ contrat mettre à jour quand on édite depuis le canvas (par ID PDF).
+ */
+const PDF_ID_TO_CONTRACT_FIELD: Record<string, keyof ContractEntity> = {};
+for (const [_key, config] of Object.entries(PDF_FIELD_MAPPING)) {
+  getAllPDFIdsForMapping(config).forEach((id) => {
+    PDF_ID_TO_CONTRACT_FIELD[id] = config.contractField;
+  });
+}
+
+/**
+ * Obtient le champ ContractEntity correspondant à un ID de champ PDF.
+ * Utilisé quand l'édition vient du canvas (on reçoit l'ID PDF, pas le nom du champ).
+ */
+export function getContractFieldForPDFId(pdfId: string): keyof ContractEntity | null {
+  return PDF_ID_TO_CONTRACT_FIELD[pdfId] ?? null;
+}
+
 /**
  * Obtient les IDs PDF pour un champ donné selon le genre
  * @param fieldName Le nom du champ ContractEntity

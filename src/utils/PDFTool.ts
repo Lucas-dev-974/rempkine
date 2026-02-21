@@ -7,7 +7,7 @@ import { RenderParameters } from "pdfjs-dist/types/src/display/api";
 import { ContractEntity } from "../models/contract.entity";
 import { Accessor, createSignal } from "solid-js";
 import { loadContract } from "../const.data";
-import { getPDFIdsForField } from "./pdf-field-mapping.config";
+import { getPDFIdsForField, getContractFieldForPDFId } from "./pdf-field-mapping.config";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc as unknown as string;
 
@@ -286,6 +286,15 @@ export class PDFTool {
    * @param gender Le genre du contrat
    */
   updateContractDataAndPDFFields(contractField: string, newValue: any, gender: GenderEnum = GenderEnum.male) {
+    // Quand l'édition vient du canvas, on reçoit l'ID PDF (ex: "94R") au lieu du nom du champ.
+    // Résoudre le vrai contractField et utiliser le genre du contrat pour n'actualiser que les champs du bon genre (Madame OU Monsieur, pas les deux).
+    const resolvedContractField = getContractFieldForPDFId(contractField) ?? (contractField as keyof ContractEntity);
+    const resolvedGender: GenderEnum =
+      resolvedContractField === "replacedName"
+        ? (this.contractData.replacedGender ?? GenderEnum.male)
+        : resolvedContractField === "substituteName"
+          ? (this.contractData.substituteGender ?? GenderEnum.male)
+          : gender;
 
     const updateFieldOnGenderChange = (cleanNameFields: string[], copyNameFields: string[], contractField: keyof ContractEntity) => {
       this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => ({
@@ -305,7 +314,7 @@ export class PDFTool {
     }
 
     // * when update replacedGender or substituteGender, we need to update field name for replaced and substitute name in PDFInputsFieldsMetadata
-    if (contractField === "replacedGender") {
+    if (resolvedContractField === "replacedGender") {
       const gender = this.contractData.replacedGender;
       const inverseGender = gender === GenderEnum.male ? GenderEnum.female : GenderEnum.male;
 
@@ -316,7 +325,7 @@ export class PDFTool {
 
       this.updateField("replacedGender", inverseGender);
       return
-    } else if (contractField === "substituteGender") {
+    } else if (resolvedContractField === "substituteGender") {
       const gender = this.contractData.substituteGender;
       const inverseGender = gender === GenderEnum.male ? GenderEnum.female : GenderEnum.male;
 
@@ -328,20 +337,20 @@ export class PDFTool {
       this.updateField("substituteGender", inverseGender);
       return
     } else {
-      // Récupère les IDs des champs PDF correspondant au champ contractField et au genre gender
-      const pdfIds = getPDFIdsForField(contractField, gender);
-
+      // Récupère les IDs des champs PDF correspondant au champ contractField et au genre (un seul genre pour éviter de remplir Madame et Monsieur avec la même donnée)
+      const pdfIds = getPDFIdsForField(resolvedContractField, resolvedGender);
+      const pdfIdsArray = Array.isArray(pdfIds) ? pdfIds : [pdfIds];
 
       // Met à jour les valeurs des champs PDF correspondants
       this.PDFInputsFieldsMetadata = this.PDFInputsFieldsMetadata.map((page) => ({
         ...page,
         fields: page.fields.map((field) =>
-          pdfIds.includes(field.id) ? { ...field, value: String(newValue ?? "") } : field
+          pdfIdsArray.includes(field.id) ? { ...field, value: String(newValue ?? "") } : field
         ),
       }));
 
       // Met à jour la valeur du champ contractField dans le contractData
-      this.updateField(contractField as keyof ContractEntity, newValue);
+      this.updateField(resolvedContractField, newValue);
     }
   }
 

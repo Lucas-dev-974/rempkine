@@ -17,13 +17,6 @@ export function PDFInputsOnCanvas() {
         return fields.value ?? ""
     }
 
-    function getInputOfset() {
-        if (window.innerWidth < 768) {
-            return 10
-        } else {
-            return 18
-        }
-    }
 
     function getFontSize() {
         if (window.innerWidth < 768) {

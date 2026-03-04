@@ -36,7 +36,7 @@ export function HeroSection() {
                         text="Je souhaite me connecter"
                         onClick={() => navigate("/login")}
                         size="full-mobile" class="w-full" /> */}
-                    <Show when={storeService.data.user.email === ""}>
+                    <Show when={!storeService.data.user || storeService.data.user.email === ""}>
                         <RegisterInformationsInLocal />
                     </Show>
                 </div>

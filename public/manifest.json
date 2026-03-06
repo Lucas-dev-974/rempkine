@@ -5,7 +5,7 @@
   "display": "standalone",
   "start_url": "/",
   "short_name": "Kiné'd'Poche",
-  "theme_color": "#E1477E",
+  "theme_color": "#099773",
   "description": "Application de gestion des contrats de remplacement entre kinésithérapeutes. Créez, signez et gérez vos contrats de remplacement facilement.",
   "orientation": "any",
   "background_color": "#099773",

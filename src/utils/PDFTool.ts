@@ -486,6 +486,10 @@ export class PDFTool {
       // Mettre à jour les champs de formulaire
       const form = pdfDoc_.getForm();
 
+      // Champs de date (IDs PDF) : ne pas appliquer le formatage aux autres champs
+      // (sinon certains nombres comme le numéro d'ordre peuvent être interprétés comme des dates).
+      const dateFieldIds = new Set(["96R", "102R", "122R", "123R", "131R", "138R"]);
+
       const formatDate_ = (value: string) => {
         try {
           const formatedDate = formatDate(value)
@@ -502,8 +506,9 @@ export class PDFTool {
         for (const field of page.fields) {
           const pdfField = form.getTextField(field.name)
           if (pdfField) {
-
-            pdfField.setText(formatDate_(field.value));
+            const rawValue = String(field.value ?? "");
+            const valueToWrite = dateFieldIds.has(field.id) ? formatDate_(rawValue) : rawValue;
+            pdfField.setText(valueToWrite);
           }
         }
       }

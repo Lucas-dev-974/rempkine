@@ -315,26 +315,30 @@ export class PDFTool {
 
     // * when update replacedGender or substituteGender, we need to update field name for replaced and substitute name in PDFInputsFieldsMetadata
     if (resolvedContractField === "replacedGender") {
-      const gender = this.contractData.replacedGender;
-      const inverseGender = gender === GenderEnum.male ? GenderEnum.female : GenderEnum.male;
+      const previousGender = this.contractData.replacedGender ?? GenderEnum.male;
+      const nextGender = (newValue as GenderEnum) ?? previousGender;
 
-      const cleanNameFields = getPDFIdsForField("replacedName", gender);
-      const copyNameFields = getPDFIdsForField("replacedName", inverseGender);
+      if (nextGender !== previousGender) {
+        const cleanNameFields = getPDFIdsForField("replacedName", previousGender);
+        const copyNameFields = getPDFIdsForField("replacedName", nextGender);
 
-      updateFieldOnGenderChange(cleanNameFields as string[], copyNameFields as string[], "replacedName");
+        updateFieldOnGenderChange(cleanNameFields as string[], copyNameFields as string[], "replacedName");
+      }
 
-      this.updateField("replacedGender", inverseGender);
+      this.updateField("replacedGender", nextGender);
       return
     } else if (resolvedContractField === "substituteGender") {
-      const gender = this.contractData.substituteGender;
-      const inverseGender = gender === GenderEnum.male ? GenderEnum.female : GenderEnum.male;
+      const previousGender = this.contractData.substituteGender ?? GenderEnum.male;
+      const nextGender = (newValue as GenderEnum) ?? previousGender;
 
-      const cleanNameFields = getPDFIdsForField("substituteName", gender);
-      const copyNameFields = getPDFIdsForField("substituteName", inverseGender);
+      if (nextGender !== previousGender) {
+        const cleanNameFields = getPDFIdsForField("substituteName", previousGender);
+        const copyNameFields = getPDFIdsForField("substituteName", nextGender);
 
-      updateFieldOnGenderChange(cleanNameFields as string[], copyNameFields as string[], "substituteName");
+        updateFieldOnGenderChange(cleanNameFields as string[], copyNameFields as string[], "substituteName");
+      }
 
-      this.updateField("substituteGender", inverseGender);
+      this.updateField("substituteGender", nextGender);
       return
     } else {
       // Récupère les IDs des champs PDF correspondant au champ contractField et au genre (un seul genre pour éviter de remplir Madame et Monsieur avec la même donnée)

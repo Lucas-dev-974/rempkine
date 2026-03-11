@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import { ContractEntity } from "../models/contract.entity";
 import { UserEntity } from "../models/user.entity";
+import { AuthorsEnum, GenderEnum } from "../utils/PDFTool";
 
 export const [localeUpdateEvent, setLocalUpdateEvent] = createSignal<boolean>(false)
 
@@ -10,6 +11,19 @@ type StoreDataType = {
   contracts?: Partial<ContractEntity>[];
   signeBackContracts?: Partial<ContractEntity>[];
   user?: UserEntity | null | undefined;
+};
+
+const EMPTY_USER: UserEntity = {
+  fullname: "",
+  email: "",
+  orderNumber: 0,
+  department: "",
+  birthday: new Date(0),
+  bornLocation: "",
+  personalAdress: "",
+  officeAdress: "",
+  gender: GenderEnum.male,
+  status: AuthorsEnum.professional,
 };
 
 class StoreService {
@@ -35,12 +49,20 @@ class StoreService {
   constructor() {
     const storeData = this.getStore();
     if (!storeData) {
+      // Aucun store en localStorage : initialiser avec un user défini mais vide
+      this.proxy.user = EMPTY_USER;
+      this.proxy.isLogin = undefined;
+      this.proxy.contracts = [];
       this.setState();
       return;
     }
 
     for (const key in storeData) {
       this.proxy[key] = storeData[key];
+    }
+    // S'assurer que user existe toujours comme clé, même après d’anciennes versions du store
+    if (typeof this.proxy.user === "undefined") {
+      this.proxy.user = EMPTY_USER;
     }
     this.proxy.isLogin = storeData.isLogin;
   }
@@ -66,7 +88,7 @@ class StoreService {
     // Réinitialiser les données utilisateur dans le proxy
     this.proxy.isLogin = false;
     this.proxy.token = "";
-    this.proxy.user = undefined;
+    this.proxy.user = EMPTY_USER;
     this.proxy.contracts = [];
 
     // Vider complètement le localStorage

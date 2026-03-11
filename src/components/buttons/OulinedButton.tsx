@@ -7,6 +7,7 @@ interface OutlinedButtonProps {
     class?: string;
     size?: "xs" | "small" | "medium" | "large" | "responsive" | "full-mobile";
     subText?: string;
+    type?: "button" | "submit" | "reset";
 }
 
 export function OutlinedButton(props: OutlinedButtonProps) {
@@ -32,6 +33,7 @@ export function OutlinedButton(props: OutlinedButtonProps) {
                 (props.class ?? " ")
             }
             onClick={props.onClick}
+            type={props.type ?? "button"}
         >
             <p class="m-0"> {props.icon ? props.icon : props.text}</p>
             {props.subText ? <p class="text-xs text-gray-500 m-0">{props.subText}</p> : null}

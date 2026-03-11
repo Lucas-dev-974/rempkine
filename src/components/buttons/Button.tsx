@@ -49,7 +49,7 @@ export function Button(props: ButtonProps) {
         props.onClick()
       }}
       disabled={props.disabled}
-      type={props.type}
+      type={props.type ?? "button"}
       style={style()}
     >
 

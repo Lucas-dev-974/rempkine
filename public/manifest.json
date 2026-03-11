@@ -25,16 +25,6 @@
       "src": "assets/icons/192x192.png",
       "sizes": "192x192",
       "type": "image/png"
-    },
-    {
-      "src": "assets/icons/48x48.png",
-      "sizes": "48x48",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icons/24x24.png",
-      "sizes": "24x24",
-      "type": "image/png"
     }
   ],
   "screenshots": [
@@ -88,15 +78,15 @@
       "description": "Widget pour accéder rapidement aux contrats de remplacement.",
       "screenshots": [
         {
-          "src": "assets/screenshots/widget-screen.png",
+          "src": "assets/screenshots/widget _screen.png",
           "sizes": "500x500",
           "label": "Widget des contrats"
         }
       ],
       "icons": [
         {
-          "src": "assets/icons/48x48.png",
-          "sizes": "48x48"
+          "src": "assets/icons/192x192.png",
+          "sizes": "192x192"
         }
       ]
     }

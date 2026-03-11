@@ -1,4 +1,4 @@
-import { createEffect, createSignal, JSX, Match, onMount, Show, Switch } from "solid-js";
+import { createEffect, createSignal, JSX, Match, Show, Switch } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
 import { VsChromeClose } from 'solid-icons/vs'
 
@@ -71,7 +71,7 @@ export function DialogWrapper(props: DialogWrapperProps) {
         </Match>
       </Switch>
       <Show when={isOpen()} fallback={null}>
-        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" onClick={closeDialogTool}>
+        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={closeDialogTool}>
 
           <div onClick={(e) => e.stopPropagation()} class="w-[90vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] bg-slate-200 rounded-lg">
             <div class="text-white text-lg p-3  font-bold lg:text-2xl items-center flex justify-between bg-primary rounded-t-lg"
@@ -83,7 +83,7 @@ export function DialogWrapper(props: DialogWrapperProps) {
               </button>
             </div>
 
-            <div class="overflow-y-auto pt-5">
+            <div class="overflow-y-auto pt-5" style={{ "-webkit-overflow-scrolling": "touch" }}>
               {props.children}
             </div>
           </div>

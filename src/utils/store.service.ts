@@ -1,7 +1,6 @@
 import { createSignal } from "solid-js";
 import { ContractEntity } from "../models/contract.entity";
 import { UserEntity } from "../models/user.entity";
-import { AuthorsEnum, GenderEnum } from "../utils/PDFTool";
 
 export const [localeUpdateEvent, setLocalUpdateEvent] = createSignal<boolean>(false)
 
@@ -22,8 +21,9 @@ const EMPTY_USER: UserEntity = {
   bornLocation: "",
   personalAdress: "",
   officeAdress: "",
-  gender: GenderEnum.male,
-  status: AuthorsEnum.professional,
+  // On utilise les valeurs string brutes pour éviter une dépendance circulaire avec PDFTool (où les enums sont définis).
+  gender: "male" as any,
+  status: "professionnal" as any,
 };
 
 class StoreService {

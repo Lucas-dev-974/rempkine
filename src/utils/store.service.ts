@@ -10,7 +10,7 @@ type StoreDataType = {
   isLogin: boolean | undefined;
   contracts?: Partial<ContractEntity>[];
   signeBackContracts?: Partial<ContractEntity>[];
-  user?: UserEntity | null | undefined;
+  user?: UserEntity;
 };
 
 const EMPTY_USER: UserEntity = {

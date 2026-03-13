@@ -6,6 +6,7 @@ import { toSendBlob } from "../../../utils/PDFTool"
 import { LabeledInput } from "../../inputs/LabeledInput"
 import { NotificationService } from "../../../utils/notification.service"
 import { LabeledTextarea } from "../../inputs/LabeledTextarea"
+import storeService from "../../../utils/store.service"
 
 export function SendContractTo(props: {
     setOpen: Setter<boolean>
@@ -66,7 +67,7 @@ export function SendContractTo(props: {
             return
         }
 
-        setIsLoading(true)
+
 
         try {
             // Générer le PDF avec les signatures
@@ -85,6 +86,7 @@ export function SendContractTo(props: {
 
     createEffect(on(toSendBlob, async () => {
         if (toSendBlob() && mailFrom() && mailTo() && validateForm()) {
+
             try {
                 const form = new FormData()
                 form.append("contractFile", toSendBlob() as Blob, "contrat.pdf")
@@ -94,13 +96,21 @@ export function SendContractTo(props: {
 
                 const contractData = currentPDFTool()?.contractData
                 if (contractData !== undefined) {
-                    form.append("contractAuth", JSON.stringify({
-                        id: contractData.id,
-                        token: contractData.token
-                    }))
+                    form.append("contractData", JSON.stringify(contractData))
                 }
 
-                await mailService.sendContratTo(form)
+                console.log("contract data", contractData);
+
+                const response: any = await mailService.sendContratTo(form)
+                console.log("response", response);
+
+                if (response.creatingContract) {
+                    console.log("save contract in store:", response.creatingContract.contract);
+
+                    currentPDFTool()?.setContractData(response.creatingContract.contract)
+                    storeService.proxy.contracts = [...storeService.proxy.contracts!, response.creatingContract.contract]
+
+                }
                 NotificationService.push({
                     content: "Contrat envoyé.",
                     type: "info"

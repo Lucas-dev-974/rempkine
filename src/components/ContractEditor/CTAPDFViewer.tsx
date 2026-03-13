@@ -9,11 +9,6 @@ import { PDFViewerPrevisualisationDialog } from "../ContractDialog/PDFPrevisuali
 import { currentPDFTool } from "./PDFEditor";
 import { loadContract } from "../../const.data";
 
-// function createContractID(): string {
-//     const timestamp = Date.now().toString(36);
-//     const randomPart = Math.random().toString(36).substring(2, 15);
-//     return `contract_${timestamp}_${randomPart}`;
-// }
 
 export function CTAPDFViewer() {
     async function saveContractInDB() {
@@ -21,7 +16,7 @@ export function CTAPDFViewer() {
 
         if (!loadContract() || loadContract() == undefined) {
             const contract = await contractService.createContract(contractFromPDF);
-            contract.updatedAt = new Date(Date.now())
+            currentPDFTool()?.setContractData(contract);
             storeService.proxy.contracts = [...storeService.proxy.contracts!, contract]
             NotificationService.push({
                 content: "Contrat sauvegarder",
@@ -29,7 +24,7 @@ export function CTAPDFViewer() {
             });
         } else {
             const contract = await contractService.update(contractFromPDF);
-
+            currentPDFTool()?.setContractData(contract);
             storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
                 if (_contract.id == contract.id) return contract
                 return _contract
@@ -41,66 +36,6 @@ export function CTAPDFViewer() {
             });
         }
 
-        // if (loggedIn()) {
-        //     if (!loadContract()) {
-        //         const contract = await contractService.createContract(contractFromPDF);
-        //         contract.updatedAt = new Date(Date.now())
-        //         storeService.proxy.contracts = [...storeService.proxy.contracts!, contract]
-        //         NotificationService.push({
-        //             content: "Contrat sauvegarder comme brouillon",
-        //             type: "info",
-        //         });
-        //     } else {
-        //         const contract = await contractService.update(contractFromPDF);
-
-        //         storeService.proxy.contracts = storeService.proxy.contracts?.map(_contract => {
-        //             if (_contract.id == contract.id) {
-        //                 return contract
-        //             }
-        //             return _contract
-        //         })
-
-        //         NotificationService.push({
-        //             content: "Contrat mis à jour",
-        //             type: "info",
-        //         });
-        //     }
-
-        // } else {
-        //     if (!storeService.proxy.contracts) storeService.proxy.contracts = []
-
-        //     if (!loadContract()) {
-        //         storeService.proxy.contracts = [
-        //             ...storeService.proxy.contracts,
-        //             {
-        //                 id: createContractID(),
-        //                 logoutCreate: true,
-        //                 ...contractFromPDF,
-        //             },
-        //         ];
-
-        //         setLoadContrat(contractFromPDF)
-
-        //         NotificationService.push({
-        //             content: "Contrat sauvegarder comme brouillon",
-        //             type: "info",
-        //         });
-
-        //     } else {
-        //         let contracts: Partial<ContractEntity>[] = storeService.proxy.contracts
-        //         storeService.proxy.contracts = contracts.map(contract => {
-        //             if (contract.id == contractFromPDF.id) {
-        //                 contract = contractFromPDF
-        //             }
-        //             return contract
-        //         })
-
-        //         NotificationService.push({
-        //             content: "Contrat mis à jour",
-        //             type: "info",
-        //         });
-        //     }
-        // }
     }
 
     function downloadPDF() {

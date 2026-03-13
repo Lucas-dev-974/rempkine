@@ -127,6 +127,10 @@ export class PDFTool {
     }
   }
 
+  setContractData(contract: Partial<ContractEntity>) {
+    this.contractData = contract;
+  }
+
   updateField(fieldName: keyof ContractEntity, value: any) {
     this.contractData[fieldName] = value;
   }

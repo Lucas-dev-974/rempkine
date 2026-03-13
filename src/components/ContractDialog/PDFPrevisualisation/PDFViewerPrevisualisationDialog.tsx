@@ -1,4 +1,5 @@
 import { createSignal, Show } from "solid-js"
+import { Portal } from "solid-js/web"
 import { AiTwotoneEye } from 'solid-icons/ai'
 import { Button } from "../../buttons/Button"
 import { PDFCanvas } from "../../ContractEditor/PDFCanvas"
@@ -12,27 +13,29 @@ export function PDFViewerPrevisualisationDialog() {
         <Button onClick={() => setOpen(!open())} icon={<AiTwotoneEye />} text="ouvrir" />
 
         <Show when={open()}>
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-start sm:items-center justify-center p-2 sm:p-4 z-50 pt-16 sm:pt-4" onClick={() => setOpen(false)}>
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-[700px] max-h-[calc(100vh-8rem)] sm:max-h-[90vh] overflow-hidden flex flex-col mt-4 sm:mt-0 " onClick={(e) => e.stopPropagation()}>
-                    {/* Header avec titre */}
-                    <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
-                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Aperçu et envoi du contrat</h2>
-                    </div>
-
-                    {/* Contenu principal avec scroll */}
-                    <div class="flex-1 overflow-y-auto min-h-0 ">
-                        {/* Section PDF Viewer */}
-                        <div class="p-3 sm:p-6 bg-gray-50">
-                            <PDFCanvas />
+            <Portal>
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-start sm:items-center justify-center p-2 sm:p-4 z-[200] pt-16 sm:pt-4" onClick={() => setOpen(false)}>
+                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-[700px] max-h-[calc(100vh-8rem)] sm:max-h-[90vh] overflow-hidden flex flex-col mt-4 sm:mt-0 " onClick={(e) => e.stopPropagation()}>
+                        {/* Header avec titre */}
+                        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+                            <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Aperçu et envoi du contrat</h2>
                         </div>
 
-                        {/* Section formulaire d'envoi */}
-                        <div class="p-4 sm:p-6 bg-white border-t border-gray-200  mx-auto">
-                            <SendContractTo setOpen={setOpen} />
+                        {/* Contenu principal avec scroll */}
+                        <div class="flex-1 overflow-y-auto min-h-0 ">
+                            {/* Section PDF Viewer */}
+                            <div class="p-3 sm:p-6 bg-gray-50">
+                                <PDFCanvas />
+                            </div>
+
+                            {/* Section formulaire d'envoi */}
+                            <div class="p-4 sm:p-6 bg-white border-t border-gray-200  mx-auto">
+                                <SendContractTo setOpen={setOpen} />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Portal>
         </Show>
     </>
 }

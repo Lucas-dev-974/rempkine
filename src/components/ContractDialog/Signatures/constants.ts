@@ -2,7 +2,7 @@ export const SIGNATURE_CONFIG = {
     PEN_COLOR: "rgb(66, 133, 244)",
     CANVAS_CLASSES: {
         DISPLAY: "bg-slate-300 w-full mx-auto",
-        EDITOR: "border border-slate-300 rounded-md w-[80vw] h-[40vh] mx-auto",
+        EDITOR: "border border-slate-300 rounded-md w-full h-[40vh] mx-auto",
     },
     CONTAINER_CLASSES: {
         CANVAS: "relative group w-full ",

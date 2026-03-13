@@ -1,5 +1,6 @@
 import SignaturePad from "signature_pad";
 import { Component, createEffect, createSignal, on } from "solid-js";
+import { Portal } from "solid-js/web";
 import { Button } from "../../buttons/Button";
 import { BottomSlideDialog } from "../../dialog/BottomSlideDialog";
 import { SignatureEditorProps } from "./types";
@@ -75,24 +76,26 @@ export const SignatureEditor: Component<SignatureEditorProps> = (props) => {
     };
 
     return (
-        <BottomSlideDialog
-            open={props.open}
-            onClose={props.onClose}
-            title={getTitle()}
-        >
-            <div class="flex flex-col justify-between h-full px-3 pb-3 gap-2">
-                <canvas
-                    id="signature-canvas"
-                    ref={setCanvasRef}
-                    class={SIGNATURE_CONFIG.CANVAS_CLASSES.EDITOR}
-                />
+        <Portal>
+            <BottomSlideDialog
+                open={props.open}
+                onClose={props.onClose}
+                title={getTitle()}
+            >
+                <div class="flex flex-col justify-between h-full px-3 pb-3 gap-2">
+                    <canvas
+                        id="signature-canvas"
+                        ref={setCanvasRef}
+                        class={SIGNATURE_CONFIG.CANVAS_CLASSES.EDITOR}
+                    />
 
-                <div class="flex justify-center md:justify-end gap-3">
-                    <Button text={SIGNATURE_LABELS.CLEAR} onClick={handleClear} />
-                    <Button text={SIGNATURE_LABELS.CANCEL} onClick={props.onClose} />
-                    <Button text={SIGNATURE_LABELS.SAVE} onClick={handleSave} />
+                    <div class="flex justify-center md:justify-end gap-3">
+                        <Button text={SIGNATURE_LABELS.CLEAR} onClick={handleClear} />
+                        <Button text={SIGNATURE_LABELS.CANCEL} onClick={props.onClose} />
+                        <Button text={SIGNATURE_LABELS.SAVE} onClick={handleSave} />
+                    </div>
                 </div>
-            </div>
-        </BottomSlideDialog>
+            </BottomSlideDialog>
+        </Portal>
     );
 };

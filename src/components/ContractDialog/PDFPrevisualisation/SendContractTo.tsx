@@ -99,14 +99,8 @@ export function SendContractTo(props: {
                     form.append("contractData", JSON.stringify(contractData))
                 }
 
-                console.log("contract data", contractData);
-
                 const response: any = await mailService.sendContratTo(form)
-                console.log("response", response);
-
                 if (response.creatingContract) {
-                    console.log("save contract in store:", response.creatingContract.contract);
-
                     currentPDFTool()?.setContractData(response.creatingContract.contract)
                     storeService.proxy.contracts = [...storeService.proxy.contracts!, response.creatingContract.contract]
 

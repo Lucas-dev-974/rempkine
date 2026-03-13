@@ -125,7 +125,7 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       isOpen={(typeof props.items === "function" ? props.items() : props.items).find((i) => i.id === 3)?.isOpen}
       valid={valid()}
     >
-      <Show when={storeService.data.user.email !== ""}>
+      <Show when={storeService.data?.user?.email !== ""}>
         <div class="flex flex-wrap w-full justify-end gap-2">
           <Button
             text="Je suis remplacé"

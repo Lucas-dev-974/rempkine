@@ -1,9 +1,11 @@
 import { createEffect, createSignal, JSX, Match, Show, Switch } from "solid-js";
 import { setCurrentPDFTool } from "../ContractEditor/PDFEditor";
-import { VsChromeClose } from 'solid-icons/vs'
 
 import { setLoadContrat } from "../../const.data";
 import { OutlinedButton } from "../buttons/OulinedButton";
+import { Overlay } from "./Overlay";
+import { DialogContainer } from "./dialog-components/DialogContainer";
+import { DialgoHeader } from "./dialog-components/DialgoHeader";
 
 interface DialogWrapperProps {
   children: JSX.Element;
@@ -11,6 +13,18 @@ interface DialogWrapperProps {
   btnText: string;
   title: string;
   isInNavbar?: boolean;
+  /**
+   * When provided, the dialog becomes controlled from the outside.
+   */
+  isOpen?: boolean;
+  /**
+   * Optional external close handler used when `isOpen` is controlled.
+   */
+  onClose?: () => void;
+  /**
+   * Hide the trigger button and only render the dialog content.
+   */
+  hideTriggerButton?: boolean;
 }
 
 export const DIALOG_NAMES = {
@@ -19,8 +33,6 @@ export const DIALOG_NAMES = {
   editContract: "editContract",
 } as const;
 
-// ! TODO review this code, if we have multiple use of DialogWrapper this externalised openDialog gonna open them all
-// const [isOpen, setIsOpen] = createSignal(false);
 
 const [openDialogs, setOpenDialogs] = createSignal<string>(DIALOG_NAMES.none);
 const [closeDialog, setCloseDialog] = createSignal<string>(DIALOG_NAMES.none);
@@ -34,7 +46,18 @@ export const closeDialogTool = (dialog: string) => {
 };
 
 export function DialogWrapper(props: DialogWrapperProps) {
-  const [isOpen, setIsOpen] = createSignal(false);
+  const [internalIsOpen, setInternalIsOpen] = createSignal(false);
+
+  const isControlled = () => props.isOpen !== undefined;
+  const isOpen = () => (isControlled() ? !!props.isOpen : internalIsOpen());
+
+  const setOpen = (value: boolean) => {
+    if (!isControlled()) {
+      setInternalIsOpen(value);
+    } else if (!value && props.onClose) {
+      props.onClose();
+    }
+  };
 
   function removeSigneBackQuery() {
     const queryParams = new URLSearchParams(window.location.search);
@@ -46,48 +69,45 @@ export function DialogWrapper(props: DialogWrapperProps) {
     setOpenDialogs(DIALOG_NAMES.none);
     setLoadContrat(undefined);
     setCurrentPDFTool(undefined);
-    setIsOpen(false);
+    setOpen(false);
     removeSigneBackQuery();
   };
 
   createEffect(() => {
-    openDialogs() === props.name ? setIsOpen(true) : null;
+    openDialogs() === props.name ? setOpen(true) : null;
     closeDialog() === props.name ? closeDialogTool() : null;
   });
 
   return (
     <>
-      <Switch>
-        <Match when={!props.isInNavbar}>
-          <OutlinedButton text={props.btnText} onClick={() => setIsOpen(true)} class="w-full" />
-        </Match>
+      <Show when={!props.hideTriggerButton}>
+        <Switch>
+          <Match when={!props.isInNavbar}>
+            <OutlinedButton text={props.btnText} onClick={() => setOpen(true)} class="w-full" />
+          </Match>
 
-        <Match when={props.isInNavbar}>
-          <button onClick={() => setIsOpen(true)} class={"flex flex-col items-center justify-center" +
-            " font-[Nunito] text-sm  px-4 py-2 rounded-lg cursor-pointer duration-200 " +
-            " bg-transparent border-none text-white shadow-none hover:shadow-none "}>
-            {props.btnText}
-          </button>
-        </Match>
-      </Switch>
+          <Match when={props.isInNavbar}>
+            <button
+              onClick={() => setOpen(true)}
+              class={
+                "flex flex-col items-center justify-center" +
+                " font-[Nunito] text-sm  px-4 py-2 rounded-lg cursor-pointer duration-200 " +
+                " bg-transparent border-none text-white shadow-none hover:shadow-none "
+              }
+            >
+              {props.btnText}
+            </button>
+          </Match>
+        </Switch>
+      </Show>
       <Show when={isOpen()} fallback={null}>
-        <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50" onClick={closeDialogTool}>
-
-          <div onClick={(e) => e.stopPropagation()} class="w-[90vw] sm:w-[70vw] md:w-[60vw] lg:w-[50vw] xl:w-[40vw] bg-slate-200 rounded-lg">
-            <div class="text-white text-lg p-3  font-bold lg:text-2xl items-center flex justify-between bg-primary rounded-t-lg"
-              style="background: linear-gradient(190deg,rgba(9, 151, 115, 1) 0%, rgba(67, 182, 146, 1) 100%);">
-              <h3 class="text-xl font-bold m-0 font-[Nunito]">{props.title}</h3>
-
-              <button class="bg-none border-none text-3xl cursor-pointer text-red-500 bg-transparent" onClick={closeDialogTool}>
-                <VsChromeClose size={24} />
-              </button>
-            </div>
-
-            <div class="overflow-y-auto pt-5" style={{ "-webkit-overflow-scrolling": "touch" }}>
-              {props.children}
-            </div>
+        <Overlay onClick={closeDialogTool} show={isOpen()} />
+        <DialogContainer>
+          <DialgoHeader title={props.title} onClose={closeDialogTool} />
+          <div class="overflow-y-auto pt-5" style={{ "-webkit-overflow-scrolling": "touch" }}>
+            {props.children}
           </div>
-        </div>
+        </DialogContainer>
       </Show>
     </>
   );

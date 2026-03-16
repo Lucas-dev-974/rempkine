@@ -104,7 +104,7 @@ export function DialogWrapper(props: DialogWrapperProps) {
         <Overlay onClick={closeDialogTool} show={isOpen()} />
         <DialogContainer>
           <DialgoHeader title={props.title} onClose={closeDialogTool} />
-          <div class="overflow-y-auto pt-5" style={{ "-webkit-overflow-scrolling": "touch" }}>
+          <div class="overflow-y-auto py-5 px-4" style={{ "-webkit-overflow-scrolling": "touch" }}>
             {props.children}
           </div>
         </DialogContainer>

@@ -7,6 +7,16 @@ import { LabeledInput } from "../../inputs/LabeledInput"
 import { NotificationService } from "../../../utils/notification.service"
 import { LabeledTextarea } from "../../inputs/LabeledTextarea"
 import storeService from "../../../utils/store.service"
+import { ContractEntity } from "../../../models/contract.entity"
+
+
+export type ResponseTypeSendContractTo = {
+    message?: string;
+    error?: string;
+    creatingContract?: {
+        contract: Partial<ContractEntity>
+    }
+}
 
 export function SendContractTo(props: {
     setOpen: Setter<boolean>
@@ -59,15 +69,8 @@ export function SendContractTo(props: {
 
     const handleSubmit = async (e?: Event) => {
         // Empêcher le rechargement de la page
-        if (e) {
-            e.preventDefault()
-        }
-
-        if (!validateForm()) {
-            return
-        }
-
-
+        if (e) { e.preventDefault() }
+        if (!validateForm()) { return }
 
         try {
             // Générer le PDF avec les signatures
@@ -84,38 +87,37 @@ export function SendContractTo(props: {
         }
     }
 
+    const buildFormData = (): FormData => {
+        const form = new FormData()
+        form.append("contractFile", toSendBlob() as Blob, "contrat.pdf")
+        form.append("from", mailFrom())
+        form.append("to", mailTo())
+        form.append("body", mailBody())
+        const contractData = currentPDFTool()?.contractData
+        form.append("contractData", JSON.stringify(contractData))
+        return form
+    }
+
+    // * Send the request in a createEffect cause we must wait the blob to be generated before sending the request
     createEffect(on(toSendBlob, async () => {
         if (toSendBlob() && mailFrom() && mailTo() && validateForm()) {
-
             try {
-                const form = new FormData()
-                form.append("contractFile", toSendBlob() as Blob, "contrat.pdf")
-                form.append("from", mailFrom())
-                form.append("to", mailTo())
-                form.append("body", mailBody())
-
-                const contractData = currentPDFTool()?.contractData
-                if (contractData !== undefined) {
-                    form.append("contractData", JSON.stringify(contractData))
-                }
-
-                const response: any = await mailService.sendContratTo(form)
+                const response: ResponseTypeSendContractTo = await mailService.sendContratTo(buildFormData())
                 if (response.creatingContract) {
                     currentPDFTool()?.setContractData(response.creatingContract.contract)
                     storeService.proxy.contracts = [...storeService.proxy.contracts!, response.creatingContract.contract]
 
+                } else {
+                    NotificationService.push({
+                        content: "Erreur lors de la création du contrat",
+                        type: "error"
+                    })
                 }
                 NotificationService.push({
                     content: "Contrat envoyé.",
                     type: "info"
                 })
                 props.setOpen(false)
-                // Réinitialiser le formulaire après envoi réussi
-                setTimeout(() => {
-                    setMailFrom("")
-                    setMailTo("")
-                }, 3000)
-
             } catch (error) {
                 if (import.meta.env.DEV) {
                     console.error("Erreur lors de l'envoi:", error);

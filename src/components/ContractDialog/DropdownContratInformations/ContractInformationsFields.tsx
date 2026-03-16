@@ -1,7 +1,7 @@
 import { currentPDFTool, setCurrentPDFTool } from "../../ContractEditor/PDFEditor";
 import { DorpdownItemType } from "../../Dropdown/DropdownWrapper";
-import { fillWithMyInformationsSubstitute } from "./SubstituteFields";
-import { fillWithMyInformationsReplaced } from "./ReplacedFields";
+import { fillWithMyInformationsSubstitute, isFilledWithUserSubstitute, removeMyInformationsSubstitute } from "./SubstituteFields";
+import { fillWithMyInformationsReplaced, isFilledWithUserReplaced, removeMyInformationsReplaced } from "./ReplacedFields";
 import { DropdownItem } from "../../Dropdown/DropdownItem";
 import { LabeledInput } from "../../inputs/LabeledInput";
 import { Button } from "../../buttons/Button";
@@ -9,6 +9,7 @@ import { createSignal, onMount, Show } from "solid-js";
 import { formatDateForInput } from "./ContratInformationsDropdowns";
 import { loadContract, loggedIn } from "../../../const.data";
 import storeService from "../../../utils/store.service";
+import { FitFieldsWithUserData } from "./FitFieldsWithUserData";
 
 interface ContractInformationsFieldsProps {
   toggleItem: ((id: number) => void) | ((id: number) => void);
@@ -135,17 +136,19 @@ export function ContractInformationsFields(props: ContractInformationsFieldsProp
       valid={valid()}
     >
       <Show when={storeService.data?.user?.email !== ""}>
-        <div class="flex flex-wrap w-full justify-end gap-2">
-          <Button
-            text="Je suis remplacé"
-            onClick={() => fillWithMyInformations("author,replaced")}
-            size="xs"
+        <div class="flex w-full justify-end gap-2">
+          <FitFieldsWithUserData
+            onFill={fillWithMyInformationsReplaced}
+            onClear={removeMyInformationsReplaced}
+            isFilled={isFilledWithUserReplaced()}
+            filledText="Je suis le remplacé"
           />
 
-          <Button
-            text="Je remplace un confrère"
-            onClick={() => fillWithMyInformations("author,substitute")}
-            size="xs"
+          <FitFieldsWithUserData
+            onFill={fillWithMyInformationsSubstitute}
+            onClear={removeMyInformationsSubstitute}
+            isFilled={isFilledWithUserSubstitute()}
+            filledText="Je remplace un confrère"
           />
         </div>
       </Show>

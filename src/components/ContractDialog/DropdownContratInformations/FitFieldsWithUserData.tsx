@@ -4,6 +4,8 @@ interface FitFieldsWithUserDataProps {
   onFill: () => void;
   onClear: () => void;
   isFilled: boolean;
+  filledText?: string;
+  clearedText?: string;
 }
 
 export function FitFieldsWithUserData(props: FitFieldsWithUserDataProps) {
@@ -16,13 +18,11 @@ export function FitFieldsWithUserData(props: FitFieldsWithUserDataProps) {
   };
 
   return (
-    <div class="flex w-full justify-end">
-      <Button
-        text={props.isFilled ? "Retirer mes informations" : "Remplir avec mes informations"}
-        onClick={handleClick}
-        size="small"
-        isDanger={props.isFilled}
-      />
-    </div>
+    <Button
+      text={props.isFilled ? props.clearedText || "Retirer mes informations" : props.filledText || "Remplir avec mes informations"}
+      onClick={handleClick}
+      size="small"
+      isDanger={props.isFilled}
+    />
   );
 }

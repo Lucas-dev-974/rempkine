@@ -27,7 +27,8 @@ const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
 const [gender, setGender] = createSignal<GenderEnum>(GenderEnum.male);
 const [valid, setValid] = createSignal<boolean>(false);
-const [isFilledWithUser, setIsFilledWithUser] = createSignal<boolean>(false);
+
+export const [isFilledWithUserSubstitute, setIsFilledWithUserSubstitute] = createSignal<boolean>(false);
 
 
 function isValid() {
@@ -120,12 +121,12 @@ export function fillWithMyInformationsSubstitute() {
   HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "");
   HandlerToUpdateFormInputsAndPDFInputs("address", userDatas.personalAdress);
 
-  setIsFilledWithUser(true);
+  setIsFilledWithUserSubstitute(true);
 }
 
-function removeMyInformationsSubstitute() {
+export function removeMyInformationsSubstitute() {
   clearSubstituteFields();
-  setIsFilledWithUser(false);
+  setIsFilledWithUserSubstitute(false);
 }
 
 export function handlerToUpdateFormInputsWithContratData() {
@@ -159,7 +160,7 @@ export function SubstituteFields(props: AccordionFieldsProps) {
   // Écoute le mode de remplissage : si le remplacé est rempli, on vide le substitut
   useFillMode("replaced", () => {
     clearSubstituteFields();
-    setIsFilledWithUser(false);
+    setIsFilledWithUserSubstitute(false);
   });
 
   return (
@@ -172,11 +173,13 @@ export function SubstituteFields(props: AccordionFieldsProps) {
     >
 
       <Show when={storeService.data.user!.email !== ""}>
-        <FitFieldsWithUserData
-          onFill={fillWithMyInformationsSubstitute}
-          onClear={removeMyInformationsSubstitute}
-          isFilled={isFilledWithUser()}
-        />
+        <div class="flex w-full justify-end">
+          <FitFieldsWithUserData
+            onFill={fillWithMyInformationsSubstitute}
+            onClear={removeMyInformationsSubstitute}
+            isFilled={isFilledWithUserSubstitute()}
+          />
+        </div>
       </Show>
 
       <RadioButtons

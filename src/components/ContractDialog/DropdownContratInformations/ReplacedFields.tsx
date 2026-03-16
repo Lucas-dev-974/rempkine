@@ -26,7 +26,8 @@ const [birthday, setBirthday] = createSignal<string>("");
 const [email, setEmail] = createSignal<string>("");
 const [name, setName] = createSignal<string>("");
 const [valid, setValid] = createSignal<boolean>(false);
-const [isFilledWithUser, setIsFilledWithUser] = createSignal<boolean>(false);
+
+export const [isFilledWithUserReplaced, setIsFilledWithUserReplaced] = createSignal<boolean>(false);
 
 function isValid() {
   if (name() && email() && birthday() && birthdayLocation() && orderDepartement() && orderDepartmentNumber() && professionnalAddress()) {
@@ -112,12 +113,12 @@ export function fillWithMyInformationsReplaced() {
   HandlerToUpdateFormInputsAndPDFInputs("orderDepartmentNumber", userDatas.orderNumber ? userDatas.orderNumber.toString() : "");
   HandlerToUpdateFormInputsAndPDFInputs("professionnalAddress", userDatas.officeAdress as string);
 
-  setIsFilledWithUser(true);
+  setIsFilledWithUserReplaced(true);
 }
 
-function removeMyInformationsReplaced() {
+export function removeMyInformationsReplaced() {
   clearReplacedFields();
-  setIsFilledWithUser(false);
+  setIsFilledWithUserReplaced(false);
 }
 
 export function handlerToUpdateFormInputsWithContratData() {
@@ -151,7 +152,7 @@ export function ReplacedFields(props: AccordionFieldsProps) {
   // Écoute le mode de remplissage : si le substitut est rempli, on vide le remplacé
   useFillMode("substitute", () => {
     clearReplacedFields();
-    setIsFilledWithUser(false);
+    setIsFilledWithUserReplaced(false);
   });
 
 
@@ -168,11 +169,13 @@ export function ReplacedFields(props: AccordionFieldsProps) {
       valid={valid()}
     >
       <Show when={storeService.data.user?.email !== ""}>
-        <FitFieldsWithUserData
-          onFill={fillWithMyInformationsReplaced}
-          onClear={removeMyInformationsReplaced}
-          isFilled={isFilledWithUser()}
-        />
+        <div class="flex w-full justify-end">
+          <FitFieldsWithUserData
+            onFill={fillWithMyInformationsReplaced}
+            onClear={removeMyInformationsReplaced}
+            isFilled={isFilledWithUserReplaced()}
+          />
+        </div>
       </Show>
 
       <RadioButtons

@@ -50,26 +50,5 @@
       "icons": [{ "src": "assets/icons/512x512.png", "sizes": "512x512" }]
     }
   ],
-  "widgets": [
-    {
-      "name": "Contrats de Remplacement",
-      "tag": "contractsWidget",
-      "ms_ac_template": "widget/ac.json",
-      "data": "widget/data.json",
-      "description": "Widget pour accéder rapidement aux contrats de remplacement.",
-      "screenshots": [
-        {
-          "src": "assets/screenshots/widget _screen.png",
-          "sizes": "500x500",
-          "label": "Widget des contrats"
-        }
-      ],
-      "icons": [
-        {
-          "src": "assets/icons/512x512.png",
-          "sizes": "512x512"
-        }
-      ]
-    }
-  ]
+  "widgets": []
 }

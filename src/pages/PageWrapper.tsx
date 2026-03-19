@@ -39,7 +39,7 @@ export function PageWrapper(props: PageWrapperProps) {
                 setSigneBack(true)
                 openDialogTool(DIALOG_NAMES.editContract);
 
-                storeService.proxy.signeBackContracts = [contract];
+                storeService.proxy.contracts = [contract];
             }
         }
     });

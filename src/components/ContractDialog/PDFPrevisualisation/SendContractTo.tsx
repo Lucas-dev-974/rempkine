@@ -71,7 +71,7 @@ export function SendContractTo(props: {
         // Empêcher le rechargement de la page
         if (e) { e.preventDefault() }
         if (!validateForm()) { return }
-
+        setIsLoading(true)
         try {
             // Générer le PDF avec les signatures
             await currentPDFTool()?.downloadModifiedPdfWithStoredSignatures(currentPDFTool()?.pdfFile as File, false)
@@ -93,28 +93,23 @@ export function SendContractTo(props: {
         form.append("from", mailFrom())
         form.append("to", mailTo())
         form.append("body", mailBody())
-        const contractData = currentPDFTool()?.contractData
+        const contractData = currentPDFTool()?.contractData ?? {}
         form.append("contractData", JSON.stringify(contractData))
         return form
     }
 
     // * Send the request in a createEffect cause we must wait the blob to be generated before sending the request
     createEffect(on(toSendBlob, async () => {
-        if (toSendBlob() && mailFrom() && mailTo() && validateForm()) {
+        if (toSendBlob() && currentPDFTool() && mailFrom() && mailTo() && validateForm()) {
             try {
                 const response: ResponseTypeSendContractTo = await mailService.sendContratTo(buildFormData())
-                if (response.creatingContract) {
-                    currentPDFTool()?.setContractData(response.creatingContract.contract)
-                    storeService.proxy.contracts = [...storeService.proxy.contracts!, response.creatingContract.contract]
-
-                } else {
-                    NotificationService.push({
-                        content: "Erreur lors de la création du contrat",
-                        type: "error"
-                    })
+                if (response.creatingContract?.contract) {
+                    const contract = response.creatingContract.contract
+                    currentPDFTool()?.setContractData(contract)
+                    storeService.proxy.contracts = [...(storeService.proxy.contracts ?? []), contract]
                 }
                 NotificationService.push({
-                    content: "Contrat envoyé.",
+                    content: response.message || "Contrat envoyé.",
                     type: "info"
                 })
                 props.setOpen(false)

@@ -19,7 +19,7 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
       class="sticky top-0 z-10"
       style={gradientStyle}
     >
-      <tr class="text-white text-sm">
+      <tr class="text-white text-xs sm:text-sm">
         <For each={props.columns}>
           {(column) => (
             <th

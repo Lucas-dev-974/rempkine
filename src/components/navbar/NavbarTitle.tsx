@@ -4,6 +4,6 @@ export function NavbarTitle() {
     const navigate = useNavigate();
 
     return (
-        <p class="text-xl cursor-pointer font-[Nunito] text-white" onClick={() => navigate("/")}>Kiné de poche</p>
+        <p class="text-base sm:text-lg md:text-xl cursor-pointer font-[Nunito] text-white" onClick={() => navigate("/")}>Kiné de poche</p>
     )
 }

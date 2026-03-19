@@ -34,7 +34,7 @@ export function NotifcationItem(props: Partial<NotificationType>) {
 
   return (
     <div
-      class="relative overflow-hidden px-4 py-3 rounded-md flex justify-around gap-3 items-center text-white "
+      class="relative overflow-hidden px-4 py-3 rounded-md flex justify-around gap-3 items-center text-white text-sm sm:text-base"
       classList={{
         "bg-[#099773]": mergedProps.type == "info",
         "bg-red-500": mergedProps.type == "error",
@@ -52,9 +52,9 @@ export function NotifcationItem(props: Partial<NotificationType>) {
           style={{ width: `${remainingPercent()}%` }}
         />
       </div>
-      <p> {props.content} </p>
-      <div>
-        <button class="w-3 h-3 border-none bg-transparent cursor-pointer" onClick={closeNotif}>
+      <div class="flex w-full justify-between items-center gap-2">
+        <p> {props.content} </p>
+        <button class="min-w-[28px] min-h-[28px] w-7 h-7 flex items-center justify-center border-none bg-transparent cursor-pointer touch-manipulation" onClick={closeNotif} aria-label="Fermer">
           <VsChromeClose stroke="white" color="white" />
         </button>
       </div>

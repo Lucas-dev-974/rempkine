@@ -26,7 +26,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
                 hideTriggerButton
             >
                 <div class="mb-6">
-                    <p class="text-gray-700 font-[Nunito] m-0 text-center">
+                    <p class="text-sm sm:text-base text-gray-700 font-[Nunito] m-0 text-center">
                         {props.message}
                     </p>
                 </div>

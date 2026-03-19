@@ -84,7 +84,7 @@ export function PDFInputsOnCanvas() {
         };
     }
 
-    return <div class="text-xs md:text-sm lg:text-md">
+    return <div class="text-xs md:text-sm lg:text-base">
         {canvasInputs().map((field) => {
             const position = getAdjustedPosition(field);
             return (

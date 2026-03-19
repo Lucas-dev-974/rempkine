@@ -9,7 +9,7 @@ interface TableBodyProps<T> {
 
 export function TableBody<T>(props: TableBodyProps<T>) {
     const defaultRowClass = (index: number) =>
-        `${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors text-sm`;
+        `${index % 2 === 0 ? "bg-gray-100" : "bg-white"} hover:bg-blue-100 transition-colors text-xs sm:text-sm`;
 
     return (
         <For each={props.data}>

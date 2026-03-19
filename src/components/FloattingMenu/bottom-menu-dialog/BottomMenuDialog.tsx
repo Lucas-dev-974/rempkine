@@ -22,7 +22,7 @@ export function BottomMenuDialog() {
   return (
     <>
       <Overlay show={isBottomMenuVisible()} onClick={() => setIsBottomMenuVisible(false)} />
-      <div class="fixed bottom-0 left-0 w-full bg-white rounded-t-lg shadow-lg transform transition-transform duration-1000 h-[600px] z-[200]"
+      <div class="fixed bottom-0 left-0 w-full bg-white rounded-t-lg shadow-lg transform transition-transform duration-1000 h-[85vh] max-h-[600px] z-[200]"
         classList={{
           "translate-y-full": !isBottomMenuVisible(),
           "translate-y-0": isBottomMenuVisible(),

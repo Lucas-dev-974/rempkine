@@ -28,7 +28,7 @@ export function LabeledInput(props: LabeledInputProps) {
       <label class="font-[Nunito]" for={props.id}>{props.label}</label>
       <input
         ref={inputRef}
-        class="border border-gray-300 rounded-lg py-2 px-3 bg-transparent shadow-sm focus:outline-none resize-none   outline-none font-[Nunito]"
+        class="border border-gray-300 rounded-lg py-2 px-3 bg-transparent shadow-sm focus:outline-none resize-none outline-none font-[Nunito] text-base min-h-[44px] sm:min-h-0"
         type={props.type}
         id={props.id}
         name={props.id}

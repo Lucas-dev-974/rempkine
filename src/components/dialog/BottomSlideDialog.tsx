@@ -17,8 +17,8 @@ export function BottomSlideDialog(props: BottomSlideDialogProps) {
             }}
             onClick={(e) => e.stopPropagation()}
         >
-            <div class="flex items-center justify-between px-8">
-                <h3 class="text-lg font-semibold">{props.title}</h3>
+            <div class="flex items-center justify-between px-4 sm:px-8">
+                <h3 class="text-base sm:text-lg font-semibold">{props.title}</h3>
                 <button aria-label="Fermer" class="p-1 bg-transparent border-none text-2xl text-red-500" onClick={props.onClose}> ✕ </button>
             </div>
             <div class="mt-4 ">

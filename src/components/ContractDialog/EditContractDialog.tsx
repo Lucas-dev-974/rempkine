@@ -23,7 +23,7 @@ export function EditContractDialog() {
       btnText="Créer un contrat"
       title={title()}
     >
-      <div class="p-3 max-h-[70vh]">
+      <div class="max-h-[70vh]">
         <Show when={currentPDFTool() instanceof PDFTool}>
           <ContratInformationsDropdowns />
         </Show>

@@ -1,4 +1,3 @@
-import { useNavigate } from "@solidjs/router";
 import { RegisterInformationsInLocal } from "../RegisterInformationsInLocal/RegisterInformationsInLocal";
 import { NavbarTitle } from "./NavbarTitle";
 

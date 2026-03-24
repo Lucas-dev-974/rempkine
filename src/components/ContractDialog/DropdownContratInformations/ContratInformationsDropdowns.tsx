@@ -1,9 +1,10 @@
 import { DropdownWrapper } from "../../Dropdown/DropdownWrapper";
 import { ContractInformationsFields } from "./ContractInformationsFields";
-import { SubstituteFields } from "./SubstituteFields";
-import { ReplacedFields } from "./ReplacedFields";
-import { createSignal } from "solid-js";
+import { setIsFilledWithUserSubstitute, SubstituteFields } from "./SubstituteFields";
+import { ReplacedFields, setIsFilledWithUserReplaced } from "./ReplacedFields";
+import { createSignal, onCleanup } from "solid-js";
 import { Signatures } from "../Signatures/Singatures";
+import { setFillMode } from "./formFillMode";
 
 export const [toggleItemEvent, setToggleItemEvent] = createSignal(false);
 
@@ -14,6 +15,12 @@ export function formatDateForInput(date: string | undefined) {
 }
 
 export function ContratInformationsDropdowns() {
+  onCleanup(() => {
+    setFillMode(null);
+    setIsFilledWithUserReplaced(false);
+    setIsFilledWithUserSubstitute(false);
+  })
+
   return (
     <DropdownWrapper multiple={true}>
       {(toggleItem, items) => (

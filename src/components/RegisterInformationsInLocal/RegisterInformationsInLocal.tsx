@@ -38,8 +38,6 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
 
 
     function saveInformations() {
-        console.log(birthday());
-
         const informations: UserEntity = {
             fullname: name(),
             email: email(),
@@ -52,10 +50,7 @@ export function RegisterInformationsInLocal(props: { isInNavbar?: boolean }) {
             gender: gender(),
             status: AuthorsEnum.professional,
         };
-        console.log(informations);
-        console.log(storeService.proxy.user);
         storeService.proxy.user = informations;
-        console.log(storeService.proxy.user);
 
         NotificationService.push({
             content: "Informations enregistrées.",

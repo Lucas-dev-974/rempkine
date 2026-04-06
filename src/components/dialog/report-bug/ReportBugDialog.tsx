@@ -91,7 +91,7 @@ export function ReportBugDialog() {
                                 placeholder="Exemple: en cliquant sur 'Valider', la page se bloque..."
                                 value={reportContent()}
                                 onInput={(e) => setReportContent(e.currentTarget.value)}
-                                class="w-full min-h-[25 0px] rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-[#099773]/30 focus:border-[#099773]"
+                                class=" min-h-[25 0px] rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 shadow-sm resize-y focus:outline-none focus:ring-2 focus:ring-[#099773]/30 focus:border-[#099773]"
                             />
                         </div>
 
@@ -105,7 +105,7 @@ export function ReportBugDialog() {
                                 multiple
                                 accept=".jpg,.jpeg,.png,image/jpeg,image/png"
                                 onInput={onFileInput}
-                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 shadow-sm cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-[#099773]/10 file:px-3 file:py-1.5 file:font-[Nunito] file:text-sm file:font-semibold file:text-[#099773] hover:file:bg-[#099773]/20"
+                                class=" rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 shadow-sm cursor-pointer file:mr-3 file:rounded-md file:border-0 file:bg-[#099773]/10 file:px-3 file:py-1.5 file:font-[Nunito] file:text-sm file:font-semibold file:text-[#099773] hover:file:bg-[#099773]/20"
                             />
                             <p class="m-0 text-xs text-gray-500">
                                 Ajoutez une capture d'ecran ou un fichier utile pour reproduire le bug.

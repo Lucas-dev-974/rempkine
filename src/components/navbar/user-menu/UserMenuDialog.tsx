@@ -18,13 +18,14 @@ export function UserMenuDialog(props: UserMenuDialogProps) {
         hidden: !props.openDialog,
       }}
     >
-      <UserMenuButton
+      {/* Todo: refactor this */}
+      {/* <UserMenuButton
         onClick={() => {
           authService.logout();
           navigate("/");
         }}
         text="Me déconnecter"
-      />
+      /> */}
       <ReportBugDialog />
     </div>
   );

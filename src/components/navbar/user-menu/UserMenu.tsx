@@ -2,9 +2,8 @@ import { createSignal, onCleanup, onMount, Show } from "solid-js";
 import storeService from "../../../utils/store.service";
 import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
-import { CgProfile } from 'solid-icons/cg'
-import { loggedIn } from "../../../const.data";
-import { FallbackAuthBtn } from "./FallbackAuthBtn";
+import { RiSystemMenu3Line } from 'solid-icons/ri'
+
 
 export function UserMenu() {
   const [isMenuDialogOpen, setIsMenuDialogOpen] = createSignal<boolean>(false);
@@ -29,15 +28,13 @@ export function UserMenu() {
   });
 
   return (
-    <Show when={loggedIn()} fallback={<FallbackAuthBtn />}>
-      <div ref={setMenuRef} class={" relative"}>
-        <ButtonIcon
-          icons={<CgProfile fill="white" size={24} />}
-          onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
-          size="large"
-        />
-        <UserMenuDialog openDialog={isMenuDialogOpen()} />
-      </div>
-    </Show>
-  );
+    <div ref={setMenuRef} class={" relative"}>
+      <ButtonIcon
+        icons={<RiSystemMenu3Line fill="white" size={24} />}
+        onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
+        size="large"
+      />
+      <UserMenuDialog openDialog={isMenuDialogOpen()} />
+    </div>
+  )
 }

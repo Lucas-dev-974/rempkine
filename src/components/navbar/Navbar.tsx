@@ -1,5 +1,6 @@
 import { RegisterInformationsInLocal } from "../RegisterInformationsInLocal/RegisterInformationsInLocal";
 import { NavbarTitle } from "./NavbarTitle";
+import { UserMenu } from "./user-menu/UserMenu";
 
 export function Navbar() {
   // const navigate = useNavigate();
@@ -13,8 +14,10 @@ export function Navbar() {
           <NavbarTitle />
         </div>
 
-        {/* <UserMenu /> */}
-        <RegisterInformationsInLocal isInNavbar={true} />
+        <div class="flex gap-2 items-center">
+          <RegisterInformationsInLocal isInNavbar={true} />
+          <UserMenu />
+        </div>
       </div>
 
     </nav>

@@ -1,5 +1,4 @@
-import { createSignal, onCleanup, onMount, Show } from "solid-js";
-import storeService from "../../../utils/store.service";
+import { createSignal } from "solid-js";
 import { ButtonIcon } from "../../buttons/ButtonIcon";
 import { UserMenuDialog } from "./UserMenuDialog";
 import { RiSystemMenu3Line } from 'solid-icons/ri'
@@ -9,24 +8,6 @@ export function UserMenu() {
   const [isMenuDialogOpen, setIsMenuDialogOpen] = createSignal<boolean>(false);
   const [menuRef, setMenuRef] = createSignal<HTMLDivElement>();
 
-  function handleClickOutside(event: MouseEvent) {
-    if (storeService.proxy.isLogin) {
-      if (menuRef() && !menuRef()!.contains(event.target as Node)) {
-        setIsMenuDialogOpen(false); // Ferme le menu si on clique à l'extérieur
-      }
-    }
-  }
-
-  onMount(() => {
-    if (storeService.proxy.isLogin)
-      document.addEventListener("click", handleClickOutside);
-  });
-
-  onCleanup(() => {
-    if (storeService.proxy.isLogin)
-      document.removeEventListener("click", handleClickOutside);
-  });
-
   return (
     <div ref={setMenuRef} class={" relative"}>
       <ButtonIcon
@@ -34,7 +15,11 @@ export function UserMenu() {
         onClick={() => setIsMenuDialogOpen(!isMenuDialogOpen())}
         size="large"
       />
-      <UserMenuDialog openDialog={isMenuDialogOpen()} />
+      <UserMenuDialog
+        openDialog={isMenuDialogOpen()}
+        onClose={() => setIsMenuDialogOpen(false)}
+        menuRootRef={menuRef}
+      />
     </div>
   )
 }

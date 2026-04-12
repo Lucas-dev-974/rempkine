@@ -1,10 +1,10 @@
 {
   "id": "/",
   "scope": "/",
-  "name": "kine'd'poche",
+  "name": "kinéd'Poche",
   "display": "standalone",
   "start_url": "/",
-  "short_name": "Kiné'd'Poche",
+  "short_name": "Kinéd'Poche",
   "theme_color": "#099773",
   "description": "Application de gestion des contrats de remplacement entre kinésithérapeutes. Créez, signez et gérez vos contrats de remplacement facilement.",
   "orientation": "any",

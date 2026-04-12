@@ -41,14 +41,6 @@
     "business",
     "productivity"
   ],
-  "shortcuts": [
-    {
-      "name": "Mes Contrats",
-      "short_name": "Contrats",
-      "description": "Accéder à mes contrats de remplacement",
-      "url": "/",
-      "icons": [{ "src": "assets/icons/512x512.png", "sizes": "512x512" }]
-    }
-  ],
+  "shortcuts": [],
   "widgets": []
 }
